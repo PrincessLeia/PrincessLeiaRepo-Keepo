@@ -79,7 +79,7 @@ class Program
         killMenu.AddItem(new MenuItem("KillI", "Steal with Ignite?").SetValue(true));
 
         Menu itemsMenu = Menu.AddSubMenu(new Menu("Items", "Items"));
-        itemsMenu.AddItem(new MenuItem("useMura", "Auto enable Muramana").SetValue(true));
+        itemsMenu.AddItem(new MenuItem("useMura", "enable Auto Muramana").SetValue(new KeyBind('A', KeyBindType.Toggle)));
 
         Menu preMenu = Menu.AddSubMenu(new Menu("Prediction", "Prediction"));
         preMenu.AddItem(new MenuItem("preE", "HitChance E").SetValue(HitChanceList));
@@ -155,7 +155,7 @@ class Program
 
             foreach (var obj in ObjectManager.Get<Obj_AI_Hero>().Where(obj => obj.IsValidTarget(1500) && obj.HasBuff("urgotcorrosivedebuff", true)))
             {
-                Utility.DrawCircle(Player.Position, Q2.Range, DrawE.Color);
+                Utility.DrawCircle(Player.Position, 1110, DrawE.Color);
             }
         }
 
@@ -181,16 +181,29 @@ class Program
                     "Auto KS : Off");
 
             if (Menu.Item("lastHitQ").GetValue<bool>() == true)
-                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.64f, System.Drawing.Color.Yellow, "Q LastHit : On");
+                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.62f, System.Drawing.Color.Yellow, "Q LastHit : On");
             else
-                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.64f, System.Drawing.Color.DarkRed,
+                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.62f, System.Drawing.Color.DarkRed,
                     "Q LastHit : Off");
 
             if (Menu.Item("LaneClearQ").GetValue<bool>() == true)
-                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.62f, System.Drawing.Color.Yellow, "Q LaneClear : On");
+                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.60f, System.Drawing.Color.Yellow, "Q LaneClear : On");
             else
-                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.62f, System.Drawing.Color.DarkRed,
+                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.60f, System.Drawing.Color.DarkRed,
                     "Q LaneClear : Off");
+
+            if (Muramana.IsReady())
+            {
+                if (Menu.Item("useMura").GetValue<KeyBind>().Active)
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.64f, System.Drawing.Color.Yellow,
+                        "Auto Muramana : On");
+                else
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.64f, System.Drawing.Color.DarkRed,
+                        "Auto Muramana : Off");
+            }
+            else
+                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.64f, System.Drawing.Color.DarkRed,
+                    "Muramana not available");
         }
 
         if (Menu.Item("hitbye").GetValue<bool>() == true)
@@ -347,7 +360,7 @@ class Program
 
     public static void activateMura()
     {
-        if (Menu.Item("useMura").GetValue<bool>() == true)
+        if (Menu.Item("useMura").GetValue<KeyBind>().Active)
         {
             if (Player.Buffs.Count(buf => buf.Name == "Muramana") == 0)
                 Muramana.Cast();
@@ -355,7 +368,7 @@ class Program
     }
     public static void deActivateMura()
     {
-        if (Menu.Item("useMura").GetValue<bool>() == true)
+        if (Menu.Item("useMura").GetValue<KeyBind>().Active)
         {
             if (Player.Buffs.Count(buf => buf.Name == "Muramana") == 1)
                 Muramana.Cast();
