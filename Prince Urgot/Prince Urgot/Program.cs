@@ -28,15 +28,16 @@ class Program
         if (Player.ChampionName != "Urgot")
             return;
 
-        Q = new Spell(SpellSlot.Q, 1000);
-        Q2 = new Spell(SpellSlot.Q, 1200);
-        W = new Spell(SpellSlot.W, 0);
-        E = new Spell(SpellSlot.E, 900);
-        R = new Spell(SpellSlot.R, float.MaxValue);
+        Q = new Spell(SpellSlot.Q, 1000); 
+        Q2 = new Spell(SpellSlot.Q, 1200); 
+        W = new Spell(SpellSlot.W); 
+        E = new Spell(SpellSlot.E, 900);  
+        R = new Spell(SpellSlot.R, 550);
 
         Q.SetSkillshot(0.10f, 100f, 1600f, true, SkillshotType.SkillshotLine);
         Q2.SetSkillshot(0.10f, 100f, 1600f, false, SkillshotType.SkillshotLine);
         E.SetSkillshot(0.283f, 0f, 1750f, false, SkillshotType.SkillshotCircle);
+
 
         IgniteSlot = Player.GetSpellSlot("SummonerDot");
         Muramana = new Items.Item(3042, 0);
@@ -60,23 +61,12 @@ class Program
         lastHitMenu.AddItem(new MenuItem("lastHitQ", "Use Q").SetValue(true));
         lastHitMenu.AddItem(new MenuItem("lastHitQManaPercent", "Minimum Q Mana Percent").SetValue(new Slider(30, 0, 100)));
 
-        Menu drawMenu = Menu.AddSubMenu(new Menu("Draw", "Drawing"));
-        drawMenu.AddItem(new MenuItem("drawQ", "Draw Q").SetValue(new Circle(true, Color.FromArgb(100, Color.Red))));
-        drawMenu.AddItem(new MenuItem("drawE", "Draw extended Q range if hit by E").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
-        drawMenu.AddItem(new MenuItem("HUD", "Heads-up Display").SetValue(true));
-        drawMenu.AddItem(new MenuItem("hitbye", "Draw Circle on Enemy if hit by E").SetValue(true));
-        //drawMenu.AddItem(new MenuItem("drawR", "Draw R").SetValue(true));
-
         Menu harassMenu = Menu.AddSubMenu(new Menu("Harass", "Harass"));
         harassMenu.AddItem(new MenuItem("HarassActive", "Harass").SetValue(new KeyBind('C', KeyBindType.Press)));
         harassMenu.AddItem(new MenuItem("HarassToggle", "Harass").SetValue(new KeyBind('T', KeyBindType.Toggle)));
         harassMenu.AddItem(new MenuItem("haraQ", "Auto Q on E Debuff").SetValue(true));
         harassMenu.AddItem(new MenuItem("haraE", "Auto E for Debuff").SetValue(true));
         harassMenu.AddItem(new MenuItem("HaraManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
-
-        Menu killMenu = Menu.AddSubMenu(new Menu("KillSteal", "KillSteal"));
-        killMenu.AddItem(new MenuItem("KillQ", "Steal with Q?").SetValue(true));
-        killMenu.AddItem(new MenuItem("KillI", "Steal with Ignite?").SetValue(true));
 
         Menu itemsMenu = Menu.AddSubMenu(new Menu("Items", "Items"));
         itemsMenu.AddItem(new MenuItem("useMura", "enable Auto Muramana").SetValue(new KeyBind('A', KeyBindType.Toggle)));
@@ -85,10 +75,28 @@ class Program
         preMenu.AddItem(new MenuItem("preE", "HitChance E").SetValue(HitChanceList));
         preMenu.AddItem(new MenuItem("preQ", "HitChance Q").SetValue(HitChanceList));
 
+        Menu drawMenu = Menu.AddSubMenu(new Menu("Draw", "Drawing"));
+        drawMenu.AddItem(new MenuItem("drawQ", "Draw Q").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
+        drawMenu.AddItem(new MenuItem("drawE", "Draw extended Q range if hit by E").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
+        drawMenu.AddItem(new MenuItem("HUD", "Heads-up Display").SetValue(true));
+        drawMenu.AddItem(new MenuItem("hitbye", "Draw Circle on Enemy if hit by E").SetValue(true));
+        drawMenu.AddItem(new MenuItem("drawR", "Draw R").SetValue(new Circle(true, Color.FromArgb(100, Color.Red))));
+
+        Menu miscMenu = Menu.AddSubMenu(new Menu("Misc", "Misc"));
+        miscMenu.AddItem(new MenuItem("autoR", "Auto R if under Tower BETA").SetValue(false));
+        miscMenu.AddItem(new MenuItem("autoInt", "Auto Interrupt with R").SetValue(false));
+        miscMenu.AddItem(new MenuItem("KillQ", "KillSteal with Q?").SetValue(true));
+        miscMenu.AddItem(new MenuItem("KillI", "KillSteal with Ignite?").SetValue(true));
+
         Menu.AddItem(new MenuItem("Packet", "Packet Casting").SetValue(true));
+
+        Menu.AddItem(new MenuItem("madebyme", "PrincessLeia :)").DontSave());
 
         Menu.AddToMainMenu();
 
+
+        Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt; 
+        CustomEvents.Unit.OnLevelUp += OnLevelUp; 
         Drawing.OnDraw += Drawing_OnDraw;
         Game.OnGameUpdate += Game_OnGameUpdate;
 
@@ -106,8 +114,9 @@ class Program
 
         if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Combo)
         {
-            NCC();
-            Hunter();
+            //NCC();
+            //Hunter();
+            CastLogic();
             activateMura();
         }
 
@@ -130,6 +139,11 @@ class Program
         {
             Harass();
         }
+        if (Menu.Item("autoR").GetValue<bool>() && R.IsReady())
+        {
+            AutoR();
+        }
+
 
         KillSteal();
 
@@ -181,15 +195,15 @@ class Program
                     "Auto KS : Off");
 
             if (Menu.Item("lastHitQ").GetValue<bool>() == true)
-                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.62f, System.Drawing.Color.Yellow, "Q LastHit : On");
+                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.60f, System.Drawing.Color.Yellow, "Q LastHit : On");
             else
-                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.62f, System.Drawing.Color.DarkRed,
+                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.60f, System.Drawing.Color.DarkRed,
                     "Q LastHit : Off");
 
             if (Menu.Item("LaneClearQ").GetValue<bool>() == true)
-                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.60f, System.Drawing.Color.Yellow, "Q LaneClear : On");
+                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.58f, System.Drawing.Color.Yellow, "Q LaneClear : On");
             else
-                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.60f, System.Drawing.Color.DarkRed,
+                Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.58f, System.Drawing.Color.DarkRed,
                     "Q LaneClear : Off");
 
             if (Muramana.IsReady())
@@ -203,8 +217,14 @@ class Program
             }
             else
                 Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.64f, System.Drawing.Color.DarkRed,
-                    "Muramana not available");
+                    "Muramana unavailable");
         }
+
+        if (Menu.Item("autoR").GetValue<bool>() == true || Menu.Item("autoInt").GetValue<bool>() == true)
+            Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.62f, System.Drawing.Color.Yellow, "Auto R : On");
+        else
+            Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.62f, System.Drawing.Color.DarkRed,
+                "Auto R : Off");
 
         if (Menu.Item("hitbye").GetValue<bool>() == true)
         {
@@ -215,82 +235,113 @@ class Program
                 Utility.DrawCircle(target.Position, 100, Color.GreenYellow);
         }
 
-          if (Menu.Item("drawR").GetValue<bool>() == true)
+        var DrawR = Menu.Item("drawR").GetValue<Circle>();
+        if (DrawR.Active)
         {
-            var target = SimpleTs.GetTarget(2000, SimpleTs.DamageType.Physical);
-
-            foreach (var obj in ObjectManager.Get<Obj_AI_Hero>().Where(obj => obj.IsValidTarget(2000)))
-                Utility.DrawCircle(Player.Position, R.Range, Color.Red);
-            
+            Utility.DrawCircle(Player.Position, R.Range, DrawR.Color);
         }
+
     }
 
 
-    private static void Hunter()
-    {
-        var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
-        var hitchanceq = (HitChance)(Menu.Item("preQ").GetValue<StringList>().SelectedIndex + 3);
 
-        if (Menu.Item("haraQ").GetValue<bool>() == false)
-        {
-
-            if (Q2.IsReady() && target.IsValidTarget(Q2.Range) && target.HasBuff("urgotcorrosivedebuff", true))
-            {
-                W.Cast(Menu.Item("Packet").GetValue<bool>());
-                Q2.Cast(target.ServerPosition, Menu.Item("Packet").GetValue<bool>());
-            }
-        }
-
-        if (Q.IsReady() && target.IsValidTarget(Q.Range))
-        {
-            Q.CastIfHitchanceEquals(target, hitchanceq, Menu.Item("Packet").GetValue<bool>());
-        }
-    }
+            public static void OnLevelUp(Obj_AI_Base sender, CustomEvents.Unit.OnLevelUpEventArgs args) 
+         { 
+             if (!sender.IsValid || !sender.IsMe) 
+                 return; 
+             if (args.NewLevel == 11) 
+                 R = new Spell(SpellSlot.R, 700); 
+             if (args.NewLevel == 16) 
+                 R = new Spell(SpellSlot.R, 850); 
+         } 
+ 
+ 
+         public static void Interrupter_OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell) 
+         { 
+             if (Menu.Item("autoInt").GetValue<bool>() && R.IsReady() && unit.IsEnemy && unit.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player))) 
+             {                 R.CastOnUnit(unit); 
+            } 
+         } 
 
 
-    private static void NCC()
-    {
-            var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
-            var hitchancee = (HitChance) (Menu.Item("preE").GetValue<StringList>().SelectedIndex + 3);
+         private static void Hunter()
+         {
+             var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
+             if (Q.IsReady() && target.IsValidTarget(target.HasBuff("urgotcorrosivedebuff", true) ? Q2.Range : Q.Range))
+             {
+                 Q.Cast(target);
+             }
+         }
+         private static void SmartQ()
+         {
 
-            if (target.IsValidTarget(E.Range))
-            {
-                E.CastIfHitchanceEquals(target, hitchancee, Menu.Item("Packet").GetValue<bool>());
-            }
-            else
-            {
-                E.CastIfHitchanceEquals(SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical), HitChance.High, Menu.Item("Packet").GetValue<bool>());
-            }
-        }
+             foreach (var obj in
+                 ObjectManager.Get<Obj_AI_Hero>()
+                     .Where(obj => obj.IsValidTarget(Q2.Range) && obj.HasBuff("urgotcorrosivedebuff", true)))
+             {
+                 W.Cast();
+                 Q2.Cast(obj.ServerPosition);
+             }
+         }
+
+         private static void CastLogic()
+         {
+             SmartQ();
+
+             var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
+             if (target == null)
+             {
+                 return;
+             }
+
+             NCC();
+             Hunter();
+         }
+
+         private static void NCC()
+         {
+             if (!E.IsReady())
+             {
+                 return;
+             }
+
+             var hitchance = (HitChance)(Menu.Item("preE").GetValue<StringList>().SelectedIndex + 3);
+             var target = SimpleTs.GetTarget(1400, SimpleTs.DamageType.Physical);
+
+             if (target.IsValidTarget(E.Range))
+             {
+                 E.CastIfHitchanceEquals(target, hitchance);
+             }
+             else
+             {
+                 E.CastIfHitchanceEquals(SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical), HitChance.High);
+             }
+         }
+
 
 
     private static void Harass()
     {
-        if (Player.Mana > Player.MaxMana*Menu.Item("HaraManaPercent").GetValue<Slider>().Value/100)
-        {
+        var mana = Player.Mana > Player.MaxMana*Menu.Item("HaraManaPercent").GetValue<Slider>().Value/100;
+        var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
+        
             if (Menu.Item("haraQ").GetValue<bool>() == true)
             {
-
-                var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
-                var hitchanceq = (HitChance) (Menu.Item("preQ").GetValue<StringList>().SelectedIndex + 3);
-
-                if (Q2.IsReady() && target.IsValidTarget(Q2.Range) && target.HasBuff("urgotcorrosivedebuff", true))
-
-                {
-                    activateMura();
-                    Q2.Cast(target.ServerPosition, Menu.Item("Packet").GetValue<bool>());
-                    W.Cast(Menu.Item("Packet").GetValue<bool>());
-                }
+                SmartQ();
             }
 
-            if (Menu.Item("haraE").GetValue<bool>() == true)
+            if (Menu.Item("haraE").GetValue<bool>() == true && mana)
             {
+
+                if (target == null)
+                {
+                    return;
+                }
 
                 NCC();
 
             }
 
-        }
     }
 
 
@@ -346,14 +397,15 @@ class Program
             if (Player.Mana > Player.MaxMana*Menu.Item("LaneClearQManaPercent").GetValue<Slider>().Value/100)
 
             {
-                foreach (
-                    var minion in
-                        MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly))
+                var myMinions = MinionManager.GetMinions(Player.ServerPosition, Q.Range);
 
-                    if (Q.IsReady() && Q.IsKillable(minion))
+                if (Q.IsReady())
+                {
+                    foreach (var minion in myMinions.Where(minion => Player.GetSpellDamage(minion, SpellSlot.Q) >= HealthPrediction.GetHealthPrediction(minion, (int)(Q.Delay * 1000))))
                     {
-                        Q.Cast(minion.Position, Menu.Item("Packet").GetValue<bool>());
+                        Q.Cast(minion.ServerPosition, Menu.Item("Packet").GetValue<bool>());
                     }
+                }             
             }
         }
     }
@@ -374,5 +426,18 @@ class Program
                 Muramana.Cast();
         }
     }
+
+    public static void AutoR()
+    {
+        var target = SimpleTs.GetTarget(R.Range, SimpleTs.DamageType.Physical);
+
+        var turret = ObjectManager.Get<Obj_AI_Turret>().First(obj => obj.IsAlly && obj.Distance(Player) <= 775f);
+
+        if (turret != null && target != null)
+        {
+            R.Cast(target, true);
+        }
+    }
+
 
 }
