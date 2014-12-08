@@ -7,88 +7,51 @@ using xSLx_Orbwalker;
 using SharpDX;   
 using Color = System.Drawing.Color;
 
-//ToDo: Draw EQ properly, Draw R, Enable slider
 
 class Program
 {
-    // declare shorthandle to access the player object
-    // Properties http://msdn.microsoft.com/en-us/library/aa288470%28v=vs.71%29.aspx 
     private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
-
-    // declare orbwalker class
     public static xSLxOrbwalker Orbwalker;
-
-    // declare  list of spells
     private static Spell Q, Q2, W, E, R;
-
     public static SpellSlot IgniteSlot;
-
-    // declare menu
     private static Menu Menu;
-
-    // Prediction List
-
     public static readonly StringList HitChanceList = new StringList(new []{ "Low", "Medium", "High", "Very High" });
+    public static Items.Item Muramana;
 
-    /// <summary>
-    /// Default programm entrypoint, gets called once on programm creation
-    /// </summary>
     static void Main(string[] args)
     {
-        // Events http://msdn.microsoft.com/en-us/library/edzehd2t%28v=vs.110%29.aspx
-        // OnGameLoad event, gets fired after loading screen is over
         CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
     }
 
-    /// <summary>
-    /// Game Loaded Method
-    /// </summary>
     private static void Game_OnGameLoad(EventArgs args)
     {
-        if (Player.ChampionName != "Urgot") // check if the current champion is Nunu
-            return; // stop programm
+        if (Player.ChampionName != "Urgot")
+            return;
 
-        // the Spell class provides methods to check and cast Spells
-        // Constructor Spell(SpellSlot slot, float range)
-        Q = new Spell(SpellSlot.Q, 1000); // create Q spell with a range of 125 units
+        Q = new Spell(SpellSlot.Q, 1000);
         Q2 = new Spell(SpellSlot.Q, 1200);
-        W = new Spell(SpellSlot.W, 0); // create W spell with a range of 700 units
-        E = new Spell(SpellSlot.E, 900); // create E spell with a range of 550 units
-        R = new Spell(SpellSlot.R, float.MaxValue); // create R spell with a range of 650 units
+        W = new Spell(SpellSlot.W, 0);
+        E = new Spell(SpellSlot.E, 900);
+        R = new Spell(SpellSlot.R, float.MaxValue);
 
-        // set spells prediction values, not used on Nunu
-        // Method Spell.SetSkillshot(float delay, float width, float speed, bool collision, SkillshotType type)
-        // Q.SetSkillshot(0.25f, 80f, 1800f, false, SkillshotType.SkillshotLine);
         Q.SetSkillshot(0.10f, 100f, 1600f, true, SkillshotType.SkillshotLine);
         Q2.SetSkillshot(0.10f, 100f, 1600f, false, SkillshotType.SkillshotLine);
         E.SetSkillshot(0.283f, 0f, 1750f, false, SkillshotType.SkillshotCircle);
 
         IgniteSlot = Player.GetSpellSlot("SummonerDot");
-
-        // create root menu
-        // Constructor Menu(string displayName, string name, bool root)
+        Muramana = new Items.Item(3042, 0);
 
         Menu = new Menu("Prince " + Player.ChampionName, Player.ChampionName, true);
 
-        // create and add submenu 'Orbwalker'
-        // Menu.AddSubMenu(Menu menu) returns added Menu
         Menu orbwalkerMenu = Menu.AddSubMenu(new Menu("xSLx Orbwalker", "Orbwalkert1"));
 
-        // creates Orbwalker object and attach to orbwalkerMenu
-        // Constructor Orbwalking.Orbwalker(Menu menu);
         Orbwalker = new xSLxOrbwalker();
         xSLxOrbwalker.AddToMenu(orbwalkerMenu);
-        //Menu.AddSubMenu(orbwalkerMenu);
 
-        // create submenu for TargetSelector used by Orbwalker
         Menu ts = Menu.AddSubMenu(new Menu("Target Selector", "Target Selector")); ;
 
-        // attach
         SimpleTs.AddToMenu(ts);
 
-        // Menu.AddItem(MenuItem item) returns added MenuItem
-        // Constructor MenuItem(string name, string displayName)
-        // .SetValue(true) on/off button
         Menu laneClearMenu = Menu.AddSubMenu(new Menu("LaneClear", "LaneClear"));
         laneClearMenu.AddItem(new MenuItem("LaneClearQ", "Use Q").SetValue(true));
         laneClearMenu.AddItem(new MenuItem("LaneClearQManaPercent", "Minimum Q Mana Percent").SetValue(new Slider(30, 0, 100)));
@@ -98,8 +61,8 @@ class Program
         lastHitMenu.AddItem(new MenuItem("lastHitQManaPercent", "Minimum Q Mana Percent").SetValue(new Slider(30, 0, 100)));
 
         Menu drawMenu = Menu.AddSubMenu(new Menu("Draw", "Drawing"));
-        drawMenu.AddItem(new MenuItem("drawQ", "Draw Q").SetValue(true/*new Circle(true, Color.FromArgb(100, Color.Red))*/));
-        //drawMenu.AddItem(new MenuItem("drawE", "Draw extended Q range if hit by E").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
+        drawMenu.AddItem(new MenuItem("drawQ", "Draw Q").SetValue(new Circle(true, Color.FromArgb(100, Color.Red))));
+        drawMenu.AddItem(new MenuItem("drawE", "Draw extended Q range if hit by E").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
         drawMenu.AddItem(new MenuItem("HUD", "Heads-up Display").SetValue(true));
         drawMenu.AddItem(new MenuItem("hitbye", "Draw Circle on Enemy if hit by E").SetValue(true));
         //drawMenu.AddItem(new MenuItem("drawR", "Draw R").SetValue(true));
@@ -107,13 +70,16 @@ class Program
         Menu harassMenu = Menu.AddSubMenu(new Menu("Harass", "Harass"));
         harassMenu.AddItem(new MenuItem("HarassActive", "Harass").SetValue(new KeyBind('C', KeyBindType.Press)));
         harassMenu.AddItem(new MenuItem("HarassToggle", "Harass").SetValue(new KeyBind('T', KeyBindType.Toggle)));
-        harassMenu.AddItem(new MenuItem("haraQ", "Harass Q").SetValue(true));
-        harassMenu.AddItem(new MenuItem("haraE", "Harass QE").SetValue(true));
+        harassMenu.AddItem(new MenuItem("haraQ", "Auto Q on E Debuff").SetValue(true));
+        harassMenu.AddItem(new MenuItem("haraE", "Auto E for Debuff").SetValue(true));
         harassMenu.AddItem(new MenuItem("HaraManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 
         Menu killMenu = Menu.AddSubMenu(new Menu("KillSteal", "KillSteal"));
         killMenu.AddItem(new MenuItem("KillQ", "Steal with Q?").SetValue(true));
         killMenu.AddItem(new MenuItem("KillI", "Steal with Ignite?").SetValue(true));
+
+        Menu itemsMenu = Menu.AddSubMenu(new Menu("Items", "Items"));
+        itemsMenu.AddItem(new MenuItem("useMura", "Auto enable Muramana").SetValue(true));
 
         Menu preMenu = Menu.AddSubMenu(new Menu("Prediction", "Prediction"));
         preMenu.AddItem(new MenuItem("preE", "HitChance E").SetValue(HitChanceList));
@@ -121,50 +87,44 @@ class Program
 
         Menu.AddItem(new MenuItem("Packet", "Packet Casting").SetValue(true));
 
-        // attach to 'Sift/F9' Menu
         Menu.AddToMainMenu();
 
-        // subscribe to Drawing event
         Drawing.OnDraw += Drawing_OnDraw;
-
-
-        // subscribe to Update event gets called every game update around 10ms
         Game.OnGameUpdate += Game_OnGameUpdate;
 
-        // print text in local chat
-        Game.PrintChat("Prince " + Player.ChampionName + "Loaded");
+
+        Game.PrintChat("Prince " + Player.ChampionName + " Loaded");
     }
 
-    /// <summary>
-    /// Main Update Method
-    /// </summary>
+
     private static void Game_OnGameUpdate(EventArgs args)
     {
-        // dont do stuff while dead
+
+ 
         if (Player.IsDead)
             return;
 
-        // checks the current Orbwalker mode Combo/Mixed/LaneClear/LastHit
         if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Combo)
         {
-            // combo to kill the enemy
-            Hunter();
             NCC();
-            Shield();
+            Hunter();
+            activateMura();
         }
 
         if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Harass)
         {
-            // farm and harass
+
         }
 
         if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.LaneClear)
         {
             laneClear();
+            deActivateMura();
         }
         if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Lasthit)
         {
             lastHit();
+            deActivateMura();
         }
         if (Menu.Item("HarassActive").GetValue<KeyBind>().Active || Menu.Item("HarassToggle").GetValue<KeyBind>().Active)
         {
@@ -173,11 +133,9 @@ class Program
 
         KillSteal();
 
+
     }
 
-    /// <summary>
-    /// Get Ignite DMG
-    /// </summary>
 
     private static float GetIgniteDamage(Obj_AI_Hero enemy)
     {
@@ -185,30 +143,27 @@ class Program
         return (float)Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
     }
 
-    /// <summary>
-    /// Main Draw Method
-    /// </summary>
     private static void Drawing_OnDraw(EventArgs args)
     {
-        // dont draw stuff while dead
         if (Player.IsDead)
             return;
 
-        // check if E ready
-        /*var DrawE = Menu.Item("drawE").GetValue<Circle>();
+        var DrawE = Menu.Item("drawE").GetValue<Circle>();
         if (DrawE.Active)
         {
             var target = SimpleTs.GetTarget(1500, SimpleTs.DamageType.Physical);
 
             foreach (var obj in ObjectManager.Get<Obj_AI_Hero>().Where(obj => obj.IsValidTarget(1500) && obj.HasBuff("urgotcorrosivedebuff", true)))
-            // draw Aqua circle around the player
             {
                 Utility.DrawCircle(Player.Position, Q2.Range, DrawE.Color);
             }
-        }*/
+        }
 
-        //var DrawQ = Menu.Item("drawQ").GetValue<Circle>();
-        if (Menu.Item("drawQ").GetValue<bool>() == true/*DrawQ.Active*/) Utility.DrawCircle(Player.Position, Q.Range, Color.Aqua/*DrawQ.Color*/);
+        var DrawQ = Menu.Item("drawQ").GetValue<Circle>();
+        if (DrawQ.Active)
+        {
+            Utility.DrawCircle(Player.Position, Q.Range, DrawQ.Color);
+        }
 
         if (Menu.Item("HUD").GetValue<bool>())
         {
@@ -258,39 +213,28 @@ class Program
     }
 
 
-    /// <summary>
-    /// Consume logic
-    /// </summary>
     private static void Hunter()
     {
         var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
         var hitchanceq = (HitChance)(Menu.Item("preQ").GetValue<StringList>().SelectedIndex + 3);
 
-        if (Q2.IsReady() && target.IsValidTarget(Q2.Range) && target.HasBuff("urgotcorrosivedebuff", true))
+        if (Menu.Item("haraQ").GetValue<bool>() == false)
         {
-            Q2.Cast(target.ServerPosition, Menu.Item("Packet").GetValue<bool>());
+
+            if (Q2.IsReady() && target.IsValidTarget(Q2.Range) && target.HasBuff("urgotcorrosivedebuff", true))
+            {
+                W.Cast(Menu.Item("Packet").GetValue<bool>());
+                Q2.Cast(target.ServerPosition, Menu.Item("Packet").GetValue<bool>());
+            }
         }
-        
+
         if (Q.IsReady() && target.IsValidTarget(Q.Range))
         {
             Q.CastIfHitchanceEquals(target, hitchanceq, Menu.Item("Packet").GetValue<bool>());
         }
     }
 
-    /// <summary>
-    /// Bloodboil logic
-    /// </summary>
-    private static void Shield()
-    {
-        if (W.IsReady() && Q.Cast())
-        {
-            W.Cast(Menu.Item("Packet").GetValue<bool>());
-        }
-    }
 
-    /// <summary>
-    /// Iceblast logic
-    /// </summary>
     private static void NCC()
     {
             var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
@@ -311,17 +255,30 @@ class Program
     {
         if (Player.Mana > Player.MaxMana*Menu.Item("HaraManaPercent").GetValue<Slider>().Value/100)
         {
-            var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
-            if (target == null) return;
+            if (Menu.Item("haraQ").GetValue<bool>() == true)
+            {
 
-                   Hunter();
+                var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
+                var hitchanceq = (HitChance) (Menu.Item("preQ").GetValue<StringList>().SelectedIndex + 3);
 
-                if (Menu.Item("haraE").GetValue<bool>() == true)
+                if (Q2.IsReady() && target.IsValidTarget(Q2.Range) && target.HasBuff("urgotcorrosivedebuff", true))
+
                 {
-                    NCC();
+                    activateMura();
+                    Q2.Cast(target.ServerPosition, Menu.Item("Packet").GetValue<bool>());
+                    W.Cast(Menu.Item("Packet").GetValue<bool>());
                 }
             }
+
+            if (Menu.Item("haraE").GetValue<bool>() == true)
+            {
+
+                NCC();
+
+            }
+
         }
+    }
 
 
     private static void KillSteal()
@@ -387,4 +344,22 @@ class Program
             }
         }
     }
+
+    public static void activateMura()
+    {
+        if (Menu.Item("useMura").GetValue<bool>() == true)
+        {
+            if (Player.Buffs.Count(buf => buf.Name == "Muramana") == 0)
+                Muramana.Cast();
+        }
+    }
+    public static void deActivateMura()
+    {
+        if (Menu.Item("useMura").GetValue<bool>() == true)
+        {
+            if (Player.Buffs.Count(buf => buf.Name == "Muramana") == 1)
+                Muramana.Cast();
+        }
+    }
+
 }

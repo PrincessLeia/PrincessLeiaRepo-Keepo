@@ -7,6 +7,5 @@ C:\Users\Carli\documents\visual studio 2013\Projects\Prince Urgot\Prince Urgot\b
 C:\Users\Carli\documents\visual studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\xSLx-Orbwalker.dll
 C:\Users\Carli\documents\visual studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\SharpDX.Direct3D9.dll
 C:\Users\Carli\documents\visual studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\LeagueSharp.xml
-C:\Users\Carli\documents\visual studio 2013\Projects\Prince Urgot\Prince Urgot\obj\Debug\Prince Urgot.csprojResolveAssemblyReference.cache
 C:\Users\Carli\documents\visual studio 2013\Projects\Prince Urgot\Prince Urgot\obj\Debug\Prince Urgot.exe
 C:\Users\Carli\documents\visual studio 2013\Projects\Prince Urgot\Prince Urgot\obj\Debug\Prince Urgot.pdb
