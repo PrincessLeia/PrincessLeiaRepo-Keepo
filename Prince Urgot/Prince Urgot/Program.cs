@@ -290,7 +290,6 @@ class Program
                  ObjectManager.Get<Obj_AI_Hero>()
                      .Where(obj => obj.IsValidTarget(Q2.Range) && obj.HasBuff("urgotcorrosivedebuff", true)))
              {
-                 W.Cast(Menu.Item("Packet").GetValue<bool>());
                  Q2.Cast(obj.ServerPosition, Menu.Item("Packet").GetValue<bool>());
              }
          }
@@ -299,6 +298,7 @@ class Program
          {
              var CastQ = (Menu.Item("ComboQ").GetValue<bool>());
              var CastE = (Menu.Item("ComboE").GetValue<bool>());
+             var CastW = (Menu.Item("ComboW").GetValue<bool>());
              if (CastQ)
              {
                 SmartQ();
@@ -319,16 +319,22 @@ class Program
              {
                  Hunter();
              }
+             if (CastW)
+             {
+                 Shield();
+             }
          }
 
-    /*private static void Shield()
+    private static void Shield()
     {
         var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
-        if (Q.IsReady() && target.IsValidTarget(target.HasBuff("urgotcorrosivedebuff", true) ? Q2.Range : Q.Range))
+        var distance = ObjectManager.Player.Distance(target);
+
+        if (W.IsReady() && distance <= 100 || (distance >= 900 && distance <= 1200))
         {
             W.Cast(Menu.Item("Packet").GetValue<bool>());
         }
-    }*/
+    }
 
          private static void NCC()
          {
@@ -360,6 +366,7 @@ class Program
             if (Menu.Item("haraQ").GetValue<bool>() == true)
             {
                 SmartQ();
+                Shield();
             }
 
             if (Menu.Item("haraE").GetValue<bool>() == true && mana)
