@@ -55,6 +55,7 @@ class Program
 
         Menu ComboMenu = Menu.AddSubMenu(new Menu("Combo", "Combo"));
         ComboMenu.AddItem(new MenuItem("ComboQ", "Use Q").SetValue(true));
+        ComboMenu.AddItem(new MenuItem("ComboW", "Use W").SetValue(true));
         ComboMenu.AddItem(new MenuItem("ComboE", "Use E").SetValue(true));
 
         Menu laneClearMenu = Menu.AddSubMenu(new Menu("LaneClear", "LaneClear"));
@@ -299,10 +300,9 @@ class Program
              var CastQ = (Menu.Item("ComboQ").GetValue<bool>());
              var CastE = (Menu.Item("ComboE").GetValue<bool>());
              var CastW = (Menu.Item("ComboW").GetValue<bool>());
-             if (CastQ)
-             {
+           
                 SmartQ();
-             }
+             
              
 
              var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
