@@ -31,7 +31,13 @@ namespace Prince_Warwick
             var DrawE = MenuHandler.WarwickConfig.Item("drawE").GetValue<Circle>();
             if (DrawE.Active)
             {
-                Utility.DrawCircle(Player.Position, SkillHandler.E.Range, DrawE.Color);
+
+                foreach (
+                    var obj in ObjectManager.Get<Obj_AI_Hero>().Where(obj => obj.IsValidTarget(5000) && obj.HasBuff("warwickbloodscent", true)))
+                    if (obj.IsValid)
+                    {
+                        Utility.DrawCircle(Player.Position, SkillHandler.E.Range, DrawE.Color);
+                    }
             }
 
             var DrawR = MenuHandler.WarwickConfig.Item("drawR").GetValue<Circle>();

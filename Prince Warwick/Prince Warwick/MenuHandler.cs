@@ -72,6 +72,7 @@ namespace Prince_Warwick
         WarwickConfig.SubMenu("Misc").AddItem(new MenuItem("InterR", "Interrupt with R").SetValue(true));
         WarwickConfig.SubMenu("Misc").AddItem(new MenuItem("notULT", "Not ULT on QSS").SetValue(true));
 
+        WarwickConfig.AddItem(new MenuItem("madebyme", "PrincessLeia :)").DontSave());
         WarwickConfig.AddToMainMenu();
     }
 

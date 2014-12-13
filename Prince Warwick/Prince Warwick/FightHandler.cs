@@ -11,6 +11,30 @@ namespace Prince_Warwick
     class FightHandler
     {
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
+        public static void OnLevelUp(Obj_AI_Base sender, CustomEvents.Unit.OnLevelUpEventArgs args)
+        {
+            if (!sender.IsValid || !sender.IsMe)
+                return;
+
+            switch (SkillHandler.E.Level)
+            {
+                case 1:
+                    SkillHandler.E.Range = 1500f;
+                    break;
+                case 2:
+                    SkillHandler.R.Range = 2300f;
+                    break;
+                case 3:
+                    SkillHandler.E.Range = 3100f;
+                    break;
+                case 4:
+                    SkillHandler.R.Range = 3900;
+                    break;
+                case 5:
+                    SkillHandler.R.Range = 4700f;
+                    break;
+            }
+        }
 
 
 
