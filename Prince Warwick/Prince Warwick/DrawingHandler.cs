@@ -10,7 +10,7 @@ using Color = System.Drawing.Color;
 
 namespace Prince_Warwick
 {
-    class DrawingHandler
+    internal class DrawingHandler
     {
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         public static void Init()

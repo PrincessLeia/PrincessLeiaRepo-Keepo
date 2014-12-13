@@ -10,7 +10,7 @@ using Color = System.Drawing.Color;
 
 namespace Prince_Urgot
 {
-    class MenuHandler
+    internal class MenuHandler
     {
         public static Menu _uMenu;
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }

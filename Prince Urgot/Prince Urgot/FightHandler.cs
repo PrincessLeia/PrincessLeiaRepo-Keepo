@@ -1,8 +1,4 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -157,12 +153,13 @@ namespace Prince_Urgot
             }
 
 
-        public static
-            void KillSteal 
-            ()
+        public static void KillSteal ()
             {
                 var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Physical);
-                if (target == null) return;
+            if (target == null)
+            {
+                return;
+            }
 
                 if (target.IsValidTarget(SkillHandler.Q.Range) && SkillHandler.Q.IsReady() && MenuHandler._uMenu.Item("KillQ").GetValue<bool>() == true &&
                     ObjectManager.Player.GetSpellDamage(target, SpellSlot.Q) > target.Health)
@@ -228,11 +225,9 @@ namespace Prince_Urgot
                 }
             }
 
-        public static
-            void LastHit 
-            ()
+        public static void LastHit ()
             {
-                if (MenuHandler._uMenu.Item("lastHitQ").GetValue<bool>() == true)
+                if (MenuHandler._uMenu.Item("lastHitQ").GetValue<bool>())
                 {
                     if (Player.Mana > Player.MaxMana * MenuHandler._uMenu.Item("LaneClearQManaPercent").GetValue<Slider>().Value / 100)
                     {

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Prince_Urgot
 {
-    class ItemHandler
+    internal class ItemHandler
     {
         public static Items.Item Muramana;
         public static SpellSlot IgniteSlot;

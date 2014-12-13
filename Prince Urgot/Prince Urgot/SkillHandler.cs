@@ -9,7 +9,7 @@ using Color = System.Drawing.Color;
 using SharpDX;
 namespace Prince_Urgot
 {
-    class SkillHandler
+    internal class SkillHandler
     {
         public static Spell Q, Q2, W, E, R;
         public static void Init()

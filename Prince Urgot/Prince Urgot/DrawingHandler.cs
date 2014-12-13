@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
 using Color = System.Drawing.Color;
 
 namespace Prince_Urgot
@@ -23,93 +19,121 @@ namespace Prince_Urgot
         }
 
         public static
-            void OnDraw 
+            void OnDraw
             (EventArgs
-            args)
+                args)
+        {
+            if (Player.IsDead)
             {
-                if (Player.IsDead)
-                    return;
+                return;
+            }
 
-                var DrawE = MenuHandler._uMenu.Item("drawE").GetValue<Circle>();
-                if (DrawE.Active)
+            var DrawE = MenuHandler._uMenu.Item("drawE").GetValue<Circle>();
+            if (DrawE.Active)
+            {
+                var target = SimpleTs.GetTarget(1500, SimpleTs.DamageType.Physical);
+
+                foreach (
+                    var obj in
+                        ObjectManager.Get<Obj_AI_Hero>()
+                            .Where(obj => obj.IsValidTarget(1500) && obj.HasBuff("urgotcorrosivedebuff", true)))
                 {
-                    var target = SimpleTs.GetTarget(1500, SimpleTs.DamageType.Physical);
+                    Utility.DrawCircle(Player.Position, 1110, DrawE.Color);
+                }
+            }
 
-                    foreach (
-                        var obj in
-                            ObjectManager.Get<Obj_AI_Hero>()
-                                .Where(obj => obj.IsValidTarget(1500) && obj.HasBuff("urgotcorrosivedebuff", true)))
+            var DrawQ = MenuHandler._uMenu.Item("drawQ").GetValue<Circle>();
+            if (DrawQ.Active)
+            {
+                Utility.DrawCircle(Player.Position, SkillHandler.Q.Range, DrawQ.Color);
+            }
+
+            var DrawEe = MenuHandler._uMenu.Item("drawEe").GetValue<Circle>();
+            if (DrawEe.Active)
+            {
+                Utility.DrawCircle(Player.Position, 820, DrawEe.Color);
+            }
+
+            if (MenuHandler._uMenu.Item("HUD").GetValue<bool>())
+            {
+                if (MenuHandler._uMenu.Item("HarassActive").GetValue<KeyBind>().Active ||
+                    MenuHandler._uMenu.Item("HarassToggle").GetValue<KeyBind>().Active)
+                {
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.68f, Color.Yellow,
+                        "Auto Harass : On");
+                }
+                else
+                {
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.68f, Color.DarkRed,
+                        "Auto Harass : Off");
+                }
+
+                if (MenuHandler._uMenu.Item("KillI").GetValue<bool>() == true ||
+                    MenuHandler._uMenu.Item("KillQ").GetValue<bool>() == true)
+                {
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.66f, Color.Yellow,
+                        "Auto KS : On");
+                }
+
+                else
+                {
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.66f, Color.DarkRed,
+                        "Auto KS : Off");
+                }
+
+                if (MenuHandler._uMenu.Item("lastHitQ").GetValue<bool>() == true)
+                {
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.60f, Color.Yellow,
+                        "Q LastHit : On");
+                }
+                else
+                {
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.60f, Color.DarkRed,
+                        "Q LastHit : Off");
+                }
+
+                if (MenuHandler._uMenu.Item("LaneClearQ").GetValue<bool>() == true ||
+                    MenuHandler._uMenu.Item("LaneClearE").GetValue<bool>() == true)
+                {
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.58f, Color.Yellow,
+                        "Q LaneClear : On");
+                }
+                else
+                {
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.58f, Color.DarkRed,
+                        "Q LaneClear : Off");
+                }
+
+                if (ItemHandler.Muramana.IsReady())
+                {
+                    if (MenuHandler._uMenu.Item("useMura").GetValue<KeyBind>().Active)
                     {
-                        Utility.DrawCircle(Player.Position, 1110, DrawE.Color);
+                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.64f, Color.Yellow,
+                            "Auto Muramana : On");
+                    }
+                    else
+                    {
+                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.64f, Color.DarkRed,
+                            "Auto Muramana : Off");
                     }
                 }
-
-                var DrawQ = MenuHandler._uMenu.Item("drawQ").GetValue<Circle>();
-                if (DrawQ.Active)
+                else
                 {
-                    Utility.DrawCircle(Player.Position, SkillHandler.Q.Range, DrawQ.Color);
-                }
-
-                var DrawEe = MenuHandler._uMenu.Item("drawEe").GetValue<Circle>();
-                if (DrawEe.Active)
-                {
-                    Utility.DrawCircle(Player.Position, 820, DrawEe.Color);
-                }
-
-                if (MenuHandler._uMenu.Item("HUD").GetValue<bool>())
-                {
-                    if (MenuHandler._uMenu.Item("HarassActive").GetValue<KeyBind>().Active ||
-                        MenuHandler._uMenu.Item("HarassToggle").GetValue<KeyBind>().Active)
-                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.68f, System.Drawing.Color.Yellow,
-                            "Auto Harass : On");
-                    else
-                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.68f, System.Drawing.Color.DarkRed,
-                            "Auto Harass : Off");
-
-                    if (MenuHandler._uMenu.Item("KillI").GetValue<bool>() == true ||
-                        MenuHandler._uMenu.Item("KillQ").GetValue<bool>() == true)
-                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.66f, System.Drawing.Color.Yellow,
-                            "Auto KS : On");
-                    else
-                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.66f, System.Drawing.Color.DarkRed,
-                            "Auto KS : Off");
-
-                    if (MenuHandler._uMenu.Item("lastHitQ").GetValue<bool>() == true)
-                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.60f, System.Drawing.Color.Yellow,
-                            "Q LastHit : On");
-                    else
-                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.60f, System.Drawing.Color.DarkRed,
-                            "Q LastHit : Off");
-
-                    if (MenuHandler._uMenu.Item("LaneClearQ").GetValue<bool>() == true ||
-                        MenuHandler._uMenu.Item("LaneClearE").GetValue<bool>() == true)
-                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.58f, System.Drawing.Color.Yellow,
-                            "Q LaneClear : On");
-                    else
-                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.58f, System.Drawing.Color.DarkRed,
-                            "Q LaneClear : Off");
-
-                    if (ItemHandler.Muramana.IsReady())
-                    {
-                        if (MenuHandler._uMenu.Item("useMura").GetValue<KeyBind>().Active)
-                            Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.64f, System.Drawing.Color.Yellow,
-                                "Auto Muramana : On");
-                        else
-                            Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.64f, System.Drawing.Color.DarkRed,
-                                "Auto Muramana : Off");
-                    }
-                    else
-                        Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.64f, System.Drawing.Color.DarkRed,
-                            "Muramana unavailable");
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.64f, Color.DarkRed,
+                        "Muramana unavailable");
                 }
 
                 if (MenuHandler._uMenu.Item("autoR").GetValue<bool>() == true ||
                     MenuHandler._uMenu.Item("autoInt").GetValue<bool>() == true)
-                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.62f, System.Drawing.Color.Yellow,
+                {
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.62f, Color.Yellow,
                         "Auto R : On");
+                }
                 else
-                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.62f, System.Drawing.Color.DarkRed,
+                {
+                    Drawing.DrawText(Drawing.Width*0.90f, Drawing.Height*0.62f, Color.DarkRed,
                         "Auto R : Off");
+                }
 
                 if (MenuHandler._uMenu.Item("hitbye").GetValue<bool>() == true)
                 {
@@ -120,14 +144,17 @@ namespace Prince_Urgot
                             ObjectManager.Get<Obj_AI_Hero>()
                                 .Where(obj => obj.IsValidTarget(2000) && obj.HasBuff("urgotcorrosivedebuff", true)))
 
+                    {
                         Utility.DrawCircle(target.Position, 100, Color.GreenYellow);
-                }
+                    }
 
-                var DrawR = MenuHandler._uMenu.Item("drawR").GetValue<Circle>();
-                if (DrawR.Active && SkillHandler.R.IsReady())
-                {
-                    Utility.DrawCircle(Player.Position, SkillHandler.R.Range, DrawR.Color);
+                    var DrawR = MenuHandler._uMenu.Item("drawR").GetValue<Circle>();
+                    if (DrawR.Active && SkillHandler.R.IsReady())
+                    {
+                        Utility.DrawCircle(Player.Position, SkillHandler.R.Range, DrawR.Color);
+                    }
                 }
             }
         }
     }
+}

@@ -13,13 +13,16 @@ namespace Prince_Warwick
 
         internal static Orbwalking.Orbwalker Orbwalker;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Load;
         }
         public static void Load(EventArgs args)
         {
-            if (ObjectManager.Player.ChampionName != "Warwick") return;
+            if (ObjectManager.Player.ChampionName != "Warwick")
+            {
+                return;
+            }
 
             SkillHandler.Init();
             ItemHandler.Init();
@@ -37,9 +40,16 @@ namespace Prince_Warwick
         {
 
             Orbwalker.SetAttack(true);
+            SkillHandler.E.Range = 700 + 800 * SkillHandler.E.Level;
 
-            if (ObjectManager.Player.IsDead) return;
-            if (ObjectManager.Player.HasBuff("Recall")) return;
+            if (ObjectManager.Player.IsDead)
+            {
+                return;
+            }
+            if (ObjectManager.Player.HasBuff("Recall"))
+            {
+                return;
+            }
 
             switch (Orbwalker.ActiveMode)
             {
