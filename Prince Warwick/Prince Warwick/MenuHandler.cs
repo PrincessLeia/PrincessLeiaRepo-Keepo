@@ -31,10 +31,17 @@ namespace Prince_Warwick
         WarwickConfig.SubMenu("Combo").AddItem(new MenuItem("useW", "Use W").SetValue(true));
         WarwickConfig.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R").SetValue(true));
 
-        WarwickConfig.AddSubMenu(new Menu("Jungle/Lane Clear", "Clear"));
-        WarwickConfig.SubMenu("Clear").AddItem(new MenuItem("usejQ", "Use Q").SetValue(true));
-        WarwickConfig.SubMenu("Clear").AddItem(new MenuItem("usejW", "Use W").SetValue(true));
-        WarwickConfig.SubMenu("Clear").AddItem(new MenuItem("usejIt", "Use Items").SetValue(true));
+        WarwickConfig.AddSubMenu(new Menu("Jungle Clear", "ClearJ"));
+        WarwickConfig.SubMenu("ClearJ").AddItem(new MenuItem("usejQ", "Use Q").SetValue(true));
+        WarwickConfig.SubMenu("ClearJ").AddItem(new MenuItem("usejW", "Use W").SetValue(true));
+        WarwickConfig.SubMenu("ClearJ").AddItem(new MenuItem("usejIt", "Use Items").SetValue(true));
+        WarwickConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
+
+        WarwickConfig.AddSubMenu(new Menu("Lane Clear", "ClearL"));
+        WarwickConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearQ", "Use Q").SetValue(true));
+        WarwickConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearW", "Use W").SetValue(true));
+        WarwickConfig.SubMenu("ClearL").AddItem(new MenuItem("uselIt", "Use Items").SetValue(true));
+        WarwickConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 
         WarwickConfig.AddSubMenu(new Menu("Items", "Items"));
         WarwickConfig.SubMenu("Items").AddItem(new MenuItem("useDfg", "Use DFG").SetValue(true));

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 namespace Prince_Warwick
 {
@@ -28,10 +29,10 @@ namespace Prince_Warwick
                     SkillHandler.E.Range = 3100f;
                     break;
                 case 4:
-                    SkillHandler.R.Range = 3900;
+                    SkillHandler.E.Range = 3900;
                     break;
                 case 5:
-                    SkillHandler.R.Range = 4700f;
+                    SkillHandler.E.Range = 4700f;
                     break;
             }
         }
@@ -117,21 +118,25 @@ namespace Prince_Warwick
             }
         }
 
-        public static void LaneClear()
+        public static void JungleClear()
         {
             var minions = MinionManager.GetMinions(Player.ServerPosition, 400, MinionTypes.All, MinionTeam.Neutral,
                 MinionOrderTypes.MaxHealth);
 
-            if (MenuHandler.WarwickConfig.Item("usejQ").GetValue<bool>() && SkillHandler.Q.IsReady())
+            if (Player.Mana >
+                Player.MaxMana*MenuHandler.WarwickConfig.Item("JungleClearManaPercent").GetValue<Slider>().Value/
+                100)
             {
-                 foreach (var minion in minions)
+                if (MenuHandler.WarwickConfig.Item("usejQ").GetValue<bool>() && SkillHandler.Q.IsReady())
+                {
+                    foreach (var minion in minions)
                     {
                         if (minion.IsValidTarget())
                         {
                             SkillHandler.Q.Cast(minion, Packeting());
                         }
                     }
-            }
+                }
 
             if (MenuHandler.WarwickConfig.Item("usejW").GetValue<bool>() && SkillHandler.W.IsReady())
             {
@@ -143,8 +148,9 @@ namespace Prince_Warwick
                     }
                 }
             }
+        }
 
-            if (MenuHandler.WarwickConfig.Item("usejIt").GetValue<bool>() && ItemHandler.Hydra.IsReady())
+    if (MenuHandler.WarwickConfig.Item("usejIt").GetValue<bool>() && ItemHandler.Hydra.IsReady())
             {
                 foreach (var minion in minions)
                 {
@@ -166,7 +172,78 @@ namespace Prince_Warwick
                 }
             }
         }
-        
+
+        public static void LaneClear()
+        {
+            if (MenuHandler.WarwickConfig.Item("LaneClearW").GetValue<bool>() == true)
+            {
+                if (Player.Mana >
+                    Player.MaxMana*MenuHandler.WarwickConfig.Item("LaneClearManaPercent").GetValue<Slider>().Value/100)
+                {
+
+                    var myMinions = MinionManager.GetMinions(Player.ServerPosition, Player.AttackRange,
+                        MinionTypes.All, MinionTeam.NotAlly);
+
+                    if (SkillHandler.W.IsReady())
+                    {
+                        foreach (var minion in myMinions.Where(minion => minion.IsValidTarget()))
+                        {
+                            if (minion.IsValidTarget(Player.AttackRange))
+                            {
+                                SkillHandler.W.Cast(Packeting());
+                            }
+                        }
+                    }
+                }
+
+                if (MenuHandler.WarwickConfig.Item("LaneClearQ").GetValue<bool>() == true)
+                {
+                    if (Player.Mana >
+                        Player.MaxMana*MenuHandler.WarwickConfig.Item("LaneClearManaPercent").GetValue<Slider>().Value/
+                        100)
+                    {
+                        var myMinions = MinionManager.GetMinions(Player.ServerPosition, Player.AttackRange,
+                            MinionTypes.All, MinionTeam.NotAlly);
+
+                        if (SkillHandler.Q.IsReady())
+                        {
+                            foreach (var minion in myMinions.Where(minion => minion.IsValidTarget()))
+                            {
+                                if (minion.IsValidTarget(SkillHandler.Q.Range))
+                                {
+                                    SkillHandler.Q.Cast(minion, Packeting());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            var minions = MinionManager.GetMinions(Player.ServerPosition, Player.AttackRange,
+                            MinionTypes.All, MinionTeam.NotAlly);
+            if (MenuHandler.WarwickConfig.Item("uselIt").GetValue<bool>() && ItemHandler.Hydra.IsReady())
+            {
+                foreach (var minion in minions)
+                {
+                    if (Player.Distance(minion) < ItemHandler.Hydra.Range)
+                    {
+                        ItemHandler.Hydra.Cast();
+                    }
+                }
+            }
+
+            if (MenuHandler.WarwickConfig.Item("uselIt").GetValue<bool>() && ItemHandler.Tiamat.IsReady())
+            {
+                foreach (var minion in minions)
+                {
+                    if (Player.Distance(minion) < ItemHandler.Tiamat.Range)
+                    {
+                        ItemHandler.Tiamat.Cast();
+                    }
+                }
+            }
+        }
+
         public static void KillSteal()
         {
             foreach (

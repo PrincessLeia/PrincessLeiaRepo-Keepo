@@ -8,3 +8,4 @@ c:\users\carli\documents\visual studio 2013\Projects\Prince Warwick\Prince Warwi
 c:\users\carli\documents\visual studio 2013\Projects\Prince Warwick\Prince Warwick\bin\Debug\LeagueSharp.xml
 c:\users\carli\documents\visual studio 2013\Projects\Prince Warwick\Prince Warwick\obj\Debug\Prince Warwick.exe
 c:\users\carli\documents\visual studio 2013\Projects\Prince Warwick\Prince Warwick\obj\Debug\Prince Warwick.pdb
+C:\Users\Carli\documents\visual studio 2013\Projects\Prince Warwick\Prince Warwick\obj\Debug\Prince Warwick.csprojResolveAssemblyReference.cache

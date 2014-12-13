@@ -52,6 +52,7 @@ namespace Prince_Warwick
 
                 case Orbwalking.OrbwalkingMode.LaneClear:
                     FightHandler.LaneClear();
+                    FightHandler.JungleClear();
                     break;
 
                 default:
