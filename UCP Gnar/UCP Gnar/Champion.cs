@@ -139,8 +139,8 @@ namespace UCP_Gnar
         public void Use_Ignite(Obj_AI_Hero target)
         {
             if (target != null && Ignite != SpellSlot.Unknown &&
-                    MyHero.SummonerSpellbook.CanUseSpell(Ignite) == SpellState.Ready && MyHero.Distance(target) < 650)
-                MyHero.SummonerSpellbook.CastSpell(Ignite, target);
+                    MyHero.Spellbook.CanUseSpell(Ignite) == SpellState.Ready && MyHero.Distance(target) < 650)
+                MyHero.Spellbook.CastSpell(Ignite, target);
         }
 
         public Obj_AI_Hero Cast_BasicSkillshot_Enemy(Spell spell, SimpleTs.DamageType prio = SimpleTs.DamageType.True, float extrarange = 0)

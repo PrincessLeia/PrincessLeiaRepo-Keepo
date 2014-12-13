@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1ACEC45C-0ED0-4F31-8FBA-1B78D922075C}</ProjectGuid>
+    <ProjectGuid>{FF514C2C-DC6F-4812-961D-733141462A67}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Prince_Urgot</RootNamespace>
@@ -44,6 +44,9 @@
     <Reference Include="SharpDX">
       <HintPath>C:\Program Files (x86)\LeagueSharp\LeagueSharp\\System\SharpDX.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX.Direct3D9">
+      <HintPath>C:\Program Files (x86)\LeagueSharp\LeagueSharp\\System\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -57,8 +60,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DrawingHandler.cs" />
+    <Compile Include="FightHandler.cs" />
+    <Compile Include="ItemHandler.cs" />
+    <Compile Include="MenuHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SkillHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

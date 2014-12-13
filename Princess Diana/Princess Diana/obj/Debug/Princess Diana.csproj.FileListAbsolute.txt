@@ -1,0 +1,11 @@
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\bin\Release\Princess Diana.exe.config
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\bin\Release\Princess Diana.exe
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\bin\Release\Princess Diana.pdb
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\bin\Release\LeagueSharp.Common.dll
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\bin\Release\LeagueSharp.dll
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\bin\Release\SharpDX.Direct3D9.dll
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\bin\Release\SharpDX.dll
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\bin\Release\LeagueSharp.xml
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\obj\Debug\Princess Diana.csprojResolveAssemblyReference.cache
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\obj\Debug\Princess Diana.exe
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess Diana\Princess Diana\obj\Debug\Princess Diana.pdb
