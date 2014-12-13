@@ -1,12 +1,13 @@
-﻿using System;
-using System.Linq;
+﻿#region
+
 using LeagueSharp;
 using LeagueSharp.Common;
-using System.Collections.Generic;
+
+#endregion
 
 namespace Prince_Warwick
 {
-    class ItemHandler
+    internal class ItemHandler
     {
         public static Items.Item Dfg;
         public static Items.Item Bilgewater;
@@ -18,7 +19,12 @@ namespace Prince_Warwick
         public static Items.Item Randuin;
         public static Items.Item Mercurial;
         public static SpellSlot IgniteSlot;
-        private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
+
+        private static Obj_AI_Hero Player
+        {
+            get { return ObjectManager.Player; }
+        }
+
         public static void Init()
         {
             Dfg = new Items.Item(3128, 750);
@@ -31,12 +37,6 @@ namespace Prince_Warwick
             Randuin = new Items.Item(3143, 500);
             Mercurial = new Items.Item(3139, 0);
             IgniteSlot = Player.GetSpellSlot("SummonerDot");
-
-
-
-
-
-
         }
     }
 }

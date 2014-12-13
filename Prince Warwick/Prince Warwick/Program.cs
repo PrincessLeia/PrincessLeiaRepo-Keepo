@@ -1,25 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region
+
+using System;
 using LeagueSharp;
 using LeagueSharp.Common;
+
+#endregion
 
 namespace Prince_Warwick
 {
     internal class Program
     {
-
         internal static Orbwalking.Orbwalker Orbwalker;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Load;
         }
+
         public static void Load(EventArgs args)
         {
-            if (ObjectManager.Player.ChampionName != "Warwick") return;
+            if (ObjectManager.Player.ChampionName != "Warwick")
+            {
+                return;
+            }
 
             SkillHandler.Init();
             ItemHandler.Init();
@@ -33,13 +36,20 @@ namespace Prince_Warwick
             AntiGapcloser.OnEnemyGapcloser += FightHandler.AntiGapCloser;
             Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
         }
+
         public static void OnGameUpdateModes(EventArgs args)
         {
-
             Orbwalker.SetAttack(true);
+            SkillHandler.E.Range = 700 + 800 * SkillHandler.E.Level;
 
-            if (ObjectManager.Player.IsDead) return;
-            if (ObjectManager.Player.HasBuff("Recall")) return;
+            if (ObjectManager.Player.IsDead)
+            {
+                return;
+            }
+            if (ObjectManager.Player.HasBuff("Recall"))
+            {
+                return;
+            }
 
             switch (Orbwalker.ActiveMode)
             {
@@ -61,8 +71,6 @@ namespace Prince_Warwick
                         FightHandler.UltonClick();
                     }
                     break;
-            
-
             }
             if (MenuHandler.WarwickConfig.Item("KSi").GetValue<bool>() ||
                 MenuHandler.WarwickConfig.Item("KSq").GetValue<bool>())
