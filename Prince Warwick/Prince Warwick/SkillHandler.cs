@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region
+
 using LeagueSharp;
 using LeagueSharp.Common;
-using Color = System.Drawing.Color;
-using SharpDX;
+
+#endregion
+
 namespace Prince_Warwick
 {
-    class SkillHandler
+    internal class SkillHandler
     {
         public static Spell Q, W, E, R;
+
         public static void Init()
         {
             Q = new Spell(SpellSlot.Q, 400);

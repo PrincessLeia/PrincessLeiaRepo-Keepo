@@ -1,28 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region
+
+using System;
 using LeagueSharp;
 using LeagueSharp.Common;
 using xSLx_Orbwalker;
+
+#endregion
 
 namespace Prince_Urgot
 {
     internal class Program
     {
-
-        private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         internal static xSLxOrbwalker Orbwalker;
 
-        static void Main(string[] args)
+        private static Obj_AI_Hero Player
+        {
+            get { return ObjectManager.Player; }
+        }
+
+        private static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Load;
         }
+
         public static void Load(EventArgs args)
         {
             if (Player.ChampionName != "Urgot")
+            {
                 return;
+            }
 
             SkillHandler.Init();
             ItemHandler.Init();
@@ -30,16 +36,19 @@ namespace Prince_Urgot
             DrawingHandler.Init();
 
             Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
-            CustomEvents.Unit.OnLevelUp += FightHandler.OnLevelUp;
             Game.OnGameUpdate += OnGameUpdateModes;
 
             Game.PrintChat("Prince " + Player.ChampionName + " Loaded");
-
         }
+
         public static void OnGameUpdateModes(EventArgs args)
         {
+            SkillHandler.R.Range = 400 + 150 * SkillHandler.R.Level;
+
             if (Player.IsDead)
+            {
                 return;
+            }
 
             if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Combo)
             {
@@ -47,10 +56,7 @@ namespace Prince_Urgot
                 FightHandler.ActivateMura();
             }
 
-            if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Harass)
-            {
-
-            }
+            if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Harass) { }
 
             if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.LaneClear)
             {
@@ -62,7 +68,8 @@ namespace Prince_Urgot
                 FightHandler.LastHit();
                 FightHandler.DeActivateMura();
             }
-            if (MenuHandler._uMenu.Item("HarassActive").GetValue<KeyBind>().Active || MenuHandler._uMenu.Item("HarassToggle").GetValue<KeyBind>().Active)
+            if (MenuHandler._uMenu.Item("HarassActive").GetValue<KeyBind>().Active ||
+                MenuHandler._uMenu.Item("HarassToggle").GetValue<KeyBind>().Active)
             {
                 FightHandler.Harass();
             }
