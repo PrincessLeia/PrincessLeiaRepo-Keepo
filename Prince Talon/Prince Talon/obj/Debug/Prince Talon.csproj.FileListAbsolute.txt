@@ -1,0 +1,10 @@
+c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\bin\Debug\Prince Talon.exe.config
+c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\bin\Debug\Prince Talon.exe
+c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\bin\Debug\Prince Talon.pdb
+c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\bin\Debug\LeagueSharp.Common.dll
+c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\bin\Debug\LeagueSharp.dll
+c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\bin\Debug\SharpDX.Direct3D9.dll
+c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\bin\Debug\SharpDX.dll
+c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\bin\Debug\LeagueSharp.xml
+c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\obj\Debug\Prince Talon.exe
+c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\obj\Debug\Prince Talon.pdb

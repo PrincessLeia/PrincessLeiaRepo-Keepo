@@ -1,0 +1,11 @@
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\bin\Debug\Princess Zyra.exe.config
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\bin\Debug\Princess Zyra.exe
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\bin\Debug\Princess Zyra.pdb
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\bin\Debug\LeagueSharp.Common.dll
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\bin\Debug\LeagueSharp.dll
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\bin\Debug\SharpDX.Direct3D9.dll
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\bin\Debug\SharpDX.dll
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\bin\Debug\LeagueSharp.xml
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\obj\Debug\Princess Zyra.csprojResolveAssemblyReference.cache
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\obj\Debug\Princess Zyra.exe
+c:\users\carli\documents\visual studio 2013\Projects\Princess Zyra\Princess Zyra\obj\Debug\Princess Zyra.pdb
