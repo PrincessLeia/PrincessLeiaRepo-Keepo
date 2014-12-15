@@ -78,7 +78,7 @@ namespace Prince_Talon
 
             if (MenuHandler.TalonConfig.Item("useR").GetValue<bool>() &&
                Player.Distance(target) <= SkillHandler.R.Range &&
-              SkillHandler.R.IsReady() && target.Health <= SkillHandler.R.GetDamage(target))
+              SkillHandler.R.IsReady() && target.Health <= SkillHandler.R.GetDamage(target) || target.Health <= MathHandler.ComboDamage(target))
             {
                 SkillHandler.R.Cast(Packeting());
             }

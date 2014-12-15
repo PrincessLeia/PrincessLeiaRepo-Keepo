@@ -8,3 +8,4 @@ c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\b
 c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\bin\Debug\LeagueSharp.xml
 c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\obj\Debug\Prince Talon.exe
 c:\users\carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\obj\Debug\Prince Talon.pdb
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Talon\Prince Talon\obj\Debug\Prince Talon.csprojResolveAssemblyReference.cache
