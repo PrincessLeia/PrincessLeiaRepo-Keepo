@@ -8,3 +8,4 @@ c:\users\carli\documents\visual studio 2013\Projects\Princess LeBlanc\Princess L
 c:\users\carli\documents\visual studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\bin\Debug\LeagueSharp.xml
 c:\users\carli\documents\visual studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\obj\Debug\Princess LeBlanc.exe
 c:\users\carli\documents\visual studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\obj\Debug\Princess LeBlanc.pdb
+C:\Users\Carli\documents\visual studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\obj\Debug\Princess LeBlanc.csprojResolveAssemblyReference.cache

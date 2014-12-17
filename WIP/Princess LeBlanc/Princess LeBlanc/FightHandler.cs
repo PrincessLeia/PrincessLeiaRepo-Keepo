@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX.Direct3D9;
 
 namespace Princess_LeBlanc
 {
@@ -23,71 +24,72 @@ namespace Princess_LeBlanc
                      MenuHandler.LeBlancConfig.Item("useE").GetValue<bool>();
             var ru = SkillHandler.R.IsReady() && !SkillHandler.R.IsChargedSpell && Player.Distance(target) <= SkillHandler.Q.Range &&
                      MenuHandler.LeBlancConfig.Item("useR").GetValue<bool>();
-            if (!Player.Level.Equals(6))
-            {
-                if (qu)
-                {
-                    SkillHandler.Q.Cast(target, Packeting());
-                }
 
-                if (wu)
+            if (!SkillHandler.R.IsReady())
                 {
-                    SkillHandler.W.Cast(target.ServerPosition, Packeting());
-                }
+                    if (qu)
+                    {
+                        SkillHandler.Q.Cast(target, Packeting());
+                    }
 
-                if (eu)
-                {
-                    SkillHandler.E.Cast(target.ServerPosition, Packeting());
-                }
+                    if (wu)
+                    {
+                        SkillHandler.W.Cast(target.ServerPosition, Packeting());
+                    }
 
-                if (wru)
-                {
-                    SkillHandler.W.Cast(Packeting());
+                    if (eu)
+                    {
+                        SkillHandler.E.Cast(target.ServerPosition, Packeting());
+                    }
+
+                    if (wru)
+                    {
+                        SkillHandler.W.Cast(Packeting());
+                    }
                 }
-            }
 
             else
-            {
-            if (target.Health <= MathHandler.ComboDamage(target) && ItemHandler.Dfg.IsReady() &&
-                Player.Distance(target) <= ItemHandler.Dfg.Range)
-            {
-                ItemHandler.Dfg.Cast(target);
-            }
+                {
+                    if (target.Health <= MathHandler.ComboDamage(target) && ItemHandler.Dfg.IsReady() &&
+                        Player.Distance(target) <= ItemHandler.Dfg.Range)
+                    {
+                        ItemHandler.Dfg.Cast(target);
+                    }
 
-            if (target.Health <= MathHandler.ComboDamage(target) && ItemHandler.IgniteSlot != SpellSlot.Unknown &&
-                Player.Spellbook.CanUseSpell(ItemHandler.IgniteSlot) == SpellState.Ready)
-            {
-                Player.Spellbook.CastSpell(ItemHandler.IgniteSlot, target);
-            }
+                    if (target.Health <= MathHandler.ComboDamage(target) && ItemHandler.IgniteSlot != SpellSlot.Unknown &&
+                        Player.Spellbook.CanUseSpell(ItemHandler.IgniteSlot) == SpellState.Ready)
+                    {
+                        Player.Spellbook.CastSpell(ItemHandler.IgniteSlot, target);
+                    }
 
-            if (SkillHandler.W.IsReady() && Player.Distance(target) <= SkillHandler.W.Range * 2 &&
-                     MenuHandler.LeBlancConfig.Item("useW").GetValue<bool>())
-            {
-                SkillHandler.W.Cast(target.ServerPosition, Packeting());
-            }
+                    if (SkillHandler.W.IsReady() && Player.Distance(target) <= SkillHandler.W.Range*2 &&
+                        MenuHandler.LeBlancConfig.Item("useW").GetValue<bool>())
+                    {
+                        SkillHandler.W.Cast(target.ServerPosition, Packeting());
+                    }
 
-            if (eu)
-            {
-                SkillHandler.E.Cast(target.ServerPosition, Packeting());
-            }
+                    if (eu)
+                    {
+                        SkillHandler.E.Cast(target.ServerPosition, Packeting());
+                    }
 
-            if (qu)
-            {
-                SkillHandler.Q.Cast(target, Packeting());
-            }
+                    if (qu)
+                    {
+                        SkillHandler.Q.Cast(target, Packeting());
+                    }
 
-            if (ru)
-            {
-                SkillHandler.R.Cast(Packeting());
-                SkillHandler.W.Cast(target.ServerPosition, Packeting());
-            }
+                    if (ru && !SkillHandler.Q.IsReady())
+                    {
+                        SkillHandler.R.Cast(Packeting());
+                        SkillHandler.W.Cast(target.ServerPosition, Packeting());
+                    }
 
-            if (wru)
-            {
-                SkillHandler.W.Cast(Packeting());
-            }
-            }
-    }
+                    if (wru)
+                    {
+                        SkillHandler.W.Cast(Packeting());
+                    }
+                }
+        }
         public static void KillSteal()
         {
             foreach (var target in
@@ -99,6 +101,12 @@ namespace Princess_LeBlanc
                     Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite) >= target.Health)
                 {
                     Player.Spellbook.CastSpell(ItemHandler.IgniteSlot, target);
+                }
+
+                if (MenuHandler.LeBlancConfig.Item("KSw").GetValue<bool>() && SkillHandler.W.IsReady() &&
+                    SkillHandler.W.GetDamage(target) >= target.Health && Player.Distance(target) <= SkillHandler.W.Range)
+                {
+                    SkillHandler.W.Cast(target, Packeting());
                 }
 
                 if (MenuHandler.LeBlancConfig.Item("KSq").GetValue<bool>() && SkillHandler.Q.IsReady() &&
