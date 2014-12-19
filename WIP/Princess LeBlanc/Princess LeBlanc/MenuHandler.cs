@@ -28,10 +28,15 @@ namespace Princess_LeBlanc
         LeBlancConfig.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R").SetValue(true));
 
         LeBlancConfig.AddSubMenu(new Menu("Lane Clear", "ClearL"));
-        LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearQ", "Use Q").SetValue(true));
+        //LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearQ", "Use Q").SetValue(true));
         LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearW", "Use W").SetValue(true));
-        LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("uselIt", "Use Items").SetValue(true));
         LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
+
+        LeBlancConfig.AddSubMenu(new Menu("Flee", "Flee"));
+            LeBlancConfig.SubMenu("Flee")
+                .AddItem(new MenuItem("FleeK", "Key").SetValue(new KeyBind('A', KeyBindType.Toggle)));
+        LeBlancConfig.SubMenu("Flee").AddItem(new MenuItem("FleeW", "Use W").SetValue(true));
+        LeBlancConfig.SubMenu("Flee").AddItem(new MenuItem("FleeR", "Use R").SetValue(true));
 
         LeBlancConfig.AddSubMenu(new Menu("Items", "Items"));
         LeBlancConfig.SubMenu("Items").AddItem(new MenuItem("useDfg", "Use DFG").SetValue(true));
@@ -59,6 +64,8 @@ namespace Princess_LeBlanc
 
         LeBlancConfig.AddSubMenu(new Menu("Misc", "Misc"));
         LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("packets", "Packets").SetValue(true));
+        LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("Interrupt", "Interrupt with E").SetValue(true));
+        LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("Gapclose", "Anit Gapclose with E").SetValue(true));
 
         LeBlancConfig.AddItem(new MenuItem("madebyme", "PrincessLeia :)").DontSave());
         LeBlancConfig.AddToMainMenu();

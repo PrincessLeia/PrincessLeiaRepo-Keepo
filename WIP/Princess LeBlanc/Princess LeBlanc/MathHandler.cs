@@ -21,7 +21,7 @@ namespace Princess_LeBlanc
 
             if (SkillHandler.W.IsReady())
             {
-                dmg += Player.GetSpellDamage(enemy, SpellSlot.W) * 2;
+                dmg += Player.GetSpellDamage(enemy, SpellSlot.W);
             }
 
             if (SkillHandler.E.IsReady())
@@ -29,9 +29,9 @@ namespace Princess_LeBlanc
                 dmg += 30 + (50 * SkillHandler.E.Level) + ObjectManager.Player.BaseAbilityDamage + ObjectManager.Player.FlatMagicDamageMod;
             }
 
-            if (SkillHandler.R.IsReady() && SkillHandler.Q.IsReady() && SkillHandler.W.IsReady() || SkillHandler.E.IsReady())
+            if (SkillHandler.R.IsReady() && SkillHandler.R.IsReady() && SkillHandler.W.IsReady())
             {
-                dmg += 70 + (50 * SkillHandler.Q.Level) + (0.8 * ObjectManager.Player.BaseAbilityDamage + ObjectManager.Player.FlatMagicDamageMod);
+                dmg += 150 * SkillHandler.R.Level + 0.975 * (ObjectManager.Player.BaseAbilityDamage + ObjectManager.Player.FlatMagicDamageMod);
             }
 
             if (Items.HasItem(3128))
@@ -45,6 +45,23 @@ namespace Princess_LeBlanc
                 dmg += Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
             }
             dmg += Player.GetAutoAttackDamage(enemy, true) * 2;
+
+            return (float) dmg;
+        }
+
+        public static float KsComboDamage(Obj_AI_Base enemy)
+        {
+            var dmg = 0d;
+
+            if (SkillHandler.Q.IsReady())
+            {
+                dmg += 70 + (50 * SkillHandler.Q.Level) + (0.8 * ObjectManager.Player.BaseAbilityDamage + ObjectManager.Player.FlatMagicDamageMod);
+            }
+
+            if (SkillHandler.W.IsReady())
+            {
+                dmg += Player.GetSpellDamage(enemy, SpellSlot.W);
+            }
 
             return (float) dmg;
         }

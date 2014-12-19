@@ -25,7 +25,10 @@ namespace Princess_LeBlanc
             MenuHandler.Init();
             DrawingHandler.Init();
 
+            Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
+            AntiGapcloser.OnEnemyGapcloser += FightHandler.AntiGapcloser_OnEnemyGapcloser;
             Game.OnGameUpdate += OnGameUpdateModes;
+            Obj_AI_Base.OnProcessSpellCast += FightHandler.Obj_AI_Hero_OnProcessSpellCast;
 
             Game.PrintChat("Princess " + ObjectManager.Player.ChampionName);
         }
@@ -48,21 +51,14 @@ namespace Princess_LeBlanc
                 case Orbwalking.OrbwalkingMode.Combo:
                     FightHandler.Combo();
                     break;
-
                 case Orbwalking.OrbwalkingMode.Mixed:
                     break;
-
                 case Orbwalking.OrbwalkingMode.LaneClear:
-                    //FightHandler.LaneClear();
+                    FightHandler.LaneClear();
                     break;
-            
-
             }
-            if (MenuHandler.LeBlancConfig.Item("KSi").GetValue<bool>() ||
-                MenuHandler.LeBlancConfig.Item("KSq").GetValue<bool>())
-            {
                 FightHandler.KillSteal();
-            }
+                FightHandler.WLogic();
         }
     }
 }

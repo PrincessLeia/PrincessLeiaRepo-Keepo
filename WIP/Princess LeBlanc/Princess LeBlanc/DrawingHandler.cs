@@ -45,7 +45,7 @@ namespace Princess_LeBlanc
 
             if (MenuHandler.LeBlancConfig.Item("HUD").GetValue<bool>())
             {
-                if (MenuHandler.LeBlancConfig.Item("KSi").GetValue<KeyBind>().Active || MenuHandler.LeBlancConfig.Item("KSq").GetValue<KeyBind>().Active)
+                if (MenuHandler.LeBlancConfig.Item("KSi").GetValue<KeyBind>().Active || MenuHandler.LeBlancConfig.Item("KSq").GetValue<KeyBind>().Active || MenuHandler.LeBlancConfig.Item("KSw").GetValue<KeyBind>().Active)
                     Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.68f, Color.Yellow,
                         "KillSteal : On");
                 else

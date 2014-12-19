@@ -16,12 +16,6 @@ namespace Princess_LeBlanc
         {
             Dfg = new Items.Item(3128, 750);
             IgniteSlot = Player.GetSpellSlot("SummonerDot");
-
-
-
-
-
-
         }
     }
 }
