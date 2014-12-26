@@ -17,7 +17,7 @@ namespace Princess_Zyra
         ZyraConfig.AddSubMenu(orbwalker);
 
         var targetselectormenu = new Menu("Target Selector", "Common_TargetSelector");
-        SimpleTs.AddToMenu(targetselectormenu);
+        TargetSelector.AddToMenu(targetselectormenu);
         ZyraConfig.AddSubMenu(targetselectormenu);
 
        ZyraConfig.AddSubMenu(new Menu("TeamFight", "TeamFight"));

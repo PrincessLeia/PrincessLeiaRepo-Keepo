@@ -27,7 +27,7 @@ namespace Prince_Urgot
 
             Menu ts = _uMenu.AddSubMenu(new Menu("Target Selector", "Target Selector")); ;
 
-            SimpleTs.AddToMenu(ts);
+            TargetSelector.AddToMenu(ts);
 
             Menu comboMenu = _uMenu.AddSubMenu(new Menu("Combo", "Combo"));
             comboMenu.AddItem(new MenuItem("ComboQ", "Use Q").SetValue(true));

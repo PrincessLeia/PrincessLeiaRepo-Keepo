@@ -23,7 +23,7 @@ namespace Princess_Diana
         DianaConfig.AddSubMenu(orbwalker);
 
         var targetselectormenu = new Menu("Target Selector", "Common_TargetSelector");
-        SimpleTs.AddToMenu(targetselectormenu);
+        TargetSelector.AddToMenu(targetselectormenu);
         DianaConfig.AddSubMenu(targetselectormenu);
 
         //Submenu Spells

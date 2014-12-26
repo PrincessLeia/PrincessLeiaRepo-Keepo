@@ -18,7 +18,7 @@ namespace Princess_LeBlanc
         LeBlancConfig.AddSubMenu(orbwalker);
 
         var targetselectormenu = new Menu("Target Selector", "Common_TargetSelector");
-        SimpleTs.AddToMenu(targetselectormenu);
+        TargetSelector.AddToMenu(targetselectormenu);
         LeBlancConfig.AddSubMenu(targetselectormenu);
 
         LeBlancConfig.AddSubMenu(new Menu("Combo", "Combo"));

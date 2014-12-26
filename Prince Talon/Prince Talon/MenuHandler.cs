@@ -18,7 +18,7 @@ namespace Prince_Talon
         TalonConfig.AddSubMenu(orbwalker);
 
         var targetselectormenu = new Menu("Target Selector", "Common_TargetSelector");
-        SimpleTs.AddToMenu(targetselectormenu);
+        TargetSelector.AddToMenu(targetselectormenu);
         TalonConfig.AddSubMenu(targetselectormenu);
 
         TalonConfig.AddSubMenu(new Menu("Combo", "Combo"));

@@ -23,7 +23,7 @@ namespace Prince_Warwick
         WarwickConfig.AddSubMenu(orbwalker);
 
         var targetselectormenu = new Menu("Target Selector", "Common_TargetSelector");
-        SimpleTs.AddToMenu(targetselectormenu);
+        TargetSelector.AddToMenu(targetselectormenu);
         WarwickConfig.AddSubMenu(targetselectormenu);
 
         WarwickConfig.AddSubMenu(new Menu("Combo", "Combo"));
