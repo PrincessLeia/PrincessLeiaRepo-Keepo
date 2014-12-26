@@ -13,7 +13,7 @@ namespace Princess_Diana
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         public static void Combo1()
         {
-            var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Magical);
             var dfg = ItemHandler.Dfg;
 
 
@@ -61,7 +61,7 @@ namespace Princess_Diana
 
         public static void Combo2()
         {
-            var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Magical);
             var dfg = ItemHandler.Dfg;
 
                 if (Player.Distance(target) <= dfg.Range && MenuHandler.DianaConfig.Item("useDfg").GetValue<bool>() &&
@@ -111,7 +111,7 @@ namespace Princess_Diana
 
         public static void Combo3()
         {
-            var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Magical);
             var dfg = ItemHandler.Dfg;
 
                 if (Player.Distance(target) <= dfg.Range && MenuHandler.DianaConfig.Item("useDfg").GetValue<bool>() &&
@@ -172,7 +172,7 @@ namespace Princess_Diana
     {
         //if (!_menu.Item("useMinionGapclose").GetValue<bool>()) return;
             
-        var target = SimpleTs.GetTarget(SkillHandler.Q.Range + SkillHandler.R.Range, SimpleTs.DamageType.Physical);
+        var target = TargetSelector.GetTarget(SkillHandler.Q.Range + SkillHandler.R.Range, TargetSelector.DamageType.Physical);
         if (!target.IsValidTarget() || target == null) return;
 
         foreach (
@@ -199,7 +199,7 @@ namespace Princess_Diana
         {
             //if (!_menu.Item("useMinionGapclose").GetValue<bool>()) return;
 
-            var target = SimpleTs.GetTarget(SkillHandler.Q.Range + SkillHandler.R.Range, SimpleTs.DamageType.Physical);
+            var target = TargetSelector.GetTarget(SkillHandler.Q.Range + SkillHandler.R.Range, TargetSelector.DamageType.Physical);
             if (!target.IsValidTarget() || target == null) return;
 
             foreach (
@@ -262,7 +262,7 @@ namespace Princess_Diana
 
         public static void Harass()
         {
-            var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Magical);
             var mana = Player.Mana > Player.MaxMana * MenuHandler.DianaConfig.Item("HaraManaPercent").GetValue<Slider>().Value / 100;
             if (MenuHandler.DianaConfig.Item("haraQ").GetValue<bool>() && SkillHandler.Q.IsReady() && target.IsValidTarget(SkillHandler.Q.Range) && mana)
             {

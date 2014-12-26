@@ -51,8 +51,14 @@ namespace Princess_LeBlanc
                 else
                     Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.68f, Color.DarkRed,
                         "KillSteal : Off");
-            }
 
+                /*if (Player.Spellbook.GetSpell(SpellSlot.W).Name == "leblancslidereturn" || Player.Spellbook.GetSpell(SpellSlot.W).Name == "leblancslidereturnm")
+                    Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.66f, Color.Yellow,
+                        "W Timer : " + timer);
+                else
+                    Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.66f, Color.DarkRed,
+                        "W Timer : Off");*/
+            }
         }
     }
 }

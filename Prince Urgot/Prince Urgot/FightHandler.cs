@@ -35,7 +35,7 @@ namespace Prince_Urgot
             void Hunter 
             ()
             {
-                var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Physical);
+                var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Physical);
                 if (SkillHandler.Q.IsReady() &&
                     target.IsValidTarget(target.HasBuff("urgotcorrosivedebuff", true) ? SkillHandler.Q2.Range : SkillHandler.Q.Range))
                 {
@@ -67,7 +67,7 @@ namespace Prince_Urgot
 
 
 
-                var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Physical);
+                var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Physical);
                 if (target == null)
                 {
                     return;
@@ -91,7 +91,7 @@ namespace Prince_Urgot
             void Shield 
             ()
             {
-                var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Physical);
+                var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Physical);
                 var distance = ObjectManager.Player.Distance(target);
 
                 if (SkillHandler.W.IsReady() && distance <= 100 || (distance >= 900 && distance <= 1200))
@@ -110,7 +110,7 @@ namespace Prince_Urgot
                 }
 
                 var hitchance = (HitChance)(MenuHandler._uMenu.Item("preE").GetValue<StringList>().SelectedIndex + 3);
-                var target = SimpleTs.GetTarget(1400, SimpleTs.DamageType.Physical);
+                var target = TargetSelector.GetTarget(1400, TargetSelector.DamageType.Physical);
 
                 if (target.IsValidTarget(SkillHandler.E.Range))
                 {
@@ -118,7 +118,7 @@ namespace Prince_Urgot
                 }
                 else
                 {
-                    SkillHandler.E.CastIfHitchanceEquals(SimpleTs.GetTarget(SkillHandler.E.Range, SimpleTs.DamageType.Physical), HitChance.High,
+                    SkillHandler.E.CastIfHitchanceEquals(TargetSelector.GetTarget(SkillHandler.E.Range, TargetSelector.DamageType.Physical), HitChance.High,
                         MenuHandler._uMenu.Item("Packet").GetValue<bool>());
                 }
             }
@@ -130,7 +130,7 @@ namespace Prince_Urgot
             ()
             {
                 var mana = Player.Mana > Player.MaxMana * MenuHandler._uMenu.Item("HaraManaPercent").GetValue<Slider>().Value / 100;
-                var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Physical);
+                var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Physical);
 
                 if (MenuHandler._uMenu.Item("haraQ").GetValue<bool>() == true)
                 {
@@ -155,7 +155,7 @@ namespace Prince_Urgot
 
         public static void KillSteal ()
             {
-                var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Physical);
+                var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Physical);
             if (target == null)
             {
                 return;
@@ -271,7 +271,7 @@ namespace Prince_Urgot
         public static
             void AutoR()
             {
-                var target = SimpleTs.GetTarget(SkillHandler.R.Range, SimpleTs.DamageType.Physical);
+                var target = TargetSelector.GetTarget(SkillHandler.R.Range, TargetSelector.DamageType.Physical);
 
                 var turret = ObjectManager.Get<Obj_AI_Turret>().First(obj => obj.IsAlly && obj.Distance(Player) <= 775f);
 

@@ -205,7 +205,7 @@ namespace UCP_Gnar
                 return;
             if (mode)
             {
-                var target = SimpleTs.GetTarget(tempSpell.Range, SimpleTs.DamageType.Physical);
+                var target = TargetSelector.GetTarget(tempSpell.Range, TargetSelector.DamageType.Physical);
                 if (target == null)
                     return;
                 if (target.IsValidTarget(tempSpell.Range) && tempSpell.GetPrediction(target).Hitchance >= HitChance.High)
@@ -242,7 +242,7 @@ namespace UCP_Gnar
         {
             if (!W.IsReady())
                 return;
-            var target = SimpleTs.GetTarget(W.Range, SimpleTs.DamageType.Physical);
+            var target = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical);
             if (target == null)
                 return;
             if (target.IsValidTarget(W.Range) && W.GetPrediction(target).Hitchance >= HitChance.High)
@@ -258,7 +258,7 @@ namespace UCP_Gnar
             if (!tempSpell.IsReady())
                 return;
 
-            var target = SimpleTs.GetTarget(tempSpell.Range + tempSpell.Width / 2, SimpleTs.DamageType.Physical);
+            var target = TargetSelector.GetTarget(tempSpell.Range + tempSpell.Width / 2, TargetSelector.DamageType.Physical);
             if (target == null)
                 return;
             if (target.IsValidTarget(tempSpell.Range + tempSpell.Width / 2) && tempSpell.GetPrediction(target).Hitchance >= HitChance.High)
@@ -277,7 +277,7 @@ namespace UCP_Gnar
 
             if (Menu.Item("Misc_useR_ifcanKill").GetValue<bool>())
             {
-                var target = SimpleTs.GetTarget(390, SimpleTs.DamageType.Physical);
+                var target = TargetSelector.GetTarget(390, TargetSelector.DamageType.Physical);
                 if (target.Health < GetComboDamage(target) && target.IsValidTarget(MyHero.Distance(R.GetPrediction(target).CastPosition)))
                     R.Cast(V2E(MyHero.Position, R.GetPrediction(target).CastPosition, -50), UsePackets());
             }

@@ -31,7 +31,6 @@ namespace Prince_Urgot
             var DrawE = MenuHandler._uMenu.Item("drawE").GetValue<Circle>();
             if (DrawE.Active)
             {
-                var target = SimpleTs.GetTarget(1500, SimpleTs.DamageType.Physical);
 
                 foreach (
                     var obj in
@@ -137,7 +136,7 @@ namespace Prince_Urgot
 
                 if (MenuHandler._uMenu.Item("hitbye").GetValue<bool>() == true)
                 {
-                    var target = SimpleTs.GetTarget(2000, SimpleTs.DamageType.Physical);
+                    var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Physical);
 
                     foreach (
                         var obj in

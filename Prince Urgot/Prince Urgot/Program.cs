@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using xSLx_Orbwalker;
@@ -13,12 +9,14 @@ namespace Prince_Urgot
     {
 
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
-        internal static xSLxOrbwalker Orbwalker;
 
-        static void Main(string[] args)
+         static void Main(string[] args)
         {
+            Game.PrintChat("---------------------------");
+            Game.PrintChat("[<font color='#FF0000'>v4</font>]<font color='#7A6EFF'>Twilight's Auto Carry:</font> <font color='#86E5E1'>Kalista</font>");
             CustomEvents.Game.OnGameLoad += Load;
         }
+
         public static void Load(EventArgs args)
         {
             if (Player.ChampionName != "Urgot")

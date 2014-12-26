@@ -15,7 +15,7 @@ namespace Prince_Talon
 
         public static void Combo()
         {
-            var target = SimpleTs.GetTarget(SkillHandler.E.Range, SimpleTs.DamageType.Physical);
+            var target = TargetSelector.GetTarget(SkillHandler.E.Range, TargetSelector.DamageType.Physical);
 
             if (Player.Distance(target) <= ItemHandler.Blade.Range &&
 
@@ -234,7 +234,7 @@ namespace Prince_Talon
             {
                 if (MenuHandler.TalonConfig.Item("haraQ").GetValue<KeyBind>().Active)
                 {
-                    var target = SimpleTs.GetTarget(ObjectManager.Player.AttackRange, SimpleTs.DamageType.Physical);
+                    var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, TargetSelector.DamageType.Physical);
                     if (SkillHandler.Q.IsReady() && Player.Distance(target) <= SkillHandler.Q.Range)
                     {
                         SkillHandler.Q.Cast(Packeting());
@@ -243,7 +243,7 @@ namespace Prince_Talon
 
                 if (MenuHandler.TalonConfig.Item("haraW").GetValue<KeyBind>().Active)
                 {
-                    var target = SimpleTs.GetTarget(SkillHandler.W.Range, SimpleTs.DamageType.Physical);
+                    var target = TargetSelector.GetTarget(SkillHandler.W.Range, TargetSelector.DamageType.Physical);
                     if (SkillHandler.W.IsReady() && Player.Distance(target) <= SkillHandler.W.Range)
                     {
                         SkillHandler.W.Cast(target.ServerPosition, Packeting());

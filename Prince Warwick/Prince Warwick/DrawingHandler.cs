@@ -49,7 +49,7 @@ namespace Prince_Warwick
             var DrawQss = MenuHandler.WarwickConfig.Item("drawQss").GetValue<Circle>();
             if (DrawQss.Active)
             {
-                var target = SimpleTs.GetTarget(2000, SimpleTs.DamageType.Physical);
+                var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Physical);
 
                 foreach (
                     var obj in

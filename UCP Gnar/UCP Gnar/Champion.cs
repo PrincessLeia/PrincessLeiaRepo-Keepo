@@ -95,7 +95,7 @@ namespace UCP_Gnar
 
             //TargetSelector
             var targetselectormenu = new Menu("TargetSelector", "Common_TargetSelector");
-            SimpleTs.AddToMenu(targetselectormenu);
+            TargetSelector.AddToMenu(targetselectormenu);
             Menu.AddSubMenu(targetselectormenu);
 
             //PacketMenu
@@ -143,11 +143,11 @@ namespace UCP_Gnar
                 MyHero.Spellbook.CastSpell(Ignite, target);
         }
 
-        public Obj_AI_Hero Cast_BasicSkillshot_Enemy(Spell spell, SimpleTs.DamageType prio = SimpleTs.DamageType.True, float extrarange = 0)
+        public Obj_AI_Hero Cast_BasicSkillshot_Enemy(Spell spell, TargetSelector.DamageType prio = TargetSelector.DamageType.True, float extrarange = 0)
         {
             if (!spell.IsReady())
                 return null;
-            var target = SimpleTs.GetTarget(spell.Range + extrarange, prio);
+            var target = TargetSelector.GetTarget(spell.Range + extrarange, prio);
             if (target == null)
                 return null;
             if (!target.IsValidTarget(spell.Range + extrarange) || spell.GetPrediction(target).Hitchance < HitChance.Medium)

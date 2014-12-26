@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -19,7 +20,17 @@ namespace Princess_LeBlanc
         public static float RPositionX;
         public static float RPositionY;
         public static float RPositionZ;
+        private static bool leBlancClone;
 
+        public static void GameObject_OnCreate(GameObject sender, EventArgs args)
+        {
+            leBlancClone = sender.Name.Contains("LeBlanc_MirrorImagePoff.troy");
+        }
+        public static bool LeBlancClone
+        {
+            get { return leBlancClone; }
+            set { leBlancClone = value;}
+        }
         public static void Flee()
         {
             if (MenuHandler.LeBlancConfig.Item("FleeK").GetValue<KeyBind>().Active)
@@ -37,7 +48,7 @@ namespace Princess_LeBlanc
         }
         public static void Combo()
         {
-            var target = SimpleTs.GetTarget(SkillHandler.W.Range*2, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.W.Range*2, TargetSelector.DamageType.Magical);
             var q = SkillHandler.Q.IsReady() && Player.Distance(target) <= SkillHandler.Q.Range &&
                      MenuHandler.LeBlancConfig.Item("useQ").GetValue<bool>();
             var w = SkillHandler.W.IsReady() && Player.Distance(target) <= SkillHandler.W.Range &&
@@ -138,7 +149,7 @@ namespace Princess_LeBlanc
         }
         public static void UseR()
         {
-            var target = SimpleTs.GetTarget(SkillHandler.E.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.E.Range, TargetSelector.DamageType.Magical);
             var q = Player.Distance(target) <= SkillHandler.Q.Range &&
                      MenuHandler.LeBlancConfig.Item("useQ").GetValue<bool>();
             var w = Player.Distance(target) <= SkillHandler.W.Range &&  //add prediction
@@ -231,10 +242,43 @@ namespace Princess_LeBlanc
                 }
             }
         }
+        public static void CloneLogic()
+        {
+            if (leBlancClone == true)
+            {
+                var target = TargetSelector.GetTarget(SkillHandler.E.Range*2, TargetSelector.DamageType.Magical);
+                var none = MenuHandler.LeBlancConfig.Item("Clone").GetValue<StringList>().SelectedIndex == 1;
+                var toenemy = MenuHandler.LeBlancConfig.Item("Clone").GetValue<StringList>().SelectedIndex == 2;
+                var rlocation = MenuHandler.LeBlancConfig.Item("Clone").GetValue<StringList>().SelectedIndex == 3;
+                var tryescape = MenuHandler.LeBlancConfig.Item("Clone").GetValue<StringList>().SelectedIndex == 4;
+                var tomouse = MenuHandler.LeBlancConfig.Item("Clone").GetValue<StringList>().SelectedIndex == 5;
 
+                if (none)
+                {
+                    return;
+                }
+                if (toenemy)
+                {
+
+                }
+                if (rlocation)
+                {
+
+                }
+                if (tryescape)
+                {
+
+                }
+                if (tomouse)
+                {
+
+                }
+
+            }
+        }
         public static void WLogic()
         {
-            var target = SimpleTs.GetTarget(SkillHandler.E.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.E.Range, TargetSelector.DamageType.Magical);
 
             if (!MenuHandler.LeBlancConfig.Item("backW").GetValue<bool>())
             {

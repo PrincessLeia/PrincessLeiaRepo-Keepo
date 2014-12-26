@@ -66,6 +66,10 @@ namespace Princess_LeBlanc
         LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("packets", "Packets").SetValue(true));
         LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("Interrupt", "Interrupt with E").SetValue(true));
         LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("Gapclose", "Anit Gapclose with E").SetValue(true));
+            /*LeBlancConfig.SubMenu("Misc")
+                .AddItem(
+                    new MenuItem("Clone", "Clone Logic").SetValue(
+                        new StringList(new[] { "None", "Towards Enemy", "Random Location", "Try To Escape", "Towards Mouse" })));*/
 
         LeBlancConfig.AddItem(new MenuItem("madebyme", "PrincessLeia :)").DontSave());
         LeBlancConfig.AddToMainMenu();

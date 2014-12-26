@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Prince_Warwick.Annotations;
 
 namespace Prince_Warwick
 {
     internal class Program
     {
-
-        internal static Orbwalking.Orbwalker Orbwalker;
+        private static Orbwalking.Orbwalker Orbwalker;
 
         private static void Main(string[] args)
         {
@@ -65,15 +65,17 @@ namespace Prince_Warwick
                     FightHandler.JungleClear();
                     break;
 
+                case Orbwalking.OrbwalkingMode.LastHit:
+                    break;
+
                 default:
                     if (MenuHandler.WarwickConfig.Item("autoULT").GetValue<KeyBind>().Active)
                     {
                         FightHandler.UltonClick();
                     }
                     break;
-            
-
             }
+
             if (MenuHandler.WarwickConfig.Item("KSi").GetValue<bool>() ||
                 MenuHandler.WarwickConfig.Item("KSq").GetValue<bool>())
             {

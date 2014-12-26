@@ -15,7 +15,7 @@ namespace Prince_Warwick
 
         public static void Combo()
         {
-            var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Magical);
             var dfg = ItemHandler.Dfg;
 
             if (Player.Distance(target) <= ItemHandler.Blade.Range &&

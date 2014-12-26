@@ -29,6 +29,7 @@ namespace Princess_LeBlanc
             AntiGapcloser.OnEnemyGapcloser += FightHandler.AntiGapcloser_OnEnemyGapcloser;
             Game.OnGameUpdate += OnGameUpdateModes;
             Obj_AI_Base.OnProcessSpellCast += FightHandler.Obj_AI_Hero_OnProcessSpellCast;
+            GameObject.OnCreate += FightHandler.GameObject_OnCreate;
 
             Game.PrintChat("Princess " + ObjectManager.Player.ChampionName);
         }

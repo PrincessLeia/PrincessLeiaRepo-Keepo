@@ -54,7 +54,7 @@ namespace Princess_Zyra
             var minHit = MenuHandler.ZyraConfig.Item("useR_TeamFight_willhit").GetValue<Slider>().Value;
             if (minHit == 0)
                 return;
-            var target = SimpleTs.GetTarget(SkillHandler.R.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.R.Range, TargetSelector.DamageType.Magical);
             if (!target.IsValidTarget(SkillHandler.R.Range))
                 return;
             SkillHandler.R.CastIfWillHit(target, minHit - 1, Packets());
@@ -64,7 +64,7 @@ namespace Princess_Zyra
         {
             if (!SkillHandler.Q.IsReady())
                 return;
-            var target = SimpleTs.GetTarget(SkillHandler.Q.Range + (SkillHandler.Q.Width / 2), SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.Q.Range + (SkillHandler.Q.Width / 2), TargetSelector.DamageType.Magical);
             if (!target.IsValidTarget(SkillHandler.Q.Range))
                 return;
             SkillHandler.Q.CastIfHitchanceEquals(target, HitChance.High, Packets());
@@ -80,7 +80,7 @@ namespace Princess_Zyra
         {
             if (!SkillHandler.E.IsReady())
                 return;
-            var target = SimpleTs.GetTarget(SkillHandler.E.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.E.Range, TargetSelector.DamageType.Magical);
             if (!target.IsValidTarget(SkillHandler.E.Range))
                 return;
             SkillHandler.E.CastIfHitchanceEquals(target, HitChance.High, Packets());
@@ -96,7 +96,7 @@ namespace Princess_Zyra
         {
             if (!SkillHandler.Passive.IsReady())
                 return;
-            var target = SimpleTs.GetTarget(SkillHandler.Passive.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.Passive.Range, TargetSelector.DamageType.Magical);
             if (!target.IsValidTarget(SkillHandler.E.Range))
                 return;
             SkillHandler.Passive.CastIfHitchanceEquals(target, HitChance.High, Packets());

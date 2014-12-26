@@ -1,12 +1,1 @@
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\Prince Urgot.exe.config
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\Prince Urgot.exe
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\Prince Urgot.pdb
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\LeagueSharp.Common.dll
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\LeagueSharp.dll
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\SharpDX.Direct3D9.dll
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\SharpDX.dll
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\xSLx-Orbwalker.dll
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\LeagueSharp.xml
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\obj\Debug\Prince Urgot.csprojResolveAssemblyReference.cache
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\obj\Debug\Prince Urgot.exe
-C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Urgot\Prince Urgot\obj\Debug\Prince Urgot.pdb
+C:\Users\Carli\documents\visual studio 2013\Projects\Prince Urgot\Prince Urgot\bin\Release\Prince Urgot.exe.config
