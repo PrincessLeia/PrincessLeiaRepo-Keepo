@@ -1,7 +1,7 @@
 ﻿using LeagueSharp;
 using LeagueSharp.Common;
 
-namespace Prince_Talon
+namespace PrinceTalon
 {
     internal class ItemHandler
     {

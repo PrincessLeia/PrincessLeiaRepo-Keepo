@@ -1,13 +1,13 @@
 ﻿using LeagueSharp;
 using LeagueSharp.Common;
-namespace Prince_Talon
+namespace PrinceTalon
 {
    internal class SkillHandler
     {
         public static Spell Q, W, E, R;
         public static void Init()
         {
-            Q = new Spell(SpellSlot.Q, ObjectManager.Player.AttackRange);
+            Q = new Spell(SpellSlot.Q, 125);
             W = new Spell(SpellSlot.W, 600);
             E = new Spell(SpellSlot.E, 700);
             R = new Spell(SpellSlot.R, 650);

@@ -1,7 +1,7 @@
 ﻿﻿using LeagueSharp;
 using LeagueSharp.Common;
 
-namespace Prince_Talon
+namespace PrinceTalon
 {
     internal class MathHandler
     {
@@ -21,7 +21,7 @@ namespace Prince_Talon
 
             if (SkillHandler.Q.IsReady())
             {
-                dmg += Player.GetSpellDamage(enemy, SpellSlot.Q) * 2;
+                dmg += 40 * SkillHandler.Q.Level + ((ObjectManager.Player.BaseAttackDamage + ObjectManager.Player.FlatPhysicalDamageMod) * 1.3) + Player.GetAutoAttackDamage(enemy, true);
             }
 
             if (SkillHandler.W.IsReady())
@@ -36,14 +36,15 @@ namespace Prince_Talon
 
             if (SkillHandler.R.IsReady())
             {
-                dmg += Player.GetSpellDamage(enemy, SpellSlot.R);
+                dmg += 140 + (100 * SkillHandler.R.Level) + ((ObjectManager.Player.BaseAttackDamage + ObjectManager.Player.FlatPhysicalDamageMod) * 1.5);
             }
 
             if (ObjectManager.Player.GetSpellSlot("SummonerIgnite") != SpellSlot.Unknown)
             {
                 dmg += Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
             }
-            dmg += Player.GetAutoAttackDamage(enemy, true) * 4;
+
+            dmg += Player.GetAutoAttackDamage(enemy, true);
 
             return (float) dmg;
         }

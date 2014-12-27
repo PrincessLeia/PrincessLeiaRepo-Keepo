@@ -10,8 +10,6 @@ namespace Prince_Urgot
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         public static void Main(string[] args)
         {
-            Game.PrintChat("---------------------------");
-            Game.PrintChat("[<font color='#FF0000'>v4</font>]<font color='#7A6EFF'>Twilight's Auto Carry:</font> <font color='#86E5E1'>Kalista</font>");
             CustomEvents.Game.OnGameLoad += Load;
         }
 

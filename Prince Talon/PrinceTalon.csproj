@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{659AEDA2-EC88-4E8B-8A4F-C1ED9BC8E621}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Prince_Talon</RootNamespace>
-    <AssemblyName>Prince Talon</AssemblyName>
+    <RootNamespace>PrinceTalon</RootNamespace>
+    <AssemblyName>PrinceTalon</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
     <PostBuildEvent />
+    <ProjectGuid>{FA74E972-E086-4BFF-A7F9-C361793DF40F}</ProjectGuid>
     <OutputPath>bin\Release</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -83,7 +83,7 @@
     <Compile Include="MathHandler.cs" />
     <Compile Include="MenuHandler.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="SkillHandler.cs" />
   </ItemGroup>
   <ItemGroup>

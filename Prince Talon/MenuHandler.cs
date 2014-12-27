@@ -2,7 +2,7 @@
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;
 
-namespace Prince_Talon
+namespace PrinceTalon
 {
     class MenuHandler
     {
@@ -40,6 +40,7 @@ namespace Prince_Talon
         TalonConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 
         TalonConfig.AddSubMenu(new Menu("Harass", "Harass"));
+        TalonConfig.SubMenu("Harass").AddItem(new MenuItem("HarassToggle", "Auto Harass Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
         TalonConfig.SubMenu("Harass").AddItem(new MenuItem("haraQ", "Use Q").SetValue(true));
         TalonConfig.SubMenu("Harass").AddItem(new MenuItem("haraW", "Use W").SetValue(true));
         TalonConfig.SubMenu("Harass").AddItem(new MenuItem("HarassManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
