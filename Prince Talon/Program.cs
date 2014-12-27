@@ -48,7 +48,7 @@ namespace PrinceTalon
             {
                 FightHandler.Combo();
             }
-            else if (MenuHandler.TalonConfig.Item("Farm").GetValue<KeyBind>().Active)
+            else if (MenuHandler.TalonConfig.Item("Mixed").GetValue<KeyBind>().Active)
             {
                 FightHandler.Harass();
             }
@@ -57,7 +57,7 @@ namespace PrinceTalon
                 FightHandler.JungleClear();
                 FightHandler.LaneClear();
             }
-            if (MenuHandler.TalonConfig.SubMenu("Harass").Item("HarassToggle").GetValue<KeyBind>().Active)
+            if (MenuHandler.TalonConfig.SubMenu("Harass").Item("HarassToggle").GetValue<KeyBind>().Active && !MenuHandler.TalonConfig.Item("LaneClear").GetValue<KeyBind>().Active)
             {
                 FightHandler.Harass();
             }

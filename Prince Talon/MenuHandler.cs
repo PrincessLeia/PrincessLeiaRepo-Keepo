@@ -41,7 +41,6 @@ namespace PrinceTalon
 
         TalonConfig.AddSubMenu(new Menu("Harass", "Harass"));
         TalonConfig.SubMenu("Harass").AddItem(new MenuItem("HarassToggle", "Auto Harass Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
-        TalonConfig.SubMenu("Harass").AddItem(new MenuItem("haraQ", "Use Q").SetValue(true));
         TalonConfig.SubMenu("Harass").AddItem(new MenuItem("haraW", "Use W").SetValue(true));
         TalonConfig.SubMenu("Harass").AddItem(new MenuItem("HarassManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 

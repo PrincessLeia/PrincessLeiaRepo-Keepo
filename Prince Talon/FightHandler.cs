@@ -239,25 +239,18 @@ namespace PrinceTalon
         {
             var mana = Player.Mana >
                        Player.MaxMana * MenuHandler.TalonConfig.Item("HarassManaPercent").GetValue<Slider>().Value / 100;
-            var useQ = MenuHandler.TalonConfig.SubMenu("Harass").Item("haraQ").GetValue<KeyBind>().Active &&
-                       SkillHandler.Q.IsReady();
-            var useW = MenuHandler.TalonConfig.SubMenu("Harass").Item("haraW").GetValue<KeyBind>().Active &&
+            var useW = MenuHandler.TalonConfig.SubMenu("Harass").Item("haraW").GetValue<bool>() &&
                        SkillHandler.W.IsReady();
-            var targetQ = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Physical);
             var targetW = TargetSelector.GetTarget(SkillHandler.W.Range, TargetSelector.DamageType.Physical);
 
             if (mana)
             {
-                if (useQ && targetQ.IsValid)
-                {
-                        SkillHandler.Q.Cast();
-                }
-
                 if (useW)
                 {
                     SkillHandler.W.CastIfHitchanceEquals(targetW, HitChance.Medium);
                 }
-            }
+           }
+
         }
     }
 }
