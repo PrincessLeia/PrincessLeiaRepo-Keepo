@@ -60,13 +60,13 @@ namespace Princess_LeBlanc
         LeBlancConfig.SubMenu("Drawing").AddItem(dmgAfterComboItem);
         LeBlancConfig.SubMenu("Drawing").AddItem(new MenuItem("drawQ", "Draw Q").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
         LeBlancConfig.SubMenu("Drawing").AddItem(new MenuItem("drawW", "Draw W").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
-        LeBlancConfig.SubMenu("Drawing").AddItem(new MenuItem("drawE", "Draw E passive").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
+        LeBlancConfig.SubMenu("Drawing").AddItem(new MenuItem("drawE", "Draw E").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
 
         LeBlancConfig.AddSubMenu(new Menu("Misc", "Misc"));
         LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("packets", "Packets").SetValue(true));
         LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("Interrupt", "Interrupt with E").SetValue(true));
         LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("Gapclose", "Anit Gapclose with E").SetValue(true));
-            /*LeBlancConfig.SubMenu("Misc")
+           /* LeBlancConfig.SubMenu("Misc")
                 .AddItem(
                     new MenuItem("Clone", "Clone Logic").SetValue(
                         new StringList(new[] { "None", "Towards Enemy", "Random Location", "Try To Escape", "Towards Mouse" })));*/

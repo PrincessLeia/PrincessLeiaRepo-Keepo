@@ -9,14 +9,15 @@ namespace Princess_LeBlanc
 
         internal static Orbwalking.Orbwalker Orbwalker;
 
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Load;
         }
         public static void Load(EventArgs args)
         {
-            if (ObjectManager.Player.ChampionName != "LeBlanc")
+            if (ObjectManager.Player.ChampionName != "Leblanc")
             {
+                Game.PrintChat("Princess " + ObjectManager.Player.ChampionName);
                 return;
             }
 

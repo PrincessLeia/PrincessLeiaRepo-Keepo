@@ -125,7 +125,7 @@ namespace Princess_LeBlanc
                     }
 
                 }
-                else if (Player.Distance(target) <= SkillHandler.W.Range + SkillHandler.W.Range)
+                else if (Player.Distance(target) <= SkillHandler.W.Range*2 + SkillHandler.Q.Range)
                 {
                     SkillHandler.W.Cast(target.Direction, Packeting());
                     if (r)
@@ -287,7 +287,7 @@ namespace Princess_LeBlanc
 
             if (Player.Spellbook.GetSpell(SpellSlot.W).Name == "leblancslidereturn" && Utility.CountEnemysInRange(new Vector3(WPositionX, WPositionY, WPositionZ) , 400) == 0)
             {
-                    if (Player.Mana < Player.Spellbook.GetManaCost(SpellSlot.Q)
+                if (Player.Mana < Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost
                         || target.IsDead && !target.IsValid 
                         || target.Health > MathHandler.ComboDamage(target) && target.HealthPercentage() >= 15
                         || Player.HealthPercentage() <= 5)
@@ -298,7 +298,7 @@ namespace Princess_LeBlanc
 
             else if (Player.Spellbook.GetSpell(SpellSlot.R).Name == "leblancslidereturnm" && Utility.CountEnemysInRange(new Vector3(RPositionX, RPositionY, RPositionZ), 400) == 0)
                 {
-                    if (Player.Mana < Player.Spellbook.GetManaCost(SpellSlot.Q)
+                    if (Player.Mana < Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost
                         || target.IsDead && !target.IsValid
                         || target.Health > MathHandler.ComboDamage(target) && target.HealthPercentage() >= 15
                         || Player.HealthPercentage() <= 5)
