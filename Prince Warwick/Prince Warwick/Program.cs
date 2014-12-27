@@ -11,7 +11,6 @@ namespace Prince_Warwick
 {
     internal class Program
     {
-        private static Orbwalking.Orbwalker Orbwalker;
 
         public static void Main(string[] args)
         {
@@ -39,7 +38,6 @@ namespace Prince_Warwick
         public static void OnGameUpdateModes(EventArgs args)
         {
 
-            Orbwalker.SetAttack(true);
             SkillHandler.E.Range = 700 + 800 * SkillHandler.E.Level;
 
             if (ObjectManager.Player.IsDead)
@@ -51,29 +49,24 @@ namespace Prince_Warwick
                 return;
             }
 
-            switch (Orbwalker.ActiveMode)
+            if (MenuHandler.WarwickConfig.Item("Orbwalk").GetValue<KeyBind>().Active)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
-                    FightHandler.Combo();
-                    break;
-
-                case Orbwalking.OrbwalkingMode.Mixed:
-                    break;
-
-                case Orbwalking.OrbwalkingMode.LaneClear:
-                    FightHandler.LaneClear();
-                    FightHandler.JungleClear();
-                    break;
-
-                case Orbwalking.OrbwalkingMode.LastHit:
-                    break;
-
-                default:
-                    if (MenuHandler.WarwickConfig.Item("autoULT").GetValue<KeyBind>().Active)
-                    {
-                        FightHandler.UltonClick();
-                    }
-                    break;
+                FightHandler.Combo();
+            }
+            else if (MenuHandler.WarwickConfig.Item("Farm").GetValue<KeyBind>().Active)
+            {
+            }
+            else if (MenuHandler.WarwickConfig.Item("LaneClear").GetValue<KeyBind>().Active)
+            {
+                FightHandler.LaneClear();
+                FightHandler.JungleClear();
+            }
+            else
+            {
+                if (MenuHandler.WarwickConfig.Item("autoULT").GetValue<KeyBind>().Active)
+                {
+                    FightHandler.UltonClick();
+                }
             }
 
             if (MenuHandler.WarwickConfig.Item("KSi").GetValue<bool>() ||

@@ -75,9 +75,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="xSLx-Orbwalker">
-      <HintPath>C:\Program Files (x86)\LeagueSharp\LeagueSharp\\System\xSLx-Orbwalker.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DrawingHandler.cs" />

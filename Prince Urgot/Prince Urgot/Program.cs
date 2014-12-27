@@ -8,7 +8,6 @@ namespace Prince_Urgot
     {
 
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
-        internal static Orbwalking.Orbwalker Orbwalker;
         public static void Main(string[] args)
         {
             Game.PrintChat("---------------------------");
@@ -38,24 +37,20 @@ namespace Prince_Urgot
             if (Player.IsDead)
                 return;
 
-            switch (Orbwalker.ActiveMode)
+            if (MenuHandler._uMenu.Item("Orbwalk").GetValue<KeyBind>().Active)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
                 FightHandler.CastLogic();
                 FightHandler.ActivateMura();
-                    break;
-                case Orbwalking.OrbwalkingMode.Mixed:
-                    break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
-                FightHandler.LaneClear();
-                FightHandler.DeActivateMura();
-                    break;
-                case Orbwalking.OrbwalkingMode.LastHit:
+            }
+            else if (MenuHandler._uMenu.Item("Farm").GetValue<KeyBind>().Active)
+            {
                 FightHandler.LastHit();
                 FightHandler.DeActivateMura();
-                    break;
-                default:
-                    break;
+            }
+            else if (MenuHandler._uMenu.Item("LaneClear").GetValue<KeyBind>().Active)
+            {
+                FightHandler.LaneClear();
+                FightHandler.DeActivateMura();
             }
 
             if (MenuHandler._uMenu.Item("HarassActive").GetValue<KeyBind>().Active || MenuHandler._uMenu.Item("HarassToggle").GetValue<KeyBind>().Active)

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
-using xSLx_Orbwalker;
 using Color = System.Drawing.Color;
 
 namespace Prince_Urgot
@@ -15,15 +14,14 @@ namespace Prince_Urgot
         public static Menu _uMenu;
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         public static readonly StringList HitChanceList = new StringList(new[] { "Low", "Medium", "High", "Very High" });
-        public static xSLxOrbwalker Orbwalker;
+        internal static Orbwalking.Orbwalker Orb;
         public static void Init()
         {
             _uMenu = new Menu("Prince " + Player.ChampionName, Player.ChampionName, true);
 
-            Menu orbwalkerMenu = _uMenu.AddSubMenu(new Menu("xSLx Orbwalker", "Orbwalkert1"));
-
-            Orbwalker = new xSLxOrbwalker();
-            xSLxOrbwalker.AddToMenu(orbwalkerMenu);
+            Menu orbwalker = new Menu("Orbwalker", "orbwalker");
+            Orb = new Orbwalking.Orbwalker(orbwalker);
+            _uMenu.AddSubMenu(orbwalker);
 
             Menu ts = _uMenu.AddSubMenu(new Menu("Target Selector", "Target Selector")); ;
 
