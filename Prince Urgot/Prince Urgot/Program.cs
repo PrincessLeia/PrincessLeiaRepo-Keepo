@@ -1,7 +1,6 @@
 ﻿using System;
 using LeagueSharp;
 using LeagueSharp.Common;
-using xSLx_Orbwalker;
 
 namespace Prince_Urgot
 {
@@ -9,7 +8,7 @@ namespace Prince_Urgot
     {
 
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
-
+        internal static Orbwalking.Orbwalker Orbwalker;
         public static void Main(string[] args)
         {
             Game.PrintChat("---------------------------");
@@ -39,27 +38,26 @@ namespace Prince_Urgot
             if (Player.IsDead)
                 return;
 
-            if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Combo)
+            switch (Orbwalker.ActiveMode)
             {
+                case Orbwalking.OrbwalkingMode.Combo:
                 FightHandler.CastLogic();
                 FightHandler.ActivateMura();
-            }
-
-            if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Harass)
-            {
-
-            }
-
-            if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.LaneClear)
-            {
+                    break;
+                case Orbwalking.OrbwalkingMode.Mixed:
+                    break;
+                case Orbwalking.OrbwalkingMode.LaneClear:
                 FightHandler.LaneClear();
                 FightHandler.DeActivateMura();
-            }
-            if (xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Lasthit)
-            {
+                    break;
+                case Orbwalking.OrbwalkingMode.LastHit:
                 FightHandler.LastHit();
                 FightHandler.DeActivateMura();
+                    break;
+                default:
+                    break;
             }
+
             if (MenuHandler._uMenu.Item("HarassActive").GetValue<KeyBind>().Active || MenuHandler._uMenu.Item("HarassToggle").GetValue<KeyBind>().Active)
             {
                 FightHandler.Harass();
