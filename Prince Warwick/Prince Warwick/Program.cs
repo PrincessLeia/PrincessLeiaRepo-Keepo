@@ -13,7 +13,7 @@ namespace Prince_Warwick
     {
         private static Orbwalking.Orbwalker Orbwalker;
 
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Load;
         }

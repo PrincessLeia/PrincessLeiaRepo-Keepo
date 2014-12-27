@@ -18,7 +18,7 @@ namespace Prince_Urgot
         }
         public static float GetIgniteDamage(Obj_AI_Hero enemy)
         {
-            if (IgniteSlot == SpellSlot.Unknown || Player.SummonerSpellbook.CanUseSpell(IgniteSlot) != SpellState.Ready) return 0f;
+            if (IgniteSlot == SpellSlot.Unknown || Player.Spellbook.CanUseSpell(IgniteSlot) != SpellState.Ready) return 0f;
             return (float)Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
         }
     }

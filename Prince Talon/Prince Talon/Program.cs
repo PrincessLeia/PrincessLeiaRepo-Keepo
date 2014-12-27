@@ -9,7 +9,7 @@ namespace Prince_Talon
 
         internal static Orbwalking.Orbwalker Orbwalker;
 
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Load;
         }

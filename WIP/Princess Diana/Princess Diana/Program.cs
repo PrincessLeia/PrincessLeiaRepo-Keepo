@@ -18,7 +18,7 @@ namespace Princess_Diana
             get { return ObjectManager.Player; }
         }
 
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Load;
         }
@@ -45,7 +45,7 @@ namespace Princess_Diana
 
             if (Player.IsDead) return;
             if (Player.HasBuff("Recall")) return;
-            var target = SimpleTs.GetTarget(SkillHandler.Q.Range, SimpleTs.DamageType.Magical);
+            var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Magical);
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {

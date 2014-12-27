@@ -9,14 +9,14 @@ namespace Princess_Zyra
 
         internal static Orbwalking.Orbwalker Orbwalker;
 
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Load;
         }
 
         public static void Load(EventArgs args)
         {
-            if (ObjectManager.Player.ChampionName != "Warwick")
+            if (ObjectManager.Player.ChampionName != "Zyra")
             {
                 return;
             }

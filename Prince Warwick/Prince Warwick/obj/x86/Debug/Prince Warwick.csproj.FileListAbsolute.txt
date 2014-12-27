@@ -8,3 +8,8 @@ C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Warwick\Prince Warwi
 C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Warwick\Prince Warwick\bin\x86\Debug\LeagueSharp.xml
 C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Warwick\Prince Warwick\obj\x86\Debug\Prince Warwick.exe
 C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Warwick\Prince Warwick\obj\x86\Debug\Prince Warwick.pdb
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Warwick\Prince Warwick\bin\x86\Debug\SharpDX.Toolkit.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Warwick\Prince Warwick\bin\x86\Debug\SharpDX.Toolkit.Graphics.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Warwick\Prince Warwick\bin\x86\Debug\SharpDX.Toolkit.xml
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Warwick\Prince Warwick\bin\x86\Debug\SharpDX.Toolkit.Graphics.xml
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Warwick\Prince Warwick\obj\x86\Debug\Prince Warwick.csprojResolveAssemblyReference.cache

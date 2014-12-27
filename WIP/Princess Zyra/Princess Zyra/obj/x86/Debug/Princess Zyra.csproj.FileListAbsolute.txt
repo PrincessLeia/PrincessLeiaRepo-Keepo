@@ -1,1 +1,15 @@
 C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\Princess Zyra.exe.config
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\Princess Zyra.exe
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\Princess Zyra.pdb
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\LeagueSharp.Common.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\LeagueSharp.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\SharpDX.Direct3D9.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\SharpDX.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\SharpDX.Toolkit.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\SharpDX.Toolkit.Graphics.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\LeagueSharp.xml
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\SharpDX.Toolkit.xml
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\bin\x86\Debug\SharpDX.Toolkit.Graphics.xml
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\obj\x86\Debug\Princess Zyra.csprojResolveAssemblyReference.cache
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\obj\x86\Debug\Princess Zyra.exe
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess Zyra\Princess Zyra\obj\x86\Debug\Princess Zyra.pdb
