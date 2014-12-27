@@ -44,10 +44,6 @@ namespace Prince_Talon
         TalonConfig.SubMenu("Harass").AddItem(new MenuItem("haraW", "Use W").SetValue(true));
         TalonConfig.SubMenu("Harass").AddItem(new MenuItem("HarassManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 
-        TalonConfig.AddSubMenu(new Menu("Flee", "Flee"));
-        TalonConfig.SubMenu("Flee").AddItem(new MenuItem("usefE", "Use E").SetValue(true));
-        TalonConfig.SubMenu("Flee").AddItem(new MenuItem("usefR", "Use R").SetValue(true));
-
         TalonConfig.AddSubMenu(new Menu("Items", "Items"));
         TalonConfig.SubMenu("Items").AddItem(new MenuItem("useBilge", "Use Bilgewater Cutless").SetValue(true));
         TalonConfig.SubMenu("Items").AddItem(new MenuItem("useBortK", "Use BotrK").SetValue(true));
@@ -73,11 +69,8 @@ namespace Prince_Talon
         TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("HUD", "HUD").SetValue(true));
         TalonConfig.SubMenu("Drawing").AddItem(dmgAfterComboItem);
         TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawW", "Draw W").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
-        TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawE", "Draw E passive").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
+        TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawE", "Draw E").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
         TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawR", "Draw R").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
-
-        TalonConfig.AddSubMenu(new Menu("Misc", "Misc"));
-        TalonConfig.SubMenu("Misc").AddItem(new MenuItem("packets", "Packets").SetValue(true));
 
         TalonConfig.AddItem(new MenuItem("madebyme", "PrincessLeia :)").DontSave());
         TalonConfig.AddToMainMenu();

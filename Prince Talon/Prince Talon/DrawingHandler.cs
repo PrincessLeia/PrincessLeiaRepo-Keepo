@@ -26,14 +26,9 @@ namespace Prince_Talon
             var DrawE = MenuHandler.TalonConfig.Item("drawE").GetValue<Circle>();
             if (DrawE.Active)
             {
-
-                foreach (
-                    var obj in ObjectManager.Get<Obj_AI_Hero>().Where(obj => obj.IsValidTarget(5000) && obj.HasBuff("warwickbloodscent", true)))
-                    if (obj.IsValid)
-                    {
-                        Utility.DrawCircle(Player.Position, SkillHandler.E.Range, DrawE.Color);
-                    }
+                Utility.DrawCircle(Player.Position, SkillHandler.W.Range, DrawE.Color);
             }
+
 
             var DrawR = MenuHandler.TalonConfig.Item("drawR").GetValue<Circle>();
             if (DrawR.Active)

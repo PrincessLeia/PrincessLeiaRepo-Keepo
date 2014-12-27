@@ -1,5 +1,4 @@
-C:\Users\Carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\bin\x86\Debug\Prince Talon.exe.config
-C:\Users\Carli\documents\visual studio 2013\Projects\Prince Talon\Prince Talon\obj\x86\Debug\Prince Talon.csprojResolveAssemblyReference.cache
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Talon\Prince Talon\bin\x86\Debug\Prince Talon.exe.config
 C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Talon\Prince Talon\bin\x86\Debug\Prince Talon.exe
 C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Talon\Prince Talon\bin\x86\Debug\Prince Talon.pdb
 C:\Users\Carli\Documents\Visual Studio 2013\Projects\Prince Talon\Prince Talon\bin\x86\Debug\LeagueSharp.Common.dll

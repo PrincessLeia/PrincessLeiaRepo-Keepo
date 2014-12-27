@@ -8,16 +8,6 @@ namespace Prince_Urgot
     internal class FightHandler
     {
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
-        public static void OnLevelUp (Obj_AI_Base sender, CustomEvents.Unit.OnLevelUpEventArgs args)
-            {
-                if (!sender.IsValid || !sender.IsMe)
-                    return;
-                if (args.NewLevel == 11)
-                    SkillHandler.R = new Spell(SpellSlot.R, 700);
-                if (args.NewLevel == 16)
-                    SkillHandler.R = new Spell(SpellSlot.R, 850);
-            }
-
 
         public static
             void Interrupter_OnPossibleToInterrupt 
@@ -91,10 +81,10 @@ namespace Prince_Urgot
             void Shield 
             ()
             {
-                var target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Physical);
+                var target = TargetSelector.GetTarget(SkillHandler.Q2.Range, TargetSelector.DamageType.Physical);
                 var distance = ObjectManager.Player.Distance(target);
 
-                if (SkillHandler.W.IsReady() && distance <= 100 || (distance >= 900 && distance <= 1200))
+                if (SkillHandler.W.IsReady() && distance <= 100 || (distance >= 900 && distance <= 1200) && target.HasBuff("urgotcorrosivedebuff"))
                 {
                     SkillHandler.W.Cast(MenuHandler._uMenu.Item("Packet").GetValue<bool>());
                 }

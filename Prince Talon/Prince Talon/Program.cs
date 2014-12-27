@@ -7,7 +7,6 @@ namespace Prince_Talon
     internal class Program
     {
 
-        internal static Orbwalking.Orbwalker Orbwalker;
 
         public static void Main(string[] args)
         {
@@ -28,13 +27,9 @@ namespace Prince_Talon
             Game.OnGameUpdate += OnGameUpdateModes;
 
             Game.PrintChat("Prince " + ObjectManager.Player.ChampionName);
-
-            AntiGapcloser.OnEnemyGapcloser += FightHandler.AntiGapCloser;
         }
         public static void OnGameUpdateModes(EventArgs args)
         {
-
-            Orbwalker.SetAttack(true);
 
             if (ObjectManager.Player.IsDead)
             {
@@ -45,28 +40,28 @@ namespace Prince_Talon
                 return;
             }
 
-            switch (Orbwalker.ActiveMode)
+            if (MenuHandler.TalonConfig.Item("Orbwalk").GetValue<KeyBind>().Active)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
-                    FightHandler.Combo();
-                    break;
-
-                case Orbwalking.OrbwalkingMode.Mixed:
-                    break;
-
-                case Orbwalking.OrbwalkingMode.LaneClear:
-                    FightHandler.LaneClear();
-                    FightHandler.JungleClear();
-                    break;
+                FightHandler.Combo();
             }
+            else if (MenuHandler.TalonConfig.Item("Farm").GetValue<KeyBind>().Active)
+            {
+            }
+            else if (MenuHandler.TalonConfig.Item("LaneClear").GetValue<KeyBind>().Active)
+            {
+                FightHandler.LaneClear();
+                FightHandler.JungleClear();
+            }
+
             if (MenuHandler.TalonConfig.Item("KSi").GetValue<bool>() ||
                 MenuHandler.TalonConfig.Item("KSq").GetValue<bool>() ||
-                MenuHandler.TalonConfig.Item("KSw").GetValue<bool>())
+                MenuHandler.TalonConfig.Item("KSw").GetValue<bool>()
+                && !MenuHandler.TalonConfig.Item("Orbwalk").GetValue<KeyBind>().Active)
             {
                 FightHandler.KillSteal();
             }
 
-            if (MenuHandler.TalonConfig.Item("HarassW").GetValue<bool>())
+            if (MenuHandler.TalonConfig.Item("HarassW").GetValue<bool>() && !MenuHandler.TalonConfig.Item("Orbwalk").GetValue<KeyBind>().Active)
             {
                 FightHandler.Harass();
             }

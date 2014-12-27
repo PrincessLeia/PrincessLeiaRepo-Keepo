@@ -61,26 +61,26 @@ namespace Prince_Talon
                 Player.Distance(target) <= SkillHandler.E.Range &&
                SkillHandler.E.IsReady())
             {
-                SkillHandler.E.Cast(target, Packeting());
+                SkillHandler.E.Cast(target);
             }
 
-            if (MenuHandler.TalonConfig.Item("useQ").GetValue<bool>() && Orbwalking.InAutoAttackRange(target)&& SkillHandler.Q.IsReady())
+            if (MenuHandler.TalonConfig.Item("useQ").GetValue<bool>() && Player.Distance(target) < 125 && SkillHandler.Q.IsReady())
             {
-                SkillHandler.Q.Cast(Packeting());
+                SkillHandler.Q.Cast();
             }
 
             if (MenuHandler.TalonConfig.Item("useW").GetValue<bool>() &&
                Player.Distance(target) <= SkillHandler.W.Range &&
               SkillHandler.W.IsReady())
             {
-                SkillHandler.W.Cast(target, Packeting());
+                SkillHandler.W.Cast(target.ServerPosition);
             }
 
             if (MenuHandler.TalonConfig.Item("useR").GetValue<bool>() &&
                Player.Distance(target) <= SkillHandler.R.Range &&
               SkillHandler.R.IsReady() && target.Health <= SkillHandler.R.GetDamage(target) || target.Health <= MathHandler.ComboDamage(target))
             {
-                SkillHandler.R.Cast(Packeting());
+                SkillHandler.R.Cast();
             }
 
         }
@@ -100,7 +100,7 @@ namespace Prince_Talon
                     {
                         if (minion.IsValidTarget(SkillHandler.Q.Range))
                         {
-                            SkillHandler.Q.Cast(Packeting());
+                            SkillHandler.Q.Cast();
                         }
                     }
                 }
@@ -111,7 +111,7 @@ namespace Prince_Talon
                     {
                         if (minion.IsValidTarget())
                         {
-                            SkillHandler.W.Cast(minion.ServerPosition, Packeting());
+                            SkillHandler.W.Cast(minion.ServerPosition);
                         }
                     }
                 }
@@ -153,7 +153,7 @@ namespace Prince_Talon
                                 myMinions.Where(minion => minion.IsValidTarget())
                                     .Where(minion => minion.IsValidTarget(Player.AttackRange)))
                             {
-                                SkillHandler.W.Cast(minion.ServerPosition, Packeting());
+                                SkillHandler.W.Cast(minion.ServerPosition);
                             }
                         }
                     }
@@ -174,7 +174,7 @@ namespace Prince_Talon
                                 var minion in
                                     myMinions.Where(minion => minion.IsValidTarget())
                                         .Where(minion => minion.IsValidTarget(SkillHandler.Q.Range)))
-                                    SkillHandler.Q.Cast(Packeting());
+                                    SkillHandler.Q.Cast();
                             }
                         }
                     }
@@ -214,13 +214,13 @@ namespace Prince_Talon
                 if (MenuHandler.TalonConfig.Item("KSq").GetValue<bool>() && SkillHandler.Q.IsReady() &&
                     SkillHandler.Q.GetDamage(target) >= target.Health && Player.Distance(target) <= ObjectManager.Player.AttackRange)
                 {
-                    SkillHandler.Q.Cast(Packeting());
+                    SkillHandler.Q.Cast();
                 }
 
                 if (MenuHandler.TalonConfig.Item("KSw").GetValue<bool>() && SkillHandler.W.IsReady() &&
                     SkillHandler.W.GetDamage(target) >= target.Health && Player.Distance(target) <= SkillHandler.W.Range)
                 {
-                    SkillHandler.W.Cast(target.ServerPosition, Packeting());
+                    SkillHandler.W.Cast(target.ServerPosition);
                 }
                 
             }
@@ -237,7 +237,7 @@ namespace Prince_Talon
                     var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, TargetSelector.DamageType.Physical);
                     if (SkillHandler.Q.IsReady() && Player.Distance(target) <= SkillHandler.Q.Range)
                     {
-                        SkillHandler.Q.Cast(Packeting());
+                        SkillHandler.Q.Cast();
                     }
                 }
 
@@ -246,23 +246,9 @@ namespace Prince_Talon
                     var target = TargetSelector.GetTarget(SkillHandler.W.Range, TargetSelector.DamageType.Physical);
                     if (SkillHandler.W.IsReady() && Player.Distance(target) <= SkillHandler.W.Range)
                     {
-                        SkillHandler.W.Cast(target.ServerPosition, Packeting());
+                        SkillHandler.W.Cast(target.ServerPosition);
                     }
                 }
-            }
-        }
-
-        public static bool Packeting()
-        {
-            return MenuHandler.TalonConfig.Item("packets").GetValue<bool>();
-        }
-
-        public static void AntiGapCloser(ActiveGapcloser gapcloser)
-        {
-           if (SkillHandler.W.IsReady() && gapcloser.Sender.IsValidTarget(SkillHandler.W.Range) &&
-               MenuHandler.TalonConfig.Item("gapcloW").GetValue<bool>())
-            {
-               SkillHandler.W.Cast(gapcloser.Sender.ServerPosition);
             }
         }
 

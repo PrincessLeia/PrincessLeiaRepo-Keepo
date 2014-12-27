@@ -26,7 +26,6 @@ namespace Prince_Urgot
             DrawingHandler.Init();
 
             Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
-            CustomEvents.Unit.OnLevelUp += FightHandler.OnLevelUp;
             Game.OnGameUpdate += OnGameUpdateModes;
 
             Game.PrintChat("Prince " + Player.ChampionName + " Loaded");
@@ -36,6 +35,8 @@ namespace Prince_Urgot
         {
             if (Player.IsDead)
                 return;
+
+            SkillHandler.R.Range =  400+(150 * SkillHandler.R.Level);
 
             if (MenuHandler._uMenu.Item("Orbwalk").GetValue<KeyBind>().Active)
             {
