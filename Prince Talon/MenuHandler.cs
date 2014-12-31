@@ -51,11 +51,6 @@ namespace PrinceTalon
         TalonConfig.SubMenu("Items").AddItem(new MenuItem("useTiamat", "Use Tiamat").SetValue(true));
         TalonConfig.SubMenu("Items").AddItem(new MenuItem("useHydra", "Use Hydra").SetValue(true));
 
-        TalonConfig.AddSubMenu(new Menu("KillSteal", "KS"));
-        TalonConfig.SubMenu("KS").AddItem(new MenuItem("KSi", "Use Ignite").SetValue(true));
-        TalonConfig.SubMenu("KS").AddItem(new MenuItem("KSq", "Use Q").SetValue(true));
-        TalonConfig.SubMenu("KS").AddItem(new MenuItem("KSw", "Use W").SetValue(true));
-
         MenuItem dmgAfterComboItem = new MenuItem("DamageAfterCombo", "Draw damage after combo").SetValue(true);
         Utility.HpBarDamageIndicator.DamageToUnit = MathHandler.ComboDamage;
         Utility.HpBarDamageIndicator.Enabled = dmgAfterComboItem.GetValue<bool>();
@@ -66,7 +61,6 @@ namespace PrinceTalon
             };
 
         TalonConfig.AddSubMenu(new Menu("Drawings", "Drawing"));
-        TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("HUD", "HUD").SetValue(true));
         TalonConfig.SubMenu("Drawing").AddItem(dmgAfterComboItem);
         TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawW", "Draw W").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
         TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawE", "Draw E").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));

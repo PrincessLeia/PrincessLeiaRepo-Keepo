@@ -43,7 +43,6 @@ namespace PrinceTalon
             {
                 return;
             }
-
             if (MenuHandler.TalonConfig.Item("Orbwalk").GetValue<KeyBind>().Active)
             {
                 FightHandler.Combo();
@@ -54,18 +53,12 @@ namespace PrinceTalon
             }
             else if (MenuHandler.TalonConfig.Item("LaneClear").GetValue<KeyBind>().Active)
             {
-                FightHandler.JungleClear();
                 FightHandler.LaneClear();
+                FightHandler.JungleClear();
             }
-            if (MenuHandler.TalonConfig.SubMenu("Harass").Item("HarassToggle").GetValue<KeyBind>().Active && !MenuHandler.TalonConfig.Item("LaneClear").GetValue<KeyBind>().Active)
+            if (MenuHandler.TalonConfig.SubMenu("Harass").Item("HarassToggle").GetValue<KeyBind>().Active)
             {
                 FightHandler.Harass();
-            }
-            if (MenuHandler.TalonConfig.SubMenu("KS").Item("KSi").GetValue<bool>() ||
-                MenuHandler.TalonConfig.SubMenu("KS").Item("KSq").GetValue<bool>() ||
-                MenuHandler.TalonConfig.SubMenu("KS").Item("KSw").GetValue<bool>())
-            {
-                FightHandler.KillSteal();
             }
         }
     }

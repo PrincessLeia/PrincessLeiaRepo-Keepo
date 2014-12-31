@@ -12,7 +12,8 @@ namespace PrinceTalon
             E = new Spell(SpellSlot.E, 700);
             R = new Spell(SpellSlot.R, 650);
 
-            W.SetSkillshot(0.7f, 400f, 900f, false, SkillshotType.SkillshotCone);
+            //W.SetSkillshot(0.7f, 400f, 900f, false, SkillshotType.SkillshotCone);
+            W.SetSkillshot(0.25f, 80, 2300, false, SkillshotType.SkillshotLine);
         }
     }
 }
