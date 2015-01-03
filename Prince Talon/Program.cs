@@ -1,17 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
 
 namespace PrinceTalon
 {
     class Program
     {
-        private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
+        private static Obj_AI_Hero Player
+        {
+            get { return ObjectManager.Player; }
+        }
+
         public static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
@@ -35,6 +34,7 @@ namespace PrinceTalon
         public static void OnGameUpdateModes(EventArgs args)
         {
 
+
             if (ObjectManager.Player.IsDead)
             {
                 return;
@@ -43,22 +43,35 @@ namespace PrinceTalon
             {
                 return;
             }
-            if (MenuHandler.TalonConfig.Item("Orbwalk").GetValue<KeyBind>().Active)
+            switch (MenuHandler.Orb.ActiveMode)
             {
-                FightHandler.Combo();
-            }
-            else if (MenuHandler.TalonConfig.Item("Mixed").GetValue<KeyBind>().Active)
-            {
-                FightHandler.Harass();
-            }
-            else if (MenuHandler.TalonConfig.Item("LaneClear").GetValue<KeyBind>().Active)
-            {
-                FightHandler.LaneClear();
-                FightHandler.JungleClear();
-            }
-            if (MenuHandler.TalonConfig.SubMenu("Harass").Item("HarassToggle").GetValue<KeyBind>().Active)
-            {
-                FightHandler.Harass();
+                case Orbwalking.OrbwalkingMode.Combo:
+                {
+                    FightHandler.Combo();
+                    break;
+                }
+                case Orbwalking.OrbwalkingMode.LaneClear:
+                {
+                    FightHandler.LaneClear();
+                    FightHandler.JungleClear();
+                    FightHandler.Harass();
+                    break;
+                }
+                case Orbwalking.OrbwalkingMode.Mixed:
+                {
+                    FightHandler.Harass();
+                    break;
+                }
+                case Orbwalking.OrbwalkingMode.LastHit:
+                {
+                    FightHandler.Harass();
+                    break;
+                }
+                case Orbwalking.OrbwalkingMode.None:
+                {
+                    FightHandler.Harass();
+                    break;
+                }
             }
         }
     }

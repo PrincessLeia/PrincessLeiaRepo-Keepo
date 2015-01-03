@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;

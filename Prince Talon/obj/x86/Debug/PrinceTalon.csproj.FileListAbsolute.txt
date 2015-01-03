@@ -10,6 +10,5 @@ C:\Users\Carl\Desktop\Projects\Prince Talon\bin\x86\Debug\SharpDX.Toolkit.Graphi
 C:\Users\Carl\Desktop\Projects\Prince Talon\bin\x86\Debug\LeagueSharp.xml
 C:\Users\Carl\Desktop\Projects\Prince Talon\bin\x86\Debug\SharpDX.Toolkit.xml
 C:\Users\Carl\Desktop\Projects\Prince Talon\bin\x86\Debug\SharpDX.Toolkit.Graphics.xml
-C:\Users\Carl\Desktop\Projects\Prince Talon\obj\x86\Debug\PrinceTalon.csprojResolveAssemblyReference.cache
 C:\Users\Carl\Desktop\Projects\Prince Talon\obj\x86\Debug\PrinceTalon.exe
 C:\Users\Carl\Desktop\Projects\Prince Talon\obj\x86\Debug\PrinceTalon.pdb

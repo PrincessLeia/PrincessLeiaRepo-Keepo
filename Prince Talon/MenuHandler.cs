@@ -7,12 +7,12 @@ namespace PrinceTalon
     class MenuHandler
     {
         public static Menu TalonConfig;
-        internal static Orbwalking.Orbwalker Orb;
+        public static Orbwalking.Orbwalker Orb;
         public static void Init()
         {
         TalonConfig = new Menu(ObjectManager.Player.ChampionName, ObjectManager.Player.ChampionName, true);
 
-        Menu orbwalker = new Menu("Orbwalker", "orbwalker");
+        var orbwalker = new Menu("Orbwalker", "orbwalker");
 
         Orb = new Orbwalking.Orbwalker(orbwalker);
         TalonConfig.AddSubMenu(orbwalker);

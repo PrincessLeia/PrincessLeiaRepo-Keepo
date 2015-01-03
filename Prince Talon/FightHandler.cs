@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Runtime.InteropServices;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -175,15 +174,16 @@ namespace PrinceTalon
             var mana = Player.ManaPercentage() > MenuHandler.TalonConfig.Item("HarassManaPercent").GetValue<Slider>().Value;
             var useW = MenuHandler.TalonConfig.SubMenu("Harass").Item("haraW").GetValue<bool>() &&
                        SkillHandler.W.IsReady();
-            var targetW = TargetSelector.GetTarget(SkillHandler.W.Range, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(SkillHandler.W.Range, TargetSelector.DamageType.Physical);
 
-            if (mana)
+            if (!mana || !MenuHandler.TalonConfig.SubMenu("Harass").Item("HarassToggle").GetValue<KeyBind>().Active)
             {
-                if (useW && targetW.IsValid)
-                {
-                    SkillHandler.W.Cast(targetW.Position);
-                }
-           }
+                return;
+            }
+            if (useW && SkillHandler.W.InRange(target))
+            {
+                SkillHandler.W.Cast(target.Position);
+            }
 
         }
     }
