@@ -12,7 +12,13 @@ namespace Princess_LeBlanc
               get { return ObjectManager.Player; }
             }
 
-        public static string RStatus;
+        public enum RSpell
+        {
+            Q,
+            W,
+            E,
+            Unknown
+        }
         public static readonly float[] WPosition = new float[3];
         public static Obj_AI_Base Clone;
 
@@ -51,7 +57,7 @@ namespace Princess_LeBlanc
                     SkillHandler.W.Cast(Game.CursorPos);
                 }
 
-                if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && RStatus == "W" &&
+                if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && RStatus == RSpell.W &&
                     SkillHandler.R.IsReady())
                 {
                     SkillHandler.R.Cast(Game.CursorPos);
@@ -92,16 +98,9 @@ namespace Princess_LeBlanc
             }
 
             //Spells
-            if (useE && targetE && !targetQ)
+            if (useE && targetE && !useR && !useQ && (!useW || Wused()))
             {
                 SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
-            }
-            else if (useR && !useQ && !useW || Wused())
-            {
-                if (useE && targetE)
-                {
-                    SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
-                }
             }
 
 
@@ -117,7 +116,7 @@ namespace Princess_LeBlanc
                     {
                         SkillHandler.W.Cast(target);
                     }
-                    if (useR && RStatus == "W" && targetW)
+                    if (useR && RStatus == RSpell.W && targetW)
                     {
                         SkillHandler.R.Cast(target);
                         if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
@@ -125,9 +124,9 @@ namespace Princess_LeBlanc
                             SkillHandler.R.Cast(Player);
                         }
                     }
-                    else if (useR && RStatus == "Q" && targetR && !useW || (Player.Distance(target) > SkillHandler.W.Range + 30))
+                    else if (useR && RStatus == RSpell.Q && targetR && !useW || (Player.Distance(target) > SkillHandler.W.Range + 30))
                     {
-                        SkillHandler.R.Cast(target);
+                        SkillHandler.R.CastOnUnit(target);
                     }
                     return;
                 }
@@ -137,11 +136,11 @@ namespace Princess_LeBlanc
                     {
                         SkillHandler.Q.Cast(target);
                     }
-                    if (useR && RStatus == "Q" && targetR)
+                    if (useR && RStatus == RSpell.Q && targetR)
                     {
-                        SkillHandler.R.Cast(target);
+                        SkillHandler.R.CastOnUnit(target);
                     }
-                    else if (useR && RStatus == "W" && targetW && !useQ)
+                    else if (useR && RStatus == RSpell.W && targetW && !useQ)
                     {
                         SkillHandler.R.Cast(target);
                         if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
@@ -194,7 +193,7 @@ namespace Princess_LeBlanc
                 {
                     SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
                 }
-            if (useR && RStatus == "E" && targetE)
+            if (useR && RStatus == RSpell.E && targetE)
             {
                 if (target.IsRooted)
                 {
@@ -206,7 +205,7 @@ namespace Princess_LeBlanc
                 }
                 return;
             }
-            if (RStatus != "E" || !useR)
+            if (RStatus != RSpell.E || !useR)
             {
                 if (useQ && targetQ)
                 {
@@ -222,20 +221,23 @@ namespace Princess_LeBlanc
         }
 
 
-        public static string Ult()
+        public static RSpell RStatus
         {
-            var nameR = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Name;
-
-            switch (nameR)
+            get
             {
-                case "LeblancChaosOrbM":
-                    return RStatus = "Q";
-                case "LeblancSlideM":
-                    return RStatus = "W";
-                case "LeblancSoulShackleM":
-                    return RStatus = "E";
-                default:
-                    return RStatus = "Unknown";
+                var name = Player.Spellbook.GetSpell(SpellSlot.R).Name;
+
+                switch (name)
+                {
+                    case "LeblancChaosOrbM":
+                        return RSpell.Q;
+                    case "LeblancSlideM":
+                        return RSpell.W;
+                    case "LeblancSoulShackleM":
+                        return RSpell.E;
+                }
+
+                return RSpell.Unknown;
             }
         }
 
@@ -365,11 +367,7 @@ namespace Princess_LeBlanc
                 {
                     SkillHandler.W.Cast(Player);
                 }
-                else if (target.HealthPercentage() > 30 && allOncd)
-                {
-                    SkillHandler.W.Cast(Player);
-                }
-                else if (Player.HealthPercentage() <= 5)
+                else if (target.HealthPercentage() > 40 && allOncd)
                 {
                     SkillHandler.W.Cast(Player);
                 }
@@ -384,7 +382,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.E.Cast(unit);
             }
-            else if (SkillHandler.R.IsReady() && RStatus == "E")
+            else if (SkillHandler.R.IsReady() && RStatus == RSpell.E)
             {
                 SkillHandler.R.Cast(unit);
             }
@@ -398,7 +396,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.E.Cast(gapcloser.Sender);
             }
-            else if (SkillHandler.R.IsReady() && RStatus == "E")
+            else if (SkillHandler.R.IsReady() && RStatus == RSpell.E)
             {
                 SkillHandler.R.Cast(gapcloser.Sender);
             }
