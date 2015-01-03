@@ -1,0 +1,15 @@
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\BatterySharp.exe.config
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\BatterySharp.exe
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\BatterySharp.pdb
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\LeagueSharp.Common.dll
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\LeagueSharp.dll
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\SharpDX.Direct3D9.dll
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\SharpDX.dll
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\SharpDX.Toolkit.dll
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\SharpDX.Toolkit.Graphics.dll
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\LeagueSharp.xml
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\SharpDX.Toolkit.xml
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\bin\x86\Debug\SharpDX.Toolkit.Graphics.xml
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\obj\x86\Debug\BatterySharp.csprojResolveAssemblyReference.cache
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\obj\x86\Debug\BatterySharp.exe
+c:\users\carl\documents\visual studio 2013\Projects\BatterySharp\BatterySharp\obj\x86\Debug\BatterySharp.pdb
