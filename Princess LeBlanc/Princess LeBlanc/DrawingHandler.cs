@@ -43,9 +43,6 @@ namespace Princess_LeBlanc
             {
                 Utility.DrawCircle(Player.Position, SkillHandler.R.Range, DrawR.Color);
             }
-            var vec = new Vector3(FightHandler.WPosition[0], FightHandler.WPosition[1], FightHandler.WPosition[2]);
-
-            Utility.DrawCircle(vec, 100, Color.Red);
 
 
             if (MenuHandler.LeBlancConfig.Item("HUD").GetValue<bool>())

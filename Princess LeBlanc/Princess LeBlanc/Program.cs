@@ -87,7 +87,6 @@ namespace Princess_LeBlanc
             if (MenuHandler.LeBlancConfig.Item("FleeK").GetValue<KeyBind>().Active)
             {
                 FightHandler.Flee();
-                Game.PrintChat(FightHandler.WPosition[0] + ", " + FightHandler.WPosition[1] + ", " + FightHandler.WPosition[2]);
             }
         }
     }

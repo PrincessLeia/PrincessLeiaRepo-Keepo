@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -8,9 +9,9 @@ namespace Princess_LeBlanc
     internal class FightHandler
     {
         private static Obj_AI_Hero Player
-            {
-              get { return ObjectManager.Player; }
-            }
+        {
+            get { return ObjectManager.Player; }
+        }
 
         public enum RSpell
         {
@@ -50,18 +51,18 @@ namespace Princess_LeBlanc
 
         public static void Flee()
         {
-                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
-                if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && Wunused() && SkillHandler.W.IsReady())
-                {
-                    SkillHandler.W.Cast(Game.CursorPos);
-                }
+            if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && Wunused() && SkillHandler.W.IsReady())
+            {
+                SkillHandler.W.Cast(Game.CursorPos);
+            }
 
-                if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && RStatus == RSpell.W &&
-                    SkillHandler.R.IsReady())
-                {
-                    SkillHandler.R.Cast(Game.CursorPos);
-                }
+            if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && RStatus == RSpell.W &&
+                SkillHandler.R.IsReady())
+            {
+                SkillHandler.R.Cast(Game.CursorPos);
+            }
         }
 
         public static void Combo()
@@ -107,57 +108,57 @@ namespace Princess_LeBlanc
             switch (wPriority)
             {
                 case true:
-                {
-                    if (useQ && targetQ)
                     {
-                        SkillHandler.Q.Cast(target);
-                    }
-                    if (!useQ && useW && targetW && Wunused())
-                    {
-                        SkillHandler.W.Cast(target);
-                    }
-                    if (useR && RStatus == RSpell.W && targetW)
-                    {
-                        SkillHandler.R.Cast(target);
-                        if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
+                        if (useQ && targetQ)
                         {
-                            SkillHandler.R.Cast(Player);
+                            SkillHandler.Q.Cast(target);
                         }
+                        if (!useQ && useW && targetW && Wunused())
+                        {
+                            SkillHandler.W.Cast(target);
+                        }
+                        if (useR && RStatus == RSpell.W && targetW)
+                        {
+                            SkillHandler.R.Cast(target);
+                            if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
+                            {
+                                SkillHandler.R.Cast(Player);
+                            }
+                        }
+                        else if (useR && RStatus == RSpell.Q && targetR && !useW || (Player.Distance(target) > SkillHandler.W.Range + 30))
+                        {
+                            SkillHandler.R.CastOnUnit(target);
+                        }
+                        return;
                     }
-                    else if (useR && RStatus == RSpell.Q && targetR && !useW || (Player.Distance(target) > SkillHandler.W.Range + 30))
-                    {
-                        SkillHandler.R.CastOnUnit(target);
-                    }
-                    return;
-                }
                 case false:
-                {
-                    if (useQ && targetQ)
                     {
-                        SkillHandler.Q.Cast(target);
-                    }
-                    if (useR && RStatus == RSpell.Q && targetR)
-                    {
-                        SkillHandler.R.CastOnUnit(target);
-                    }
-                    else if (useR && RStatus == RSpell.W && targetW && !useQ)
-                    {
-                        SkillHandler.R.Cast(target);
-                        if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
+                        if (useQ && targetQ)
                         {
-                            SkillHandler.R.Cast(Player);
+                            SkillHandler.Q.Cast(target);
                         }
-                    }
-                    if (!useQ && !useR && useW && targetW && Wunused())
-                    {
-                        SkillHandler.W.Cast(target);
-                    }
+                        if (useR && RStatus == RSpell.Q && targetR)
+                        {
+                            SkillHandler.R.CastOnUnit(target);
+                        }
+                        else if (useR && RStatus == RSpell.W && targetW && !useQ)
+                        {
+                            SkillHandler.R.Cast(target);
+                            if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
+                            {
+                                SkillHandler.R.Cast(Player);
+                            }
+                        }
+                        if (!useQ && !useR && useW && targetW && Wunused())
+                        {
+                            SkillHandler.W.Cast(target);
+                        }
 
-                    return;
-                }
+                        return;
+                    }
             }
 
-            
+
         }
 
         public static void ComboLong()
@@ -190,29 +191,28 @@ namespace Princess_LeBlanc
             var targetBuff = target.HasBuff("LeblancSoulShackle");
 
             if (useE && targetE)
-                {
-                    SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
-                }
-            if (useR && RStatus == RSpell.E && targetE)
+            {
+                SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
+            }
+            else if (useR && RStatus == RSpell.E && targetE)
             {
                 if (target.IsRooted)
                 {
                     SkillHandler.R.Cast(target);
                 }
-                else if (!useE && !targetBuff)
+                else if (!targetBuff)
                 {
                     SkillHandler.R.CastIfHitchanceEquals(target, HitChance.Medium);
                 }
-                return;
             }
-            if (RStatus != RSpell.E || !useR)
+            else if (RStatus != RSpell.E || !useR)
             {
                 if (useQ && targetQ)
                 {
                     SkillHandler.Q.Cast(target);
                 }
 
-                if (useW && targetW && !useQ)
+                if (useW && targetW && !useQ && Wunused())
                 {
                     SkillHandler.W.Cast(target);
                 }
@@ -248,25 +248,27 @@ namespace Princess_LeBlanc
             var useW = MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearW").GetValue<bool>() &&
                        SkillHandler.W.IsReady();
             var minions = MinionManager.GetMinions(
-                Player.ServerPosition, SkillHandler.W.Range, MinionTypes.All, MinionTeam.NotAlly);
-            var wHit = SkillHandler.W.GetCircularFarmLocation(minions, SkillHandler.W.Width);
+                Player.ServerPosition, SkillHandler.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+            var farmLocation = MinionManager.GetBestCircularFarmLocation(MinionManager.GetMinions(SkillHandler.W.Range, MinionTypes.All, MinionTeam.Enemy).Select(m => m.ServerPosition.To2D()).ToList(), SkillHandler.W.Width, SkillHandler.W.Range);
             var mana = Player.ManaPercentage() >
                        MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearManaPercent").GetValue<Slider>().Value;
+            var minionHit = farmLocation.MinionsHit >=
+                            MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearWHit").GetValue<Slider>().Value;
             if (!mana)
             {
                 return;
             }
             foreach (var minion in minions)
+            {
+                if (useQ && minion.IsValidTarget() && minion.Health <= SkillHandler.Q.GetDamage(minion))
                 {
-                    if (useQ && minion.IsValidTarget() && minion.Health <= SkillHandler.Q.GetDamage(minion))
-                    {
-                        SkillHandler.Q.CastOnUnit(minion);
-                    }
-                    if (useW && minion.IsValidTarget() && wHit.MinionsHit >= 1)
-                    {
-                        SkillHandler.W.Cast(wHit.Position);
-                    }
+                    SkillHandler.Q.CastOnUnit(minion);
                 }
+            }
+            if (minionHit && useW)
+            {
+                SkillHandler.W.Cast(farmLocation.Position);
+            }
             if (Wused())
             {
                 Utility.DelayAction.Add(100, () => SkillHandler.W.Cast(Player));
@@ -279,7 +281,8 @@ namespace Princess_LeBlanc
             var useW = MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearW").GetValue<bool>() &&
                        SkillHandler.W.IsReady();
             var minions = MinionManager.GetMinions(
-                Player.ServerPosition, SkillHandler.W.Range, MinionTypes.All, MinionTeam.Neutral);
+                Player.ServerPosition, SkillHandler.Q.Range, MinionTypes.All, MinionTeam.Neutral);
+            var farmLocation = MinionManager.GetBestCircularFarmLocation(MinionManager.GetMinions(SkillHandler.W.Range, MinionTypes.All, MinionTeam.Neutral).Select(m => m.ServerPosition.To2D()).ToList(), SkillHandler.W.Width, SkillHandler.W.Range);
             var mana = Player.ManaPercentage() >
                        MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearManaPercent").GetValue<Slider>().Value;
 
@@ -293,10 +296,10 @@ namespace Princess_LeBlanc
                 {
                     SkillHandler.Q.CastOnUnit(minion);
                 }
-                if (useW && minion.IsValidTarget())
-                {
-                    SkillHandler.W.Cast(minion);
-                }
+            }
+            if (farmLocation.MinionsHit > 0 && useW)
+            {
+                SkillHandler.W.Cast(farmLocation.Position);
             }
             if (Wused())
             {
@@ -316,37 +319,37 @@ namespace Princess_LeBlanc
             switch (menu)
             {
                 case 0: //none
-                {
-                   return;
-                }
-                case 1: //toenemy
-                {
-                    if (Clone.CanAttack && !Clone.IsWindingUp)
                     {
-                        Clone.IssueOrder(GameObjectOrder.AutoAttackPet, target);
+                        return;
                     }
-                    break;
-                }
+                case 1: //toenemy
+                    {
+                        if (Clone.CanAttack && !Clone.IsWindingUp)
+                        {
+                            Clone.IssueOrder(GameObjectOrder.AutoAttackPet, target);
+                        }
+                        break;
+                    }
                 case 2: //rlocation or maybe between player enemy
-                {
-                    var rnd = new Random();
-                    var x = rnd.Next(1, 19000);
-                    var y = rnd.Next(1, 19000);
+                    {
+                        var rnd = new Random();
+                        var x = rnd.Next(1, 19000);
+                        var y = rnd.Next(1, 19000);
 
-                    Clone.IssueOrder(GameObjectOrder.MovePet, new Vector3(x, y, 0));
-                    break;
-                }
+                        Clone.IssueOrder(GameObjectOrder.MovePet, new Vector3(x, y, 0));
+                        break;
+                    }
                 case 3: //toplayer
-                {
-                    var play = Player.ServerPosition;
-                    Utility.DelayAction.Add(100, () => { Clone.IssueOrder(GameObjectOrder.MovePet, play); });
-                    break;
-                }
+                    {
+                        var play = Player.ServerPosition;
+                        Utility.DelayAction.Add(100, () => { Clone.IssueOrder(GameObjectOrder.MovePet, play); });
+                        break;
+                    }
                 case 4: //tocursor
-                {
-                    Clone.IssueOrder(GameObjectOrder.MovePet, Game.CursorPos);
-                    break;
-                }
+                    {
+                        Clone.IssueOrder(GameObjectOrder.MovePet, Game.CursorPos);
+                        break;
+                    }
             }
         }
         public static void WLogic()
@@ -357,7 +360,7 @@ namespace Princess_LeBlanc
             var wPos = new Vector3(WPosition[0], WPosition[1], WPosition[2]);
             var countW = Utility.CountEnemysInRange(wPos, 200) == 0;
 
-            if (Wused() && countW)
+            if (Wused() && countW && Player.Level > 1)
             {
                 if (Player.Mana < Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost && target.HealthPercentage() > 5)
                 {
@@ -411,4 +414,4 @@ namespace Princess_LeBlanc
             return SkillHandler.W.Instance.Name == "leblancslidereturn";
         }
     }
- }
+}

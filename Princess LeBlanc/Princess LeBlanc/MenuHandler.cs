@@ -30,6 +30,8 @@ namespace Princess_LeBlanc
         LeBlancConfig.AddSubMenu(new Menu("Lane Clear", "ClearL"));
         LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearQ", "Use Q").SetValue(true));
         LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearW", "Use W").SetValue(true));
+            LeBlancConfig.SubMenu("ClearL")
+                .AddItem(new MenuItem("LaneClearWHit", "Min minions by W").SetValue(new Slider(2, 0, 5)));
         LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 
         LeBlancConfig.AddSubMenu(new Menu("Jungle Clear", "ClearJ"));
