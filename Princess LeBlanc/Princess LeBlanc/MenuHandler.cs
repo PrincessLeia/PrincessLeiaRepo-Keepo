@@ -1,5 +1,6 @@
 ﻿using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 using Color = System.Drawing.Color;
 
 namespace Princess_LeBlanc
@@ -10,7 +11,7 @@ namespace Princess_LeBlanc
         internal static Orbwalking.Orbwalker Orb;
         public static void Init()
         {
-        LeBlancConfig = new Menu(ObjectManager.Player.ChampionName, ObjectManager.Player.ChampionName, true);
+            LeBlancConfig = new Menu("Princess " + ObjectManager.Player.ChampionName, "Princess" + ObjectManager.Player.ChampionName, true);
 
         Menu orbwalker = new Menu("Orbwalker", "orbwalker");
 
@@ -38,6 +39,14 @@ namespace Princess_LeBlanc
         LeBlancConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearQ", "Use Q").SetValue(true));
         LeBlancConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearW", "Use W").SetValue(true));
         LeBlancConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
+
+        LeBlancConfig.AddSubMenu(new Menu("Harass", "Harass"));
+            LeBlancConfig.SubMenu("Harass")
+                .AddItem(new MenuItem("HarassMode", "Harass Key").SetValue(new KeyBind('C', KeyBindType.Press)));
+        LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
+        LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useW", "Use W").SetValue(true));
+        LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useE", "Use E").SetValue(true));
+        LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("HarassManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 
         LeBlancConfig.AddSubMenu(new Menu("Flee", "Flee"));
             LeBlancConfig.SubMenu("Flee")
@@ -71,11 +80,11 @@ namespace Princess_LeBlanc
         LeBlancConfig.SubMenu("Misc")
              .AddItem(
                  new MenuItem("Clone", "Clone Logic").SetValue(
-                     new StringList(new[] { "None", "Towards Enemy", "Towards Player", "Random Location", "Towards Mouse" })));
+                     new StringList(new[] { "None", "Towards Enemy", "Towards Player", "Shield Mode (between me and enemy)", "Towards Mouse" })));
 
-        LeBlancConfig.AddItem(new MenuItem("madebyme", "PrincessLeia :)").DontSave());
-        LeBlancConfig.AddToMainMenu();
-    }
+        LeBlancConfig.AddItem(new MenuItem("madebyme", "Leia :)").DontSave());
+            LeBlancConfig.AddToMainMenu();
+        }
 
     }
 }

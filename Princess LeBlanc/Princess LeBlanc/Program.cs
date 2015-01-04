@@ -29,7 +29,7 @@ namespace Princess_LeBlanc
             GameObject.OnCreate += FightHandler.GameObject_OnCreate;
             GameObject.OnDelete += FightHandler.GameObject_OnDelete;
 
-            Game.PrintChat("Princess " + ObjectManager.Player.ChampionName);
+            Utility.DelayAction.Add(2000, () => Game.PrintChat("<b><font color =\"#FFFFFF\">Princess LeBlanc</font></b><font color =\"#FFFFFF\"> by </font><b><font color=\"#FF66FF\">Leia</font></b><font color =\"#FFFFFF\"> loaded!</font>"));
         }
 
         public static void Game_OnGameUpdate(EventArgs args)
@@ -44,50 +44,42 @@ namespace Princess_LeBlanc
                 return;
             }
 
-
-            if (MenuHandler.LeBlancConfig.Item("Orbwalk").GetValue<KeyBind>().Active)
+            switch (MenuHandler.Orb.ActiveMode)
             {
-                var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
-                var targetExtendet = target.Distance(ObjectManager.Player.Position) < SkillHandler.W.Range + SkillHandler.Q.Range - 100;
-                var targetQ = SkillHandler.Q.InRange(target.ServerPosition);
-                var useW = SkillHandler.W.IsReady() &&  ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name == "LeblancSlide" &&
-                           MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
+                case Orbwalking.OrbwalkingMode.Combo:
+                {
+                    var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
+                    var targetExtendet = target.Distance(ObjectManager.Player.Position) < SkillHandler.W.Range + SkillHandler.Q.Range - 100;
+                    var targetQ = SkillHandler.Q.InRange(target.ServerPosition);
+                    var useW = SkillHandler.W.IsReady() && ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name == "LeblancSlide" &&
+                               MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
 
-                if (targetExtendet && !targetQ && useW && ObjectManager.Player.Level > 1
-                     && target.Health < MathHandler.ComboDamage(target) - ObjectManager.Player.GetSpellDamage(target, SpellSlot.W))
-                {
-                    FightHandler.ComboLong();
-                }
-                else if (((target.Health - MathHandler.ComboDamage(target)) / target.MaxHealth) * 100 >
-                    (target.Health * 50) / 100)
-                {
-                    FightHandler.ComboTanky();
-                }
-                else
-                {
-                    FightHandler.Combo();
-                }
-
-                if (MenuHandler.LeBlancConfig.Item("backW").GetValue<bool>())
-                {
+                    if (targetExtendet && !targetQ && useW && ObjectManager.Player.Level > 1
+                         && target.Health < MathHandler.ComboDamage(target) - ObjectManager.Player.GetSpellDamage(target, SpellSlot.W))
+                    {
+                        FightHandler.ComboLong();
+                    }
+                    else if (((target.Health - MathHandler.ComboDamage(target)) / target.MaxHealth) * 100 >
+                        (target.Health * 50) / 100)
+                    {
+                        FightHandler.ComboTanky();
+                    }
+                    else
+                    {
+                        FightHandler.Combo();
+                    }
                     FightHandler.WLogic();
+                    break;
                 }
-
+                case Orbwalking.OrbwalkingMode.LaneClear:
+                {
+                    FightHandler.LaneClear();
+                    FightHandler.JungleClear();
+                    break;
+                }
             }
-            else if (MenuHandler.LeBlancConfig.Item("Farm").GetValue<KeyBind>().Active)
-            {
-                
-            }
-            else if (MenuHandler.LeBlancConfig.Item("LaneClear").GetValue<KeyBind>().Active)
-            {
-                FightHandler.LaneClear();
-                FightHandler.JungleClear();
-            }
-
-            if (MenuHandler.LeBlancConfig.Item("FleeK").GetValue<KeyBind>().Active)
-            {
-                FightHandler.Flee();
-            }
+            FightHandler.Flee();
+            FightHandler.Harass();
         }
     }
 }
