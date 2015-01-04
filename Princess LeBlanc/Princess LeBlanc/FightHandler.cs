@@ -12,20 +12,13 @@ namespace Princess_LeBlanc
         {
             get { return ObjectManager.Player; }
         }
-        public enum RSpell
-        {
-            Q,
-            W,
-            E,
-            Unknown
-        }
         public static readonly float[] WPosition = new float[3];
-        public static Obj_AI_Base Clone;
+        public static float CloneTime;
         public static void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
             if (sender.Name.Contains("LeBlanc_MirrorImagePoff.troy") && sender.IsMe)
             {
-                Clone = sender as Obj_AI_Base;
+                CloneTime = 8 + Game.Time;
             }
 
             if (sender.Name == "LeBlanc_Base_W_return_indicator.troy")
@@ -44,6 +37,7 @@ namespace Princess_LeBlanc
                 WPosition[1] = 0;
                 WPosition[2] = 0;
             }
+
         }
         public static void Flee()
         {
@@ -55,7 +49,7 @@ namespace Princess_LeBlanc
                     SkillHandler.W.Cast(Game.CursorPos);
                 }
 
-                if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && RStatus == RSpell.W &&
+                if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && StatusR() == "W" &&
                     SkillHandler.R.IsReady())
                 {
                     SkillHandler.R.Cast(Game.CursorPos);
@@ -114,7 +108,7 @@ namespace Princess_LeBlanc
                         {
                             SkillHandler.W.Cast(target);
                         }
-                        if (useR && RStatus == RSpell.W && targetW)
+                        if (useR && StatusR() == "W" && targetW)
                         {
                             SkillHandler.R.Cast(target);
                             if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
@@ -122,7 +116,7 @@ namespace Princess_LeBlanc
                                 SkillHandler.R.Cast(Player);
                             }
                         }
-                        else if (useR && RStatus == RSpell.Q && targetR && !useW || (Player.Distance(target) > SkillHandler.W.Range + 30))
+                        else if (useR && StatusR() == "Q" && targetR && !useW || (Player.Distance(target) > SkillHandler.W.Range + 30))
                         {
                             SkillHandler.R.CastOnUnit(target);
                         }
@@ -134,11 +128,11 @@ namespace Princess_LeBlanc
                         {
                             SkillHandler.Q.Cast(target);
                         }
-                        if (useR && RStatus == RSpell.Q && targetR)
+                        if (useR && StatusR() == "Q" && targetR)
                         {
                             SkillHandler.R.CastOnUnit(target);
                         }
-                        else if (useR && RStatus == RSpell.W && targetW && !useQ)
+                        else if (useR && StatusR() == "W" && targetW && !useQ)
                         {
                             SkillHandler.R.Cast(target);
                             if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
@@ -189,7 +183,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
             }
-            else if (useR && RStatus == RSpell.E && targetE)
+            else if (useR && StatusR() == "E" && targetE)
             {
                 if (target.IsRooted)
                 {
@@ -200,7 +194,7 @@ namespace Princess_LeBlanc
                     SkillHandler.R.CastIfHitchanceEquals(target, HitChance.Medium);
                 }
             }
-            else if (RStatus != RSpell.E || !useR)
+            else if (StatusR() != "E" || !useR)
             {
                 if (useQ && targetQ)
                 {
@@ -250,24 +244,31 @@ namespace Princess_LeBlanc
                 }
             }
         }
-        public static RSpell RStatus
+        public static string StatusR()
         {
-            get
+            var name = Player.Spellbook.GetSpell(SpellSlot.R).Name;
+
+            switch (name)
             {
-                var name = Player.Spellbook.GetSpell(SpellSlot.R).Name;
-
-                switch (name)
-                {
-                    case "LeblancChaosOrbM":
-                        return RSpell.Q;
-                    case "LeblancSlideM":
-                        return RSpell.W;
-                    case "LeblancSoulShackleM":
-                        return RSpell.E;
-                }
-
-                return RSpell.Unknown;
+                case "LeblancChaosOrbM":
+                    return "Q";
+                case "LeblancSlideM":
+                    return "W";
+                case "LeblancSoulShackleM":
+                    return "E";
             }
+            return "unkown";
+
+/* switch (name)
+ {
+     case "LeblancChaosOrbM":
+         return RBools[0] = true;
+     case "LeblancSlideM":
+         return RBools[1] = true;
+     case "LeblancSoulShackleM":
+         return RBools[2] = true;
+ }
+ return RBools[0-2] = false;*/
         }
         public static void LaneClear()
         {
@@ -336,7 +337,7 @@ namespace Princess_LeBlanc
         }
         public static void CloneLogic()
         {
-            if (Clone == null || !Clone.IsValid)
+            if (Game.Time > CloneTime)
             {
                 return;
             }
@@ -352,27 +353,24 @@ namespace Princess_LeBlanc
                     }
                 case 1: //toenemy
                     {
-                        if (Clone.CanAttack && !Clone.IsWindingUp)
-                        {
-                            Clone.IssueOrder(GameObjectOrder.AutoAttackPet, target);
-                        }
+                        Player.IssueOrder(GameObjectOrder.AutoAttackPet, target);
                         break;
                     }
                 case 2: //rlocation or maybe between player enemy
                     {
                         var newPosition = Player.Position.Extend(target.Position, 100f);
-                        Clone.IssueOrder(GameObjectOrder.MovePet, newPosition);
+                        Player.IssueOrder(GameObjectOrder.MovePet, newPosition);
                         break;
                     }
                 case 3: //toplayer
                     {
                         var play = Player.ServerPosition;
-                        Utility.DelayAction.Add(100, () => { Clone.IssueOrder(GameObjectOrder.MovePet, play); });
+                        Utility.DelayAction.Add(100, () => { Player.IssueOrder(GameObjectOrder.MovePet, play); });
                         break;
                     }
                 case 4: //tocursor
                     {
-                        Clone.IssueOrder(GameObjectOrder.MovePet, Game.CursorPos);
+                        Player.IssueOrder(GameObjectOrder.MovePet, Game.CursorPos);
                         break;
                     }
             }
@@ -414,7 +412,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.E.Cast(unit);
             }
-            else if (SkillHandler.R.IsReady() && RStatus == RSpell.E)
+            else if (SkillHandler.R.IsReady() && StatusR() == "E")
             {
                 SkillHandler.R.Cast(unit);
             }
@@ -428,7 +426,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.E.Cast(gapcloser.Sender);
             }
-            else if (SkillHandler.R.IsReady() && RStatus == RSpell.E)
+            else if (SkillHandler.R.IsReady() && StatusR() == "E")
             {
                 SkillHandler.R.Cast(gapcloser.Sender);
             }

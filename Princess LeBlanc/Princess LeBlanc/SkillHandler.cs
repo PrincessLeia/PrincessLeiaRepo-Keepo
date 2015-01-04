@@ -16,16 +16,16 @@ namespace Princess_LeBlanc
             W.SetSkillshot(0.5f, 220, 1500, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.366f, 70, 1600, true, SkillshotType.SkillshotLine);
 
-            if (FightHandler.RStatus == FightHandler.RSpell.Q)
+            if (FightHandler.StatusR() == "Q")
             {
                 R = new Spell(SpellSlot.R, Q.Range);
             }
-            else if (FightHandler.RStatus == FightHandler.RSpell.W)
+            else if (FightHandler.StatusR() == "W")
             {
                 R = new Spell(SpellSlot.R, W.Range);
                 R.SetSkillshot(0.5f, 220, 1500, false, SkillshotType.SkillshotCircle);
             }
-            else if (FightHandler.RStatus == FightHandler.RSpell.E)
+            else if (FightHandler.StatusR() == "E")
             {
                 R = new Spell(SpellSlot.R, E.Range);
                 R.SetSkillshot(0.366f, 70, 1600, true, SkillshotType.SkillshotLine);
