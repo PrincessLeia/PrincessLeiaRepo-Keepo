@@ -25,16 +25,24 @@ namespace PrinceTalon
             ItemHandler.Init();
             MenuHandler.Init();
             DrawingHandler.Init();
+            try
+            {
+                new AssassinManager();
+            }
+            catch (Exception)
+            {
+                Game.PrintChat("Something wrong 'Loading Assassing Manager'");
+                return;
+            }
 
             Game.OnGameUpdate += OnGameUpdateModes;
+            Orbwalking.BeforeAttack += FightHandler.AfterAttack;
 
             Game.PrintChat("Prince " + ObjectManager.Player.ChampionName);
         }
 
         public static void OnGameUpdateModes(EventArgs args)
         {
-
-
             if (ObjectManager.Player.IsDead)
             {
                 return;
@@ -43,6 +51,9 @@ namespace PrinceTalon
             {
                 return;
             }
+
+            FightHandler.PacketCast = MenuHandler.TalonConfig.SubMenu("Misc").Item("UsePacket").GetValue<bool>();
+
             switch (MenuHandler.Orb.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -54,7 +65,6 @@ namespace PrinceTalon
                 {
                     FightHandler.LaneClear();
                     FightHandler.JungleClear();
-                    FightHandler.Harass();
                     break;
                 }
                 case Orbwalking.OrbwalkingMode.Mixed:
@@ -69,7 +79,6 @@ namespace PrinceTalon
                 }
                 case Orbwalking.OrbwalkingMode.None:
                 {
-                    FightHandler.Harass();
                     break;
                 }
             }

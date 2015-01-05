@@ -30,6 +30,8 @@ namespace PrinceTalon
         TalonConfig.AddSubMenu(new Menu("Lane Clear", "ClearL"));
         TalonConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearQ", "Use Q").SetValue(true));
         TalonConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearW", "Use W").SetValue(true));
+            TalonConfig.SubMenu("ClearL")
+                .AddItem(new MenuItem("LaneClearWHit", "Minimum hit Minions by W").SetValue(new Slider(2, 0, 5)));
         TalonConfig.SubMenu("ClearL").AddItem(new MenuItem("uselIt", "Use Items").SetValue(true));
         TalonConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 
@@ -40,8 +42,9 @@ namespace PrinceTalon
         TalonConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 
         TalonConfig.AddSubMenu(new Menu("Harass", "Harass"));
-        TalonConfig.SubMenu("Harass").AddItem(new MenuItem("HarassToggle", "Auto Harass Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
+        TalonConfig.SubMenu("Harass").AddItem(new MenuItem("haraQ", "Use Q").SetValue(true));
         TalonConfig.SubMenu("Harass").AddItem(new MenuItem("haraW", "Use W").SetValue(true));
+        TalonConfig.SubMenu("Harass").AddItem(new MenuItem("haraE", "Use E").SetValue(true));
         TalonConfig.SubMenu("Harass").AddItem(new MenuItem("HarassManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 
         TalonConfig.AddSubMenu(new Menu("Items", "Items"));
@@ -65,6 +68,9 @@ namespace PrinceTalon
         TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawW", "Draw W").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
         TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawE", "Draw E").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
         TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawR", "Draw R").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
+
+            TalonConfig.AddSubMenu(new Menu("Misc", "Misc"));
+            TalonConfig.SubMenu("Misc").AddItem(new MenuItem("UsePacket", "Use Packet").SetValue(true));
 
         TalonConfig.AddItem(new MenuItem("madebyme", "PrincessLeia :)").DontSave());
         TalonConfig.AddToMainMenu();
