@@ -38,7 +38,7 @@ namespace PrinceTalon
             Game.OnGameUpdate += OnGameUpdateModes;
             Orbwalking.BeforeAttack += FightHandler.AfterAttack;
 
-            Game.PrintChat("Prince " + ObjectManager.Player.ChampionName);
+            Utility.DelayAction.Add(2000, () => Game.PrintChat("<b><font color =\"#FFFFFF\">Prince Talon</font></b><font color =\"#FFFFFF\"> by </font><b><font color=\"#FF66FF\">Leia</font></b><font color =\"#FFFFFF\"> loaded!</font>"));
         }
 
         public static void OnGameUpdateModes(EventArgs args)

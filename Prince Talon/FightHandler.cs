@@ -28,11 +28,11 @@ namespace PrinceTalon
                     && MenuHandler.TalonConfig.Item("Assassin" + enemy.ChampionName).GetValue<bool>())
                     .OrderBy(enemy => enemy.Distance(Game.CursorPos))
                     )
-                if (MenuHandler.TalonConfig.SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
+                if (MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
                 {
                     vTarget = Player.Distance(enemy) < assassinRange ? enemy : null;
                 }
-                else if (!MenuHandler.TalonConfig.SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
+                else if (!MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
                 {
                     vTarget = Target;
                 }

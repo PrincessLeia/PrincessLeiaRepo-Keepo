@@ -15,29 +15,29 @@ namespace PrinceTalon
 
         private static void Load()
         {
-            MenuHandler.TalonConfig.AddSubMenu(new Menu("Assassin Manager", "AssassinManager"));
-            MenuHandler.TalonConfig.SubMenu("AssassinManager")
+            MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").AddSubMenu(new Menu("Assassin Manager", "AssassinManager"));
+            MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
                 .AddItem(new MenuItem("AssassinActive", "Assassin Active").SetValue(true));
-            MenuHandler.TalonConfig.SubMenu("AssassinManager")
+            MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
                 .AddItem(new MenuItem("AssassinSetClick", "Use Click Add/Remove").SetValue(true));
-            MenuHandler.TalonConfig.SubMenu("AssassinManager")
+            MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
                 .AddItem(
                     new MenuItem("AssassinRangeColor", "Assassin Range Color").SetValue(new Circle(true,
                         Color.GreenYellow)));
-            MenuHandler.TalonConfig.SubMenu("AssassinManager")
+            MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
                 .AddItem(
                     new MenuItem("AssassinInRangeColor", "Range Enemy Color").SetValue(new Circle(true,
                         Color.GreenYellow)));
-            MenuHandler.TalonConfig.SubMenu("AssassinManager")
+            MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
                 .AddItem(
                     new MenuItem("AssassinInCloseColor", "Nearest Enemy Color").SetValue(new Circle(true,
                         Color.DarkSeaGreen)));
-            MenuHandler.TalonConfig.SubMenu("AssassinManager")
+            MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
                 .AddItem(
                     new MenuItem("AssassinReset", "Reset Assassin List").SetValue(new KeyBind("J".ToCharArray()[0],
                         KeyBindType.Press)));
 
-            MenuHandler.TalonConfig.SubMenu("AssassinManager").AddSubMenu(new Menu("Assassin 1st :", "AssassinMode"));
+            MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").AddSubMenu(new Menu("Assassin 1st :", "AssassinMode"));
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
             {
                 MenuHandler.TalonConfig.SubMenu("AssassinManager")
@@ -46,7 +46,7 @@ namespace PrinceTalon
                         new MenuItem("Assassin" + enemy.ChampionName, enemy.ChampionName).SetValue(
                             TargetSelector.GetPriority(enemy) > 3));
             }
-            MenuHandler.TalonConfig.SubMenu("AssassinManager")
+            MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
                 .AddItem(new MenuItem("AssassinRange", "Assassin Range")).SetValue(new Slider(1000, 2000));
 
             Game.OnGameUpdate += OnGameUpdate;
