@@ -1,1 +1,15 @@
 C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\Princess LeBlanc.exe.config
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\Princess LeBlanc.exe
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\Princess LeBlanc.pdb
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\LeagueSharp.Common.dll
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\LeagueSharp.dll
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\SharpDX.Direct3D9.dll
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\SharpDX.dll
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\SharpDX.Toolkit.dll
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\SharpDX.Toolkit.Graphics.dll
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\LeagueSharp.xml
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\SharpDX.Toolkit.xml
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\SharpDX.Toolkit.Graphics.xml
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\obj\x86\Debug\Princess LeBlanc.csprojResolveAssemblyReference.cache
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\obj\x86\Debug\Princess LeBlanc.exe
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\obj\x86\Debug\Princess LeBlanc.pdb

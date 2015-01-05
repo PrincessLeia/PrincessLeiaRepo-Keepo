@@ -56,6 +56,7 @@ namespace Princess_LeBlanc
 
         LeBlancConfig.AddSubMenu(new Menu("Items", "Items"));
         LeBlancConfig.SubMenu("Items").AddItem(new MenuItem("useDfg", "Use DFG").SetValue(true));
+        LeBlancConfig.SubMenu("Items").AddItem(new MenuItem("useIgnite", "Use Ignite if killable").SetValue(true));
 
         MenuItem dmgAfterComboItem = new MenuItem("DamageAfterCombo", "Draw damage after combo").SetValue(true);
         Utility.HpBarDamageIndicator.DamageToUnit = MathHandler.ComboDamage;

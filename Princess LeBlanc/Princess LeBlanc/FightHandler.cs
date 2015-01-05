@@ -58,6 +58,24 @@ namespace Princess_LeBlanc
         }
         public static void Combo()
         {
+            var assassinRange = MenuHandler.LeBlancConfig.Item("AssassinRange").GetValue<Slider>().Value;
+            Obj_AI_Hero target = null;
+            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>()
+                .Where(enemy => enemy.Team != Player.Team
+                    && !enemy.IsDead && enemy.IsVisible
+                    && MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName) != null
+                    && MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName).GetValue<bool>())
+                    .OrderBy(enemy => enemy.Distance(Game.CursorPos))
+                    )
+                if (MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
+                {
+                    target = Player.Distance(enemy) < assassinRange ? enemy : null;
+                }
+                else if (!MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
+                {
+                    target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
+                }
+
             var useQ = SkillHandler.Q.IsReady() &&
                        MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useQ").GetValue<bool>();
             var useW = SkillHandler.W.IsReady() &&
@@ -66,11 +84,10 @@ namespace Princess_LeBlanc
                        MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useE").GetValue<bool>();
             var useR = SkillHandler.R.IsReady() &&
                        MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useR").GetValue<bool>();
-            var useIgnite = ItemHandler.IgniteSlot != SpellSlot.Unknown &&
+            var useIgnite = ItemHandler.IgniteSlot != SpellSlot.Unknown && MenuHandler.LeBlancConfig.SubMenu("Items").Item("useIgnite").GetValue<bool>() &&
                             Player.Spellbook.CanUseSpell(ItemHandler.IgniteSlot) == SpellState.Ready;
             var useDfg = ItemHandler.Dfg.IsReady() &&
                          MenuHandler.LeBlancConfig.SubMenu("Items").Item("useDfg").GetValue<bool>();
-            var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
             var targetQ = SkillHandler.Q.InRange(target.ServerPosition);
             var targetW = SkillHandler.W.InRange(target.ServerPosition);
             var targetE = SkillHandler.E.InRange(target.ServerPosition, 800);
@@ -226,6 +243,7 @@ namespace Princess_LeBlanc
             if (key && mana)
             {
                 ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                
                 if (useE && targetE)
                 {
                     SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
