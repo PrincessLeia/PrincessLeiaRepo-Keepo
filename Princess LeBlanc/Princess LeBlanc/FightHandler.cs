@@ -144,7 +144,7 @@ namespace Princess_LeBlanc
                                 SkillHandler.R.Cast(CTarget);
                             }
                         }
-                        else if (useR && StatusR() == "Q" && targetR && !useW || (Player.Distance(CTarget) > SkillHandler.W.Range + 30))
+                        else if (useR && StatusR() == "Q" && targetR && !useW)
                         {
                             SkillHandler.R.CastOnUnit(CTarget);
                         }
@@ -181,8 +181,6 @@ namespace Princess_LeBlanc
         }
         public static void ComboLong()
         {
-            var target = TargetSelector.GetTarget(SkillHandler.W.Range + SkillHandler.Q.Range, TargetSelector.DamageType.Magical);
-
             if (Wused())
             {
                 return;
@@ -287,16 +285,6 @@ namespace Princess_LeBlanc
             }
             return "unkown";
 
-/* switch (name)
- {
-     case "LeblancChaosOrbM":
-         return RBools[0] = true;
-     case "LeblancSlideM":
-         return RBools[1] = true;
-     case "LeblancSoulShackleM":
-         return RBools[2] = true;
- }
- return RBools[0-2] = false;*/
         }
         public static void LaneClear()
         {

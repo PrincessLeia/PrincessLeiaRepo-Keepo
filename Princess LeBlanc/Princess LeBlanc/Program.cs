@@ -39,7 +39,7 @@ namespace Princess_LeBlanc
             GameObject.OnCreate += FightHandler.GameObject_OnCreate;
             GameObject.OnDelete += FightHandler.GameObject_OnDelete;
 
-            Utility.DelayAction.Add(2000, () => Game.PrintChat("<b><font color =\"#FFFFFF\">Princess LeBlanc</font></b><font color =\"#FFFFFF\"> by </font><b><font color=\"#FF66FF\">Leia</font></b><font color =\"#FFFFFF\"> loaded!</font>"));
+            Utility.DelayAction.Add(1000, () => Game.PrintChat("<b><font color =\"#FFFFFF\">Princess LeBlanc</font></b><font color =\"#FFFFFF\"> by </font><b><font color=\"#FF66FF\">Leia</font></b><font color =\"#FFFFFF\"> loaded!</font>"));
         }
 
         public static void Game_OnGameUpdate(EventArgs args)
