@@ -86,9 +86,13 @@ namespace Princess_LeBlanc
                     FightHandler.JungleClear();
                     break;
                 }
+                case Orbwalking.OrbwalkingMode.Mixed:
+                {
+                    FightHandler.Harass();
+                    break;
+                }
             }
             FightHandler.Flee();
-            FightHandler.Harass();
         }
     }
 }

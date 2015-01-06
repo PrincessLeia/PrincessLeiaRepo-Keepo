@@ -236,7 +236,6 @@ namespace Princess_LeBlanc
         public static void Harass()
         {
             var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
-            var key = MenuHandler.LeBlancConfig.SubMenu("Harass").Item("HarassMode").GetValue<KeyBind>().Active;
             var mana = Player.ManaPercentage() > MenuHandler.LeBlancConfig.SubMenu("Harass").Item("HarassManaPercent").GetValue<Slider>().Value;
             var useQ = SkillHandler.Q.IsReady() &&
                        MenuHandler.LeBlancConfig.SubMenu("Harass").Item("useQ").GetValue<bool>();
@@ -248,11 +247,9 @@ namespace Princess_LeBlanc
             var targetW = SkillHandler.W.InRange(target);
             var targetE = SkillHandler.E.InRange(target);
 
-            if (key && mana)
-            {
-                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                
-                if (useE && targetE)
+            if (!mana) {return;}
+
+            if (useE && targetE)
                 {
                     SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
                 }
@@ -268,7 +265,6 @@ namespace Princess_LeBlanc
                         Utility.DelayAction.Add(100, () => SkillHandler.W.Cast(Player));
                     }
                 }
-            }
         }
         public static string StatusR()
         {

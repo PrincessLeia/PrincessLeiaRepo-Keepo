@@ -41,8 +41,6 @@ namespace Princess_LeBlanc
         LeBlancConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30, 0, 100)));
 
         LeBlancConfig.AddSubMenu(new Menu("Harass", "Harass"));
-            LeBlancConfig.SubMenu("Harass")
-                .AddItem(new MenuItem("HarassMode", "Harass Key").SetValue(new KeyBind('C', KeyBindType.Press)));
         LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
         LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useW", "Use W").SetValue(true));
         LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useE", "Use E").SetValue(true));
@@ -68,7 +66,6 @@ namespace Princess_LeBlanc
             };
 
         LeBlancConfig.AddSubMenu(new Menu("Drawings", "Drawing"));
-        LeBlancConfig.SubMenu("Drawing").AddItem(new MenuItem("HUD", "HUD").SetValue(true));
         LeBlancConfig.SubMenu("Drawing").AddItem(dmgAfterComboItem);
         LeBlancConfig.SubMenu("Drawing").AddItem(new MenuItem("drawQ", "Draw Q").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
         LeBlancConfig.SubMenu("Drawing").AddItem(new MenuItem("drawW", "Draw W").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
