@@ -40,7 +40,7 @@ namespace Princess_LeBlanc
             MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").AddSubMenu(new Menu("Assassin 1st :", "AssassinMode"));
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
             {
-                MenuHandler.LeBlancConfig.SubMenu("AssassinManager")
+                MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
                     .SubMenu("AssassinMode")
                     .AddItem(
                         new MenuItem("Assassin" + enemy.ChampionName, enemy.ChampionName).SetValue(
@@ -113,7 +113,7 @@ namespace Princess_LeBlanc
                 }
             }
         }
-        private static void Drawing_OnDraw(EventArgs args)
+        public static void Drawing_OnDraw(EventArgs args)
         {
             if (!MenuHandler.LeBlancConfig.Item("AssassinActive").GetValue<bool>())
                 return;

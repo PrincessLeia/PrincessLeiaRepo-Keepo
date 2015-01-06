@@ -36,6 +36,7 @@ namespace Princess_LeBlanc
             Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
             AntiGapcloser.OnEnemyGapcloser += FightHandler.AntiGapcloser_OnEnemyGapcloser;
             Game.OnGameUpdate += Game_OnGameUpdate;
+            Drawing.OnDraw += AssassinManager.Drawing_OnDraw;
             GameObject.OnCreate += FightHandler.GameObject_OnCreate;
             GameObject.OnDelete += FightHandler.GameObject_OnDelete;
 
