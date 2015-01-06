@@ -25,6 +25,7 @@ namespace PrinceTalon
             ItemHandler.Init();
             MenuHandler.Init();
             DrawingHandler.Init();
+ 
             try
             {
                 new AssassinManager();

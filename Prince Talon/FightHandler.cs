@@ -10,10 +10,12 @@ namespace PrinceTalon
             {
               get { return ObjectManager.Player; }
             }
-        private static Obj_AI_Hero Target
+        private static Obj_AI_Hero target
         {
             get { return TargetSelector.GetTarget(1200, TargetSelector.DamageType.Physical); }
         }
+
+        private static Obj_AI_Hero Target;
         public static bool PacketCast;
 
 
@@ -28,14 +30,23 @@ namespace PrinceTalon
                     && MenuHandler.TalonConfig.Item("Assassin" + enemy.ChampionName).GetValue<bool>())
                     .OrderBy(enemy => enemy.Distance(Game.CursorPos))
                     )
-                if (MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
                 {
                     vTarget = Player.Distance(enemy) < assassinRange ? enemy : null;
                 }
-                else if (!MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
+
+            switch (MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
+            {
+                case  true:
                 {
-                    vTarget = Target;
+                    Target = vTarget;
+                    break;
                 }
+                case false:
+                {
+                    Target = target;
+                    break;
+                }
+            }
 
             var useW = SkillHandler.W.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
             var useE = SkillHandler.E.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useE").GetValue<bool>();
@@ -101,7 +112,7 @@ namespace PrinceTalon
 
         public static void AfterAttack(Orbwalking.BeforeAttackEventArgs args)
         {
-            var targetq = Target.Distance(Player.Position) < SkillHandler.Q.Range;
+            var targetq = target.Distance(Player.ServerPosition) < SkillHandler.Q.Range;
             var useQ = SkillHandler.Q.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useQ").GetValue<bool>();
             var useQh = SkillHandler.Q.IsReady() && MenuHandler.TalonConfig.SubMenu("Harass").Item("haraQ").GetValue<bool>();
 
@@ -223,13 +234,13 @@ namespace PrinceTalon
                 return;
             }
             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-            if (useW && SkillHandler.W.InRange(Target))
+            if (useW && SkillHandler.W.InRange(target))
             {
-                SkillHandler.W.Cast(Target.Position, PacketCast);
+                SkillHandler.W.Cast(target.Position, PacketCast);
             }
-            if (useE && SkillHandler.E.InRange(Target))
+            if (useE && SkillHandler.E.InRange(target))
             {
-                SkillHandler.E.Cast(Target, PacketCast);
+                SkillHandler.E.Cast(target, PacketCast);
             }
 
         }
