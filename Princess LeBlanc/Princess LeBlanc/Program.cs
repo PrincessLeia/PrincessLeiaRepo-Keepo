@@ -36,7 +36,6 @@ namespace Princess_LeBlanc
             Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
             AntiGapcloser.OnEnemyGapcloser += FightHandler.AntiGapcloser_OnEnemyGapcloser;
             Game.OnGameUpdate += Game_OnGameUpdate;
-            Drawing.OnDraw += AssassinManager.Drawing_OnDraw;
             GameObject.OnCreate += FightHandler.GameObject_OnCreate;
             GameObject.OnDelete += FightHandler.GameObject_OnDelete;
 
@@ -70,7 +69,7 @@ namespace Princess_LeBlanc
                         FightHandler.ComboLong();
                     }
                     else if (((target.Health - MathHandler.ComboDamage(target)) / target.MaxHealth) * 100 >
-                        (target.Health * 50) / 100)
+                        (target.Health * 50) / 100 && SkillHandler.Q.InRange(target))
                     {
                         FightHandler.ComboTanky();
                     }

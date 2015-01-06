@@ -113,7 +113,7 @@ namespace Princess_LeBlanc
                 }
             }
         }
-        public static void Drawing_OnDraw(EventArgs args)
+        private static void Drawing_OnDraw(EventArgs args)
         {
             if (!MenuHandler.LeBlancConfig.Item("AssassinActive").GetValue<bool>())
                 return;
