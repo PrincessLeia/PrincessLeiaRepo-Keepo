@@ -57,19 +57,19 @@ namespace Princess_LeBlanc
             {
                 case Orbwalking.OrbwalkingMode.Combo:
                 {
-                    var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
-                    var targetExtendet = target.Distance(ObjectManager.Player.Position) < SkillHandler.W.Range + SkillHandler.Q.Range - 100;
-                    var targetQ = SkillHandler.Q.InRange(target.ServerPosition);
+                    var CTarget = FightHandler.CTarget;
+                    var targetExtendet = CTarget.Distance(ObjectManager.Player.Position) < SkillHandler.W.Range + SkillHandler.Q.Range - 100;
+                    var targetQ = SkillHandler.Q.InRange(CTarget.ServerPosition);
                     var useW = SkillHandler.W.IsReady() && ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name == "LeblancSlide" &&
                                MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
 
                     if (targetExtendet && !targetQ && useW && ObjectManager.Player.Level > 1
-                         && target.Health < MathHandler.ComboDamage(target) - ObjectManager.Player.GetSpellDamage(target, SpellSlot.W))
+                         && CTarget.Health < MathHandler.ComboDamage(CTarget) - ObjectManager.Player.GetSpellDamage(CTarget, SpellSlot.W))
                     {
                         FightHandler.ComboLong();
                     }
-                    else if (((target.Health - MathHandler.ComboDamage(target)) / target.MaxHealth) * 100 >
-                        (target.Health * 50) / 100 && SkillHandler.Q.InRange(target))
+                    else if (((CTarget.Health - MathHandler.ComboDamage(CTarget)) / CTarget.MaxHealth) * 100 >
+                        (CTarget.Health * 50) / 100 && SkillHandler.Q.InRange(CTarget))
                     {
                         FightHandler.ComboTanky();
                     }

@@ -14,6 +14,7 @@ namespace Princess_LeBlanc
         }
         public static readonly float[] WPosition = new float[3];
         public static float CloneTime;
+        public static Obj_AI_Hero CTarget;
         public static void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
             if (sender.Name.Contains("LeBlanc_MirrorImagePoff.troy") && sender.IsMe)
@@ -60,21 +61,31 @@ namespace Princess_LeBlanc
         {
             var assassinRange = MenuHandler.LeBlancConfig.Item("AssassinRange").GetValue<Slider>().Value;
             Obj_AI_Hero target = null;
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>()
-                .Where(enemy => enemy.Team != Player.Team
-                    && !enemy.IsDead && enemy.IsVisible
-                    && MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName) != null
-                    && MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName).GetValue<bool>())
-                    .OrderBy(enemy => enemy.Distance(Game.CursorPos))
-                    )
-                if (MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
-                {
+            foreach (
+                var enemy in
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(
+                            enemy =>
+                                enemy.Team != Player.Team && !enemy.IsDead && enemy.IsVisible &&
+                                MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName) != null &&
+                                MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName).GetValue<bool>())
+                        .OrderBy(enemy => enemy.Distance(Game.CursorPos)))
+            {
                     target = Player.Distance(enemy) < assassinRange ? enemy : null;
-                }
-                else if (!MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
+            }
+            switch (MenuHandler.LeBlancConfig.Item("AssassinActive").GetValue<bool>())
+            {
+                case true:
+                    {
+                        CTarget = target;
+                        break;
+                    }
+                case false:
                 {
-                    target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
+                    CTarget = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
+                    break;
                 }
+            }
 
             var useQ = SkillHandler.Q.IsReady() &&
                        MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useQ").GetValue<bool>();
@@ -88,28 +99,28 @@ namespace Princess_LeBlanc
                             Player.Spellbook.CanUseSpell(ItemHandler.IgniteSlot) == SpellState.Ready;
             var useDfg = ItemHandler.Dfg.IsReady() &&
                          MenuHandler.LeBlancConfig.SubMenu("Items").Item("useDfg").GetValue<bool>();
-            var targetQ = SkillHandler.Q.InRange(target.ServerPosition);
-            var targetW = SkillHandler.W.InRange(target.ServerPosition);
-            var targetE = SkillHandler.E.InRange(target.ServerPosition, 800);
-            var targetR = SkillHandler.R.InRange(target.ServerPosition);
-            var targetDfg = target.Distance(Player.Position) < ItemHandler.Dfg.Range;
+            var targetQ = SkillHandler.Q.InRange(CTarget.ServerPosition);
+            var targetW = SkillHandler.W.InRange(CTarget.ServerPosition);
+            var targetE = SkillHandler.E.InRange(CTarget.ServerPosition, 800);
+            var targetR = SkillHandler.R.InRange(CTarget.ServerPosition);
+            var targetDfg = CTarget.Distance(Player.Position) < ItemHandler.Dfg.Range;
             var wPriority = SkillHandler.W.Level > SkillHandler.Q.Level;
 
             //Items
-            if (target.Health <= MathHandler.ComboDamage(target) && useDfg && targetDfg)
+            if (CTarget.Health <= MathHandler.ComboDamage(CTarget) && useDfg && targetDfg)
             {
-                ItemHandler.Dfg.Cast(target);
+                ItemHandler.Dfg.Cast(CTarget);
             }
 
-            if (target.Health <= MathHandler.ComboDamage(target) && useIgnite)
+            if (CTarget.Health <= MathHandler.ComboDamage(CTarget) && useIgnite)
             {
-                Player.Spellbook.CastSpell(ItemHandler.IgniteSlot, target);
+                Player.Spellbook.CastSpell(ItemHandler.IgniteSlot, CTarget);
             }
 
             //Spells
             if (useE && targetE && !useR && !useQ && (!useW || Wused()))
             {
-                SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
+                SkillHandler.E.CastIfHitchanceEquals(CTarget, HitChance.Medium);
             }
 
 
@@ -119,23 +130,23 @@ namespace Princess_LeBlanc
                     {
                         if (useQ && targetQ)
                         {
-                            SkillHandler.Q.Cast(target);
+                            SkillHandler.Q.Cast(CTarget);
                         }
                         if (!useQ && useW && targetW && Wunused())
                         {
-                            SkillHandler.W.Cast(target);
+                            SkillHandler.W.Cast(CTarget);
                         }
                         if (useR && StatusR() == "W" && targetW)
                         {
-                            SkillHandler.R.Cast(target);
+                            SkillHandler.R.Cast(CTarget);
                             if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
                             {
-                                SkillHandler.R.Cast(Player);
+                                SkillHandler.R.Cast(CTarget);
                             }
                         }
-                        else if (useR && StatusR() == "Q" && targetR && !useW || (Player.Distance(target) > SkillHandler.W.Range + 30))
+                        else if (useR && StatusR() == "Q" && targetR && !useW || (Player.Distance(CTarget) > SkillHandler.W.Range + 30))
                         {
-                            SkillHandler.R.CastOnUnit(target);
+                            SkillHandler.R.CastOnUnit(CTarget);
                         }
                         return;
                     }
@@ -143,15 +154,15 @@ namespace Princess_LeBlanc
                     {
                         if (useQ && targetQ)
                         {
-                            SkillHandler.Q.Cast(target);
+                            SkillHandler.Q.Cast(CTarget);
                         }
                         if (useR && StatusR() == "Q" && targetR)
                         {
-                            SkillHandler.R.CastOnUnit(target);
+                            SkillHandler.R.CastOnUnit(CTarget);
                         }
                         else if (useR && StatusR() == "W" && targetW && !useQ)
                         {
-                            SkillHandler.R.Cast(target);
+                            SkillHandler.R.Cast(CTarget);
                             if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
                             {
                                 SkillHandler.R.Cast(Player);
@@ -159,7 +170,7 @@ namespace Princess_LeBlanc
                         }
                         if (!useQ && !useR && useW && targetW && Wunused())
                         {
-                            SkillHandler.W.Cast(target);
+                            SkillHandler.W.Cast(CTarget);
                         }
 
                         return;
@@ -177,7 +188,7 @@ namespace Princess_LeBlanc
                 return;
             }
 
-            SkillHandler.W.Cast(target.Position);
+            SkillHandler.W.Cast(CTarget.ServerPosition);
             Combo();
         }
         public static void ComboTanky()
@@ -190,37 +201,36 @@ namespace Princess_LeBlanc
                        MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useE").GetValue<bool>();
             var useR = SkillHandler.R.IsReady() &&
                        MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useR").GetValue<bool>();
-            var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
-            var targetE = SkillHandler.E.InRange(target.ServerPosition, 800);
-            var targetQ = SkillHandler.Q.InRange(target.ServerPosition);
-            var targetW = SkillHandler.W.InRange(target.ServerPosition);
-            var targetBuff = target.HasBuff("LeblancSoulShackle");
+            var targetE = SkillHandler.E.InRange(CTarget.ServerPosition, 800);
+            var targetQ = SkillHandler.Q.InRange(CTarget.ServerPosition);
+            var targetW = SkillHandler.W.InRange(CTarget.ServerPosition);
+            var targetBuff = CTarget.HasBuff("LeblancSoulShackle");
 
             if (useE && targetE)
             {
-                SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
+                SkillHandler.E.CastIfHitchanceEquals(CTarget, HitChance.Medium);
             }
             else if (useR && StatusR() == "E" && targetE)
             {
-                if (target.IsRooted)
+                if (CTarget.IsRooted)
                 {
-                    SkillHandler.R.Cast(target);
+                    SkillHandler.R.Cast(CTarget);
                 }
                 else if (!targetBuff)
                 {
-                    SkillHandler.R.CastIfHitchanceEquals(target, HitChance.Medium);
+                    SkillHandler.R.CastIfHitchanceEquals(CTarget, HitChance.Medium);
                 }
             }
             else if (StatusR() != "E" || !useR)
             {
                 if (useQ && targetQ)
                 {
-                    SkillHandler.Q.Cast(target);
+                    SkillHandler.Q.Cast(CTarget);
                 }
 
                 if (useW && targetW && !useQ && Wunused())
                 {
-                    SkillHandler.W.Cast(target);
+                    SkillHandler.W.Cast(CTarget);
                 }
             }
 
