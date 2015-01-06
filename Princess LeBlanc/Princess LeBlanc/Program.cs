@@ -23,6 +23,16 @@ namespace Princess_LeBlanc
             MenuHandler.Init();
             DrawingHandler.Init();
 
+            try
+            {
+                new AssassinManager();
+            }
+            catch (Exception)
+            {
+                Game.PrintChat("Something wrong 'Loading Assassing Manager'");
+                return;
+            }
+
             Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
             AntiGapcloser.OnEnemyGapcloser += FightHandler.AntiGapcloser_OnEnemyGapcloser;
             Game.OnGameUpdate += Game_OnGameUpdate;
@@ -43,7 +53,6 @@ namespace Princess_LeBlanc
             {
                 return;
             }
-
             switch (MenuHandler.Orb.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
