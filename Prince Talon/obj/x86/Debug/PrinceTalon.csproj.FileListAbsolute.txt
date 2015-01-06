@@ -12,3 +12,6 @@ C:\Users\Carl\Desktop\Projects\Prince Talon\bin\x86\Debug\SharpDX.Toolkit.xml
 C:\Users\Carl\Desktop\Projects\Prince Talon\bin\x86\Debug\SharpDX.Toolkit.Graphics.xml
 C:\Users\Carl\Desktop\Projects\Prince Talon\obj\x86\Debug\PrinceTalon.exe
 C:\Users\Carl\Desktop\Projects\Prince Talon\obj\x86\Debug\PrinceTalon.pdb
+C:\Users\Carl\Documents\GitHub\Leaguesharp\Prince Talon\bin\x86\Debug\PrinceTalon.exe.config
+C:\Users\Carl\Documents\GitHub\Leaguesharp\Prince Talon\obj\x86\Debug\PrinceTalon.exe
+C:\Users\Carl\Documents\GitHub\Leaguesharp\Prince Talon\obj\x86\Debug\PrinceTalon.pdb

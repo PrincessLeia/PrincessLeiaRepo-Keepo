@@ -10,5 +10,6 @@ C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\S
 C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\LeagueSharp.xml
 C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\SharpDX.Toolkit.xml
 C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\SharpDX.Toolkit.Graphics.xml
+C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\obj\x86\Debug\Princess LeBlanc.csprojResolveAssemblyReference.cache
 C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\obj\x86\Debug\Princess LeBlanc.exe
 C:\Users\Carl\Desktop\Projects\Princess LeBlanc\Princess LeBlanc\obj\x86\Debug\Princess LeBlanc.pdb

@@ -17,7 +17,7 @@ namespace Princess_LeBlanc
         {
             MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").AddSubMenu(new Menu("Assassin Manager", "AssassinManager"));
             MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
-                .AddItem(new MenuItem("AssassinActive", "Assassin Active").SetValue(true));
+                .AddItem(new MenuItem("AssassinActive", "Assassin Active").SetValue(false));
             MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
                 .AddItem(new MenuItem("AssassinSetClick", "Use Click Add/Remove").SetValue(true));
             MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
