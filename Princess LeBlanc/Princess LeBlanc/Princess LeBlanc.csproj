@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{10FC03A0-06F0-491E-8F5F-ADB124576649}</ProjectGuid>
+    <ProjectGuid>{47F659E8-6D67-4225-B30F-3814D3E17C64}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Princess_LeBlanc</RootNamespace>

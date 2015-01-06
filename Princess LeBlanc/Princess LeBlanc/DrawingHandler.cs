@@ -10,11 +10,7 @@ namespace Princess_LeBlanc
     internal class DrawingHandler
     {
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
-        public static void Init()
-        {
-            Drawing.OnDraw += OnDraw;
-        }
-        private static void OnDraw(EventArgs args)
+        public static void OnDraw(EventArgs args)
         {
 
             if (ObjectManager.Player.IsDead)
@@ -42,24 +38,6 @@ namespace Princess_LeBlanc
             if (DrawR.Active)
             {
                 Utility.DrawCircle(Player.Position, SkillHandler.R.Range, DrawR.Color);
-            }
-
-
-            if (MenuHandler.LeBlancConfig.Item("HUD").GetValue<bool>())
-            {
-                if (MenuHandler.LeBlancConfig.Item("KSi").GetValue<KeyBind>().Active || MenuHandler.LeBlancConfig.Item("KSq").GetValue<KeyBind>().Active || MenuHandler.LeBlancConfig.Item("KSw").GetValue<KeyBind>().Active)
-                    Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.68f, Color.Yellow,
-                        "KillSteal : On");
-                else
-                    Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.68f, Color.DarkRed,
-                        "KillSteal : Off");
-
-                /*if (Player.Spellbook.GetSpell(SpellSlot.W).Name == "leblancslidereturn" || Player.Spellbook.GetSpell(SpellSlot.W).Name == "leblancslidereturnm")
-                    Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.66f, Color.Yellow,
-                        "W Timer : " + timer);
-                else
-                    Drawing.DrawText(Drawing.Width * 0.90f, Drawing.Height * 0.66f, Color.DarkRed,
-                        "W Timer : Off");*/
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using Color = System.Drawing.Color;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -8,67 +9,52 @@ namespace Princess_LeBlanc
 {
     internal class AssassinManager
     {
-        public AssassinManager()
+        public static void Init()
         {
             Load();
         }
 
-        private static void Load()
+        public static void Load()
         {
-            MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").AddSubMenu(new Menu("Assassin Manager", "AssassinManager"));
-            MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
-                .AddItem(new MenuItem("AssassinActive", "Assassin Active").SetValue(false));
-            MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
-                .AddItem(new MenuItem("AssassinSetClick", "Use Click Add/Remove").SetValue(true));
-            MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
-                .AddItem(
-                    new MenuItem("AssassinRangeColor", "Assassin Range Color").SetValue(new Circle(true,
-                        Color.GreenYellow)));
-            MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
-                .AddItem(
-                    new MenuItem("AssassinInRangeColor", "Range Enemy Color").SetValue(new Circle(true,
-                        Color.GreenYellow)));
-            MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
-                .AddItem(
-                    new MenuItem("AssassinInCloseColor", "Nearest Enemy Color").SetValue(new Circle(true,
-                        Color.DarkSeaGreen)));
-            MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
-                .AddItem(
-                    new MenuItem("AssassinReset", "Reset Assassin List").SetValue(new KeyBind("J".ToCharArray()[0],
-                        KeyBindType.Press)));
+            MenuHandler.TargetSelectorMenu.AddSubMenu(new Menu("Assassin Manager", "MenuAssassin"));
+            MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin").AddItem(new MenuItem("AssassinActive", "Active").SetValue(true));
+            MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin").AddItem(new MenuItem("AssassinSelectOption", "Set: ").SetValue(new StringList(new[] { "Single Select", "Multi Select" })));
+            MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin").AddItem(new MenuItem("AssassinSetClick", "Add/Remove with click").SetValue(true));
+            MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin").AddItem(new MenuItem("AssassinReset", "Reset List").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
 
-            MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").AddSubMenu(new Menu("Assassin 1st :", "AssassinMode"));
+            MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin").AddSubMenu(new Menu("Draw:", "Draw"));
+
+            MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin").SubMenu("Draw").AddItem(new MenuItem("DrawSearch", "Search Range").SetValue(new Circle(true, Color.GreenYellow)));
+            MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin").SubMenu("Draw").AddItem(new MenuItem("DrawActive", "Active Enemy").SetValue(new Circle(true, Color.GreenYellow)));
+            MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin").SubMenu("Draw").AddItem(new MenuItem("DrawNearest", "Nearest Enemy").SetValue(new Circle(true, Color.DarkSeaGreen)));
+
+
+            MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin").AddSubMenu(new Menu("Assassin List:", "AssassinMode"));
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
             {
-                MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
+                MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin")
                     .SubMenu("AssassinMode")
                     .AddItem(
                         new MenuItem("Assassin" + enemy.ChampionName, enemy.ChampionName).SetValue(
                             TargetSelector.GetPriority(enemy) > 3));
             }
-            MenuHandler.LeBlancConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager")
-                .AddItem(new MenuItem("AssassinRange", "Assassin Range")).SetValue(new Slider(1000, 2000));
-
-            Game.OnGameUpdate += OnGameUpdate;
-            Drawing.OnDraw += Drawing_OnDraw;
-            Game.OnWndProc += Game_OnWndProc;
+            MenuHandler.TargetSelectorMenu.SubMenu("MenuAssassin")
+                .AddItem(new MenuItem("AssassinSearchRange", "Search Range")).SetValue(new Slider(1000, 2000));
         }
 
         static void ClearAssassinList()
         {
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
+            foreach (
+                var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
             {
-                MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName).SetValue(false);
-            } 
-        }
-        private static void OnGameUpdate(EventArgs args)
-        {
+                MenuHandler.TargetSelectorMenu.Item("Assassin" + enemy.ChampionName).SetValue(false);
+            }
         }
 
-        private static void Game_OnWndProc(WndEventArgs args)
+        public static void Game_OnWndProc(WndEventArgs args)
         {
 
-            if (MenuHandler.LeBlancConfig.Item("AssassinReset").GetValue<KeyBind>().Active && args.Msg == 257)
+            if (MenuHandler.TargetSelectorMenu.Item("AssassinReset").GetValue<KeyBind>().Active && args.Msg == 257)
             {
                 ClearAssassinList();
                 Game.PrintChat(
@@ -80,7 +66,7 @@ namespace Princess_LeBlanc
                 return;
             }
 
-            if (MenuHandler.LeBlancConfig.Item("AssassinSetClick").GetValue<bool>())
+            if (MenuHandler.TargetSelectorMenu.Item("AssassinSetClick").GetValue<bool>())
             {
                 foreach (var objAiHero in from hero in ObjectManager.Get<Obj_AI_Hero>()
                                           where hero.IsValidTarget()
@@ -94,54 +80,75 @@ namespace Princess_LeBlanc
                 {
                     if (objAiHero != null && objAiHero.IsVisible && !objAiHero.IsDead)
                     {
-                        ClearAssassinList();
-                        MenuHandler.LeBlancConfig.Item("Assassin" + objAiHero.ChampionName).SetValue(true);
-                        Game.PrintChat(
-                            string.Format(
-                                "<font color='FFFFFF'>Added to Assassin List</font> <font color='#09F000'>{0} ({1})</font>",
-                                objAiHero.Name, objAiHero.ChampionName));
+                        var xSelect =
+                            MenuHandler.TargetSelectorMenu.Item("AssassinSelectOption").GetValue<StringList>().SelectedIndex;
 
-                        /*
-                        var menuStatus = MenuHandler.LeBlancConfig.Item("Assassin" + objAiHero.ChampionName).GetValue<bool>();
-                        MenuHandler.LeBlancConfig.Item("Assassin" + objAiHero.ChampionName).SetValue(!menuStatus);
-                        Game.PrintChat(string.Format("<font color='{0}'>{1}</font> <font color='#09F000'>{2} ({3})</font>",
-                                            !menuStatus ? "#FFFFFF" : "#FF8877",
-                                            !menuStatus ? "Added to Assassin List:" : "Removed from Assassin List:",
-                                            objAiHero.Name, objAiHero.ChampionName));
-                         * */
+                        switch (xSelect)
+                        {
+                            case 0:
+                                ClearAssassinList();
+                                MenuHandler.TargetSelectorMenu.Item("Assassin" + objAiHero.ChampionName).SetValue(true);
+                                Game.PrintChat(
+                                    string.Format(
+                                        "<font color='FFFFFF'>Added to Assassin List</font> <font color='#09F000'>{0} ({1})</font>",
+                                        objAiHero.Name, objAiHero.ChampionName));
+                                break;
+                            case 1:
+                                var menuStatus =
+                                    MenuHandler.TargetSelectorMenu.Item("Assassin" + objAiHero.ChampionName)
+                                        .GetValue<bool>();
+                                MenuHandler.TargetSelectorMenu.Item("Assassin" + objAiHero.ChampionName)
+                                    .SetValue(!menuStatus);
+                                Game.PrintChat(
+                                    string.Format("<font color='{0}'>{1}</font> <font color='#09F000'>{2} ({3})</font>",
+                                        !menuStatus ? "#FFFFFF" : "#FF8877",
+                                        !menuStatus ? "Added to Assassin List:" : "Removed from Assassin List:",
+                                        objAiHero.Name, objAiHero.ChampionName));
+                                break;
+                        }
                     }
                 }
             }
         }
-        private static void Drawing_OnDraw(EventArgs args)
+        public static void Drawing_OnDraw(EventArgs args)
         {
-            if (!MenuHandler.LeBlancConfig.Item("AssassinActive").GetValue<bool>())
-                return;
-
-            var drawRangeColor = MenuHandler.LeBlancConfig.Item("AssassinRangeColor").GetValue<Circle>();
-            var drawRangeEnemyColor = MenuHandler.LeBlancConfig.Item("AssassinInRangeColor").GetValue<Circle>();
-            var drawNearestEnemyColor = MenuHandler.LeBlancConfig.Item("AssassinInCloseColor").GetValue<Circle>();
-
-            var assassinRange = MenuHandler.LeBlancConfig.Item("AssassinRange").GetValue<Slider>().Value;
-            if (drawRangeColor.Active)
+            if (!MenuHandler.TargetSelectorMenu.Item("AssassinActive").GetValue<bool>())
             {
-                Utility.DrawCircle(ObjectManager.Player.Position, assassinRange, drawRangeColor.Color, 1, 15);
+                return;
             }
 
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>()
-                .Where(enemy => enemy.Team != ObjectManager.Player.Team)
-                .Where(enemy => enemy.IsVisible && MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName) != null && !enemy.IsDead)
-                .Where(enemy => MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName).GetValue<bool>()))
+            var drawSearch = MenuHandler.TargetSelectorMenu.Item("DrawSearch").GetValue<Circle>();
+            var drawActive = MenuHandler.TargetSelectorMenu.Item("DrawActive").GetValue<Circle>();
+            var drawNearest = MenuHandler.TargetSelectorMenu.Item("DrawNearest").GetValue<Circle>();
+
+            var drawSearchRange = MenuHandler.TargetSelectorMenu.Item("AssassinSearchRange").GetValue<Slider>().Value;
+            if (drawSearch.Active)
             {
-                if (ObjectManager.Player.Distance(enemy) < assassinRange)
+                Utility.DrawCircle(ObjectManager.Player.Position, drawSearchRange, drawSearch.Color);
+            }
+
+            foreach (
+                var enemy in
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(enemy => enemy.Team != ObjectManager.Player.Team)
+                        .Where(
+                            enemy =>
+                                enemy.IsVisible &&
+                                MenuHandler.TargetSelectorMenu.Item("Assassin" + enemy.ChampionName) != null &&
+                                !enemy.IsDead)
+                        .Where(
+                            enemy => MenuHandler.TargetSelectorMenu.Item("Assassin" + enemy.ChampionName).GetValue<bool>()))
+            {
+                if (ObjectManager.Player.Distance(enemy) < drawSearchRange)
                 {
-                    if (drawRangeEnemyColor.Active)
-                        Utility.DrawCircle(enemy.Position, 85f, drawRangeEnemyColor.Color, 1, 15);
+                    if (drawActive.Active)
+                        Utility.DrawCircle(enemy.Position, 85f, drawActive.Color);
                 }
-                else if (ObjectManager.Player.Distance(enemy) > assassinRange && ObjectManager.Player.Distance(enemy) < assassinRange + 400)
+                else if (ObjectManager.Player.Distance(enemy) > drawSearchRange &&
+                         ObjectManager.Player.Distance(enemy) < drawSearchRange + 400)
                 {
-                    if (drawNearestEnemyColor.Active)
-                        Utility.DrawCircle(enemy.Position, 85f, drawNearestEnemyColor.Color, 1, 15);
+                    if (drawNearest.Active)
+                        Utility.DrawCircle(enemy.Position, 85f, drawNearest.Color);
                 }
             }
         }

@@ -8,19 +8,18 @@ namespace Princess_LeBlanc
     class MenuHandler
     {
         public static Menu LeBlancConfig;
+        public static Menu TargetSelectorMenu;
         internal static Orbwalking.Orbwalker Orb;
         public static void Init()
         {
             LeBlancConfig = new Menu("Princess " + ObjectManager.Player.ChampionName, "Princess" + ObjectManager.Player.ChampionName, true);
 
-        Menu orbwalker = new Menu("Orbwalker", "orbwalker");
+        LeBlancConfig.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
+        Orb = new Orbwalking.Orbwalker(LeBlancConfig.SubMenu("Orbwalking"));
 
-        Orb = new Orbwalking.Orbwalker(orbwalker);
-        LeBlancConfig.AddSubMenu(orbwalker);
-
-        var targetselectormenu = new Menu("Target Selector", "Common_TargetSelector");
-        TargetSelector.AddToMenu(targetselectormenu);
-        LeBlancConfig.AddSubMenu(targetselectormenu);
+        TargetSelectorMenu = new Menu("Target Selector", "Common_TargetSelector");
+        TargetSelector.AddToMenu(TargetSelectorMenu);
+        LeBlancConfig.AddSubMenu(TargetSelectorMenu);
 
         LeBlancConfig.AddSubMenu(new Menu("Combo", "Combo"));
         LeBlancConfig.SubMenu("Combo").AddItem(new MenuItem("useQ", "Use Q").SetValue(true));

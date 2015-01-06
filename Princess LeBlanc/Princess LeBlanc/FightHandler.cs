@@ -57,36 +57,65 @@ namespace Princess_LeBlanc
                 }
             }
         }
-        public static void Combo()
+        public static void TargetSelect()
         {
-            var assassinRange = MenuHandler.LeBlancConfig.Item("AssassinRange").GetValue<Slider>().Value;
-            Obj_AI_Hero target = null;
-            foreach (
-                var enemy in
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(
-                            enemy =>
-                                enemy.Team != Player.Team && !enemy.IsDead && enemy.IsVisible &&
-                                MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName) != null &&
-                                MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName).GetValue<bool>())
-                        .OrderBy(enemy => enemy.Distance(Game.CursorPos)))
-            {
-                    target = Player.Distance(enemy) < assassinRange ? enemy : null;
-            }
             switch (MenuHandler.LeBlancConfig.Item("AssassinActive").GetValue<bool>())
             {
                 case true:
                     {
-                        CTarget = target;
+                        var assassinRange = MenuHandler.TargetSelectorMenu.Item("AssassinSearchRange").GetValue<Slider>().Value;
+
+                        var vEnemy = ObjectManager.Get<Obj_AI_Hero>()
+                            .Where(
+                                enemy =>
+                                    enemy.Team != ObjectManager.Player.Team && !enemy.IsDead && enemy.IsVisible &&
+                                    MenuHandler.TargetSelectorMenu.Item("Assassin" + enemy.ChampionName) != null &&
+                                    MenuHandler.TargetSelectorMenu.Item("Assassin" + enemy.ChampionName).GetValue<bool>() &&
+                                    ObjectManager.Player.Distance(enemy) < assassinRange);
+
+                        if (MenuHandler.TargetSelectorMenu.Item("AssassinSelectOption").GetValue<StringList>().SelectedIndex == 1)
+                        {
+                            vEnemy = (from vEn in vEnemy select vEn).OrderByDescending(vEn => vEn.MaxHealth);
+                        }
+
+                        Obj_AI_Hero[] objAiHeroes = vEnemy as Obj_AI_Hero[] ?? vEnemy.ToArray();
+
+                        CTarget = !objAiHeroes.Any()
+                            ? TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Magical)
+                            : objAiHeroes[0];
                         break;
                     }
                 case false:
-                {
-                    CTarget = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
-                    break;
-                }
+                    {
+                        CTarget = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
+                        break;
+                    }
             }
+        }
+        public static void ComboLogic()
+        {
+            var targetExtendet = CTarget.Distance(ObjectManager.Player.Position) < SkillHandler.W.Range + SkillHandler.Q.Range - 100;
+            var targetQ = SkillHandler.Q.InRange(CTarget.ServerPosition);
+            var useW = SkillHandler.W.IsReady() && ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name == "LeblancSlide" &&
+                       MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
 
+            if (targetExtendet && !targetQ && useW && ObjectManager.Player.Level > 1
+                 && CTarget.Health < MathHandler.ComboDamage(CTarget) - ObjectManager.Player.GetSpellDamage(CTarget, SpellSlot.W))
+            {
+                ComboLong();
+            }
+            else if (((CTarget.Health - MathHandler.ComboDamage(CTarget)) / CTarget.MaxHealth) * 100 >
+                (CTarget.Health * 50) / 100 && SkillHandler.Q.InRange(CTarget))
+            {
+                ComboTanky();
+            }
+            else
+            {
+                Combo();
+            }
+        }
+        public static void Combo()
+        {
             var useQ = SkillHandler.Q.IsReady() &&
                        MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useQ").GetValue<bool>();
             var useW = SkillHandler.W.IsReady() &&
