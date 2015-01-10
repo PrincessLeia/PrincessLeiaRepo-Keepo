@@ -55,7 +55,6 @@ namespace Princess_LeBlanc
                 case Orbwalking2.OrbwalkingMode.Combo:
                 {
                     FightHandler.ComboLogic();
-                    FightHandler.WLogic();
                     break;
                 }
                 case Orbwalking2.OrbwalkingMode.LaneClear:
@@ -74,6 +73,7 @@ namespace Princess_LeBlanc
                     break;
                 }
             }
+            FightHandler.WLogic();
             FightHandler.Flee();
             FightHandler.CloneLogic();
         }

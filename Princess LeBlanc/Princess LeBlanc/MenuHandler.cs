@@ -42,6 +42,7 @@ namespace Princess_LeBlanc
                         new KeyBind(LeBlancConfig.Item("LaneClear").GetValue<KeyBind>().Key, KeyBindType.Press)));
             LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearQ", "Use Q").SetValue(true));
             LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearW", "Use W").SetValue(true));
+            LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClear2W", "Use Second W").SetValue(true));
             LeBlancConfig.SubMenu("ClearL")
                 .AddItem(new MenuItem("LaneClearWHit", "Min minions by W").SetValue(new Slider(2, 0, 5)));
             LeBlancConfig.SubMenu("ClearL")
@@ -54,6 +55,7 @@ namespace Princess_LeBlanc
                         new KeyBind(LeBlancConfig.Item("LaneClear").GetValue<KeyBind>().Key, KeyBindType.Press)));
             LeBlancConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearQ", "Use Q").SetValue(true));
             LeBlancConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearW", "Use W").SetValue(true));
+            LeBlancConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClear2W", "Use Second W").SetValue(true));
             LeBlancConfig.SubMenu("ClearJ")
                 .AddItem(new MenuItem("JungleClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30)));
 
@@ -64,6 +66,7 @@ namespace Princess_LeBlanc
                         new KeyBind(LeBlancConfig.Item("Farm").GetValue<KeyBind>().Key, KeyBindType.Press)));
             LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
             LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useW", "Use W").SetValue(true));
+            LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("use2W", "Use Second W").SetValue(true));
             LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useE", "Use E").SetValue(true));
             LeBlancConfig.SubMenu("Harass")
                 .AddItem(new MenuItem("HarassManaPercent", "Minimum Mana Percent").SetValue(new Slider(30)));
@@ -101,8 +104,8 @@ namespace Princess_LeBlanc
             LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("useSW", "Use Second W Logic").SetValue(true));
             LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWcountEnemy", "Minimum of Enemys around Second W Point").SetValue(new Slider(0, 0, 5)));
             LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWplayerHp", "Minimum Player HP%").SetValue(new Slider(10, 0, 100)));
-            LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWflee", "If FleeMode On").SetValue(true));
-            LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWtargetDead", "Target is Dead").SetValue(true));
+            LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWpos", "If Second Wpos is closer to Cursor then Playerpos").SetValue(true));
+            LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWflee", "If FleeModeON").SetValue(true));
             LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("Interrupt", "Interrupt with E").SetValue(true));
             LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("Gapclose", "Anit Gapclose with E").SetValue(true));
             LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("UsePacket", "Use Packets").SetValue(false));

@@ -14,7 +14,7 @@ namespace Princess_LeBlanc
         }
 
         private static float _clonetime;
-        private static Vector3 _wpos;
+        public static Vector3 _wpos;
 
         static readonly bool PacketCast = Program.PacketCast;
 
@@ -197,7 +197,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.W.Cast(farmLocation.Position, PacketCast);
             }
-            if (StatusW() == "return")
+            if (StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClear2W").GetValue<bool>())
             {
                 SkillHandler.W.Cast(PacketCast);
             }
@@ -228,7 +228,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.W.Cast(farmLocation.Position);
             }
-            if (StatusW() == "return")
+            if (StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClear2W").GetValue<bool>())
             {
                 SkillHandler.W.Cast(PacketCast);
             }
@@ -255,6 +255,13 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium, PacketCast);
             }
+
+            var fleepos = Player.ServerPosition.Distance(Game.CursorPos) > _wpos.Distance(Game.CursorPos);
+            if (MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWflee").GetValue<bool>() && fleepos && StatusW() == "return")
+            {
+                SkillHandler.W.Cast(Player);
+            }
+
         }
 
         public static void Harass()
@@ -282,7 +289,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.W.Cast(target, PacketCast);
             }
-            if (StatusW() == "return")
+            if (StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("Harass").Item("use2W").GetValue<bool>())
             {
                 SkillHandler.W.Cast(PacketCast);
             }
@@ -290,19 +297,18 @@ namespace Princess_LeBlanc
 
         public static void WLogic()
         {
-            var t = GetEnemy(SkillHandler.E.Range, TargetSelector.DamageType.Magical);
-            var countW = _wpos.CountEnemysInRange(200) >= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWcountEnemy").GetValue<Slider>().Value;
+            var countW = _wpos.CountEnemysInRange(200) > MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWcountEnemy").GetValue<Slider>().Value;
+            var fleepos = Player.ServerPosition.Distance(Game.CursorPos) > _wpos.Distance(Game.CursorPos) && MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWpos").GetValue<bool>();
             var playerhealth = Player.HealthPercentage() <= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWplayerHp").GetValue<Slider>().Value;
-            var useW = MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("useSW").GetValue<bool>();
-            var alloncd = !SkillHandler.Q.IsReady() && !SkillHandler.W.IsReady() && !SkillHandler.E.IsReady() &&
-                          !SkillHandler.R.IsReady();
-            var flee = MenuHandler.LeBlancConfig.Item("FleeK").GetValue<KeyBind>().Active && MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWflee").GetValue<bool>();
-            var playermana = Player.ManaPercentage() < 50;
-            var targethealth = t.HealthPercentage() > 60;
 
-            if (StatusW() == "return" && useW && !countW || flee || playerhealth || (alloncd && playermana && targethealth))
+            if (StatusW() == "normal") { return; }
+            if (countW) { return;}
+            if (!MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("useSW").GetValue<bool>()) { return;}
+
+            
+            if (fleepos || playerhealth)
             {
-                SkillHandler.W.Cast(PacketCast);
+                SkillHandler.W.Cast(Player, PacketCast);
             }
         }
 
@@ -362,10 +368,6 @@ namespace Princess_LeBlanc
                         break;
                     }
             }
-            if (t.IsDead && StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWtargetdead").GetValue<bool>() && MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("useSW").GetValue<bool>())
-                    {
-                        SkillHandler.W.Cast(Player, PacketCast);
-                    }
         }
 
         private static void ComboGapClose()
