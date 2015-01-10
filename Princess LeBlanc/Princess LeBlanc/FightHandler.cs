@@ -294,11 +294,15 @@ namespace Princess_LeBlanc
             var countW = _wpos.CountEnemysInRange(300) >= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWcountEnemy").GetValue<Slider>().Value;
             var playerhealth = Player.HealthPercentage() <= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWplayerHp").GetValue<Slider>().Value;
             var dead = MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWtargetDead").GetValue<bool>() && t.IsDead;
-            var combooff = MenuHandler.Orbwalker.ActiveMode == Orbwalking2.OrbwalkingMode.None;
             var useW = MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("useSW").GetValue<bool>();
+            var alloncd = !SkillHandler.Q.IsReady() && !SkillHandler.W.IsReady() && !SkillHandler.E.IsReady() &&
+                          !SkillHandler.R.IsReady();
+            var playermana = Player.ManaPercentage() < 50;
+            var targethealth = t.HealthPercentage() > 60;
 
-            if (StatusW() == "return" && useW && combooff && !countW && (playerhealth  || dead))
+            if (StatusW() == "return" && useW && !countW && (playerhealth  || dead || (alloncd && playermana && targethealth)))
             {
+                Game.PrintChat("blub");
                 SkillHandler.W.Cast(PacketCast);
             }
         }
@@ -335,7 +339,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.Q.CastOnUnit(t, PacketCast);
             }
-            if (useW && !SkillHandler.Q.IsReady())
+            if (useW && !SkillHandler.Q.IsReady() && StatusW() == "normal")
             {
                 SkillHandler.W.Cast(t.ServerPosition, PacketCast);
             }
@@ -359,12 +363,16 @@ namespace Princess_LeBlanc
                         break;
                     }
             }
+            if (t.IsDead && StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWtargetdead").GetValue<bool>() && MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("useSW").GetValue<bool>())
+                    {
+                        SkillHandler.W.Cast(Player, PacketCast);
+                    }
         }
 
         private static void ComboGapClose()
         {
             var t = TargetSelector.GetTarget(1000, TargetSelector.DamageType.Magical);
-            var useW = SkillHandler.W.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
+            var useW = SkillHandler.W.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>() && StatusW() == "normal";
 
             if (useW)
             {
