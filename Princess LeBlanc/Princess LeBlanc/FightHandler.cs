@@ -291,20 +291,13 @@ namespace Princess_LeBlanc
         public static void WLogic()
         {
             var t = GetEnemy(SkillHandler.E.Range, TargetSelector.DamageType.Magical);
-            bool countW = _wpos.CountEnemysInRange(300) >= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWcountEnemy").GetValue<Slider>().Value;
+            var countW = _wpos.CountEnemysInRange(300) >= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWcountEnemy").GetValue<Slider>().Value;
             var playerhealth = Player.HealthPercentage() <= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWplayerHp").GetValue<Slider>().Value;
-            var playermana = Player.ManaPercentage() <= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWplayerMana").GetValue<Slider>().Value;
-            var thp = t.HealthPercentage() >=
-                      MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWtargetHp").GetValue<Slider>().Value;
-            var alloncd = !SkillHandler.Q.IsReady() && !SkillHandler.W.IsReady() && !SkillHandler.E.IsReady() && !SkillHandler.R.IsReady();
             var dead = MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWtargetDead").GetValue<bool>() && t.IsDead;
+            var combooff = MenuHandler.Orbwalker.ActiveMode == Orbwalking2.OrbwalkingMode.None;
+            var useW = MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("useSW").GetValue<bool>();
 
-            if (!MenuHandler.LeBlancConfig.SubMenu("backW").Item("useSW").GetValue<bool>() || StatusW() == "normal" || countW)
-            {
-                return;
-            }
-
-            if ((playermana && t.HealthPercentage() > 8) || playerhealth || (thp && alloncd) || dead)
+            if (StatusW() == "return" && useW && combooff && !countW && (playerhealth  || dead))
             {
                 SkillHandler.W.Cast(PacketCast);
             }

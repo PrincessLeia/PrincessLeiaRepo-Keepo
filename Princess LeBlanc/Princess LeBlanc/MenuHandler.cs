@@ -101,8 +101,6 @@ namespace Princess_LeBlanc
             LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("useSW", "Use Second W Logic").SetValue(true));
             LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWcountEnemy", "Minimum of Enemys around Second W Point").SetValue(new Slider(0, 0, 5)));
             LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWplayerHp", "Minimum Player HP%").SetValue(new Slider(10, 0, 100)));
-            LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWplayerMana", "Minimum Player Mana%").SetValue(new Slider(5, 0, 100)));
-            LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWtargetHp", "Minimum Target Health%").SetValue(new Slider(40, 0, 100)));
             LeBlancConfig.SubMenu("Misc").SubMenu("backW").AddItem(new MenuItem("SWtargetDead", "Target is Dead").SetValue(true));
             LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("Interrupt", "Interrupt with E").SetValue(true));
             LeBlancConfig.SubMenu("Misc").AddItem(new MenuItem("Gapclose", "Anit Gapclose with E").SetValue(true));
