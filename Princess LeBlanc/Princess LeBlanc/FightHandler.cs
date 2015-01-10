@@ -291,18 +291,17 @@ namespace Princess_LeBlanc
         public static void WLogic()
         {
             var t = GetEnemy(SkillHandler.E.Range, TargetSelector.DamageType.Magical);
-            var countW = _wpos.CountEnemysInRange(300) >= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWcountEnemy").GetValue<Slider>().Value;
+            var countW = _wpos.CountEnemysInRange(200) >= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWcountEnemy").GetValue<Slider>().Value;
             var playerhealth = Player.HealthPercentage() <= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWplayerHp").GetValue<Slider>().Value;
-            var dead = MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWtargetDead").GetValue<bool>() && t.IsDead;
             var useW = MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("useSW").GetValue<bool>();
             var alloncd = !SkillHandler.Q.IsReady() && !SkillHandler.W.IsReady() && !SkillHandler.E.IsReady() &&
                           !SkillHandler.R.IsReady();
+            var flee = MenuHandler.LeBlancConfig.Item("FleeK").GetValue<KeyBind>().Active;
             var playermana = Player.ManaPercentage() < 50;
             var targethealth = t.HealthPercentage() > 60;
 
-            if (StatusW() == "return" && useW && !countW && (playerhealth  || dead || (alloncd && playermana && targethealth)))
+            if (StatusW() == "return" && useW && !countW || flee || playerhealth || (alloncd && playermana && targethealth))
             {
-                Game.PrintChat("blub");
                 SkillHandler.W.Cast(PacketCast);
             }
         }
