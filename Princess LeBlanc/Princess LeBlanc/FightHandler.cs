@@ -296,7 +296,7 @@ namespace Princess_LeBlanc
             var useW = MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("useSW").GetValue<bool>();
             var alloncd = !SkillHandler.Q.IsReady() && !SkillHandler.W.IsReady() && !SkillHandler.E.IsReady() &&
                           !SkillHandler.R.IsReady();
-            var flee = MenuHandler.LeBlancConfig.Item("FleeK").GetValue<KeyBind>().Active;
+            var flee = MenuHandler.LeBlancConfig.Item("FleeK").GetValue<KeyBind>().Active && MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWflee").GetValue<bool>();
             var playermana = Player.ManaPercentage() < 50;
             var targethealth = t.HealthPercentage() > 60;
 

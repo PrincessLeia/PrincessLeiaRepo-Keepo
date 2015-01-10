@@ -73,16 +73,6 @@ namespace Princess_LeBlanc
                     FightHandler.Harass();
                     break;
                 }
-                case Orbwalking2.OrbwalkingMode.None:
-                {
-                    if (FightHandler.StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWnomode").GetValue<bool>() &&
-                        MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("useSW").GetValue<bool>() &&
-                        !MenuHandler.LeBlancConfig.Item("FleeK").GetValue<KeyBind>().Active)
-                    {
-                        SkillHandler.W.Cast(Player, PacketCast);
-                    }
-                    break;
-                }
             }
             FightHandler.Flee();
             FightHandler.CloneLogic();
