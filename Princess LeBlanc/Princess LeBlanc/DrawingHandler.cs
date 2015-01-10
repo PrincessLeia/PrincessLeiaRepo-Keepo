@@ -1,43 +1,35 @@
 ﻿using System;
-using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
-using Color = System.Drawing.Color;
 
 namespace Princess_LeBlanc
 {
     internal class DrawingHandler
     {
-        private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
-        public static void OnDraw(EventArgs args)
+        public static void Init()
         {
-
+            Drawing.OnDraw += OnDraw;
+        }
+        private static void OnDraw(EventArgs args)
+        {
             if (ObjectManager.Player.IsDead)
                 return;
 
-            var DrawQ = MenuHandler.LeBlancConfig.Item("drawQ").GetValue<Circle>();
-            if (DrawQ.Active)
-            {
-                Utility.DrawCircle(Player.Position, SkillHandler.Q.Range, DrawQ.Color);
-            }
+            var drawQ = MenuHandler.LeBlancConfig.Item("drawQ").GetValue<Circle>();
+            var drawW = MenuHandler.LeBlancConfig.Item("drawW").GetValue<Circle>();
+            var drawE = MenuHandler.LeBlancConfig.Item("drawE").GetValue<Circle>();
 
-            var DrawW = MenuHandler.LeBlancConfig.Item("drawW").GetValue<Circle>();
-            if (DrawW.Active)
+            if (drawQ.Active)
             {
-                Utility.DrawCircle(Player.Position, SkillHandler.W.Range, DrawW.Color);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, SkillHandler.Q.Range, drawQ.Color);
             }
-
-            var DrawE = MenuHandler.LeBlancConfig.Item("drawE").GetValue<Circle>();
-            if (DrawE.Active)
+            if (drawW.Active)
             {
-                Utility.DrawCircle(Player.Position, SkillHandler.E.Range, DrawE.Color);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, SkillHandler.W.Range, drawW.Color);
             }
-
-            var DrawR = MenuHandler.LeBlancConfig.Item("drawR").GetValue<Circle>();
-            if (DrawR.Active)
+            if (drawE.Active)
             {
-                Utility.DrawCircle(Player.Position, SkillHandler.R.Range, DrawR.Color);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, SkillHandler.E.Range, drawE.Color);
             }
         }
     }

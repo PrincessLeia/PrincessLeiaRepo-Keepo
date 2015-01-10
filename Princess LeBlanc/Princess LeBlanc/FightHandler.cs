@@ -12,289 +12,97 @@ namespace Princess_LeBlanc
         {
             get { return ObjectManager.Player; }
         }
-        public static readonly float[] WPosition = new float[3];
-        public static float CloneTime;
-        public static Obj_AI_Hero CTarget;
+
+        private static float _clonetime;
+        private static Vector3 _wpos;
+
+        static readonly bool PacketCast = Program.PacketCast;
+
+        static Obj_AI_Hero GetEnemy(float vDefaultRange = 0, TargetSelector.DamageType vDefaultDamageType = TargetSelector.DamageType.Physical)
+        {
+            if (Math.Abs(vDefaultRange) < 0.00001)
+                vDefaultRange = SkillHandler.Q.Range;
+
+            if (!MenuHandler.LeBlancConfig.Item("AssassinActive").GetValue<bool>())
+                return TargetSelector.GetTarget(vDefaultRange, vDefaultDamageType);
+
+            var assassinRange = MenuHandler.LeBlancConfig.Item("AssassinSearchRange").GetValue<Slider>().Value;
+
+            var vEnemy = ObjectManager.Get<Obj_AI_Hero>()
+                .Where(
+                    enemy =>
+                        enemy.Team != ObjectManager.Player.Team && !enemy.IsDead && enemy.IsVisible &&
+                        MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName) != null &&
+                        MenuHandler.LeBlancConfig.Item("Assassin" + enemy.ChampionName).GetValue<bool>() &&
+                        ObjectManager.Player.Distance(enemy) < assassinRange);
+
+            if (MenuHandler.LeBlancConfig.Item("AssassinSelectOption").GetValue<StringList>().SelectedIndex == 1)
+            {
+                vEnemy = (from vEn in vEnemy select vEn).OrderByDescending(vEn => vEn.MaxHealth);
+            }
+
+            Obj_AI_Hero[] objAiHeroes = vEnemy as Obj_AI_Hero[] ?? vEnemy.ToArray();
+
+            Obj_AI_Hero t = !objAiHeroes.Any()
+                ? TargetSelector.GetTarget(vDefaultRange, vDefaultDamageType)
+                : objAiHeroes[0];
+
+            return t;
+        }
+
         public static void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
             if (sender.Name.Contains("LeBlanc_MirrorImagePoff.troy") && sender.IsMe)
             {
-                CloneTime = 8 + Game.Time;
+                _clonetime = 8 + Game.Time;
             }
 
             if (sender.Name == "LeBlanc_Base_W_return_indicator.troy")
             {
-                WPosition[0] = sender.Position.X;
-                WPosition[1] = sender.Position.Y;
-                WPosition[2] = sender.Position.Z;
+                _wpos = sender.Position;
             }
 
         }
+
         public static void GameObject_OnDelete(GameObject sender, EventArgs args)
         {
             if (sender.Name == "LeBlanc_Base_W_return_indicator.troy")
             {
-                WPosition[0] = 0;
-                WPosition[1] = 0;
-                WPosition[2] = 0;
+                _wpos = new Vector3(0, 0, 0);
             }
 
         }
-        public static void Flee()
+
+        public static void Interrupter_OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
         {
-            if (MenuHandler.LeBlancConfig.Item("FleeK").GetValue<KeyBind>().Active)
-            {
-                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && Wunused() && SkillHandler.W.IsReady())
-                {
-                    SkillHandler.W.Cast(Game.CursorPos);
-                }
-
-                if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && StatusR() == "W" &&
-                    SkillHandler.R.IsReady())
-                {
-                    SkillHandler.R.Cast(Game.CursorPos);
-                }
-            }
-        }
-        public static void TargetSelect()
-        {
-            switch (MenuHandler.LeBlancConfig.Item("AssassinActive").GetValue<bool>())
-            {
-                case true:
-                    {
-                        var assassinRange = MenuHandler.TargetSelectorMenu.Item("AssassinSearchRange").GetValue<Slider>().Value;
-
-                        var vEnemy = ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(
-                                enemy =>
-                                    enemy.Team != ObjectManager.Player.Team && !enemy.IsDead && enemy.IsVisible &&
-                                    MenuHandler.TargetSelectorMenu.Item("Assassin" + enemy.ChampionName) != null &&
-                                    MenuHandler.TargetSelectorMenu.Item("Assassin" + enemy.ChampionName).GetValue<bool>() &&
-                                    ObjectManager.Player.Distance(enemy) < assassinRange);
-
-                        if (MenuHandler.TargetSelectorMenu.Item("AssassinSelectOption").GetValue<StringList>().SelectedIndex == 1)
-                        {
-                            vEnemy = (from vEn in vEnemy select vEn).OrderByDescending(vEn => vEn.MaxHealth);
-                        }
-
-                        Obj_AI_Hero[] objAiHeroes = vEnemy as Obj_AI_Hero[] ?? vEnemy.ToArray();
-
-                        CTarget = !objAiHeroes.Any()
-                            ? TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Magical)
-                            : objAiHeroes[0];
-                        break;
-                    }
-                case false:
-                    {
-                        CTarget = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
-                        break;
-                    }
-            }
-        }
-        public static void ComboLogic()
-        {
-            var targetExtendet = CTarget.Distance(ObjectManager.Player.Position) < SkillHandler.W.Range + SkillHandler.Q.Range - 100;
-            var targetQ = SkillHandler.Q.InRange(CTarget.ServerPosition);
-            var useW = SkillHandler.W.IsReady() && ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name == "LeblancSlide" &&
-                       MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
-
-            if (targetExtendet && !targetQ && useW && ObjectManager.Player.Level > 1
-                 && CTarget.Health < MathHandler.ComboDamage(CTarget) - ObjectManager.Player.GetSpellDamage(CTarget, SpellSlot.W))
-            {
-                ComboLong();
-            }
-            else if (((CTarget.Health - MathHandler.ComboDamage(CTarget)) / CTarget.MaxHealth) * 100 >
-                (CTarget.Health * 50) / 100 && SkillHandler.Q.InRange(CTarget))
-            {
-                ComboTanky();
-            }
-            else
-            {
-                Combo();
-            }
-        }
-        public static void Combo()
-        {
-            var useQ = SkillHandler.Q.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useQ").GetValue<bool>();
-            var useW = SkillHandler.W.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
-            var useE = SkillHandler.E.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useE").GetValue<bool>();
-            var useR = SkillHandler.R.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useR").GetValue<bool>();
-            var useIgnite = ItemHandler.IgniteSlot != SpellSlot.Unknown && MenuHandler.LeBlancConfig.SubMenu("Items").Item("useIgnite").GetValue<bool>() &&
-                            Player.Spellbook.CanUseSpell(ItemHandler.IgniteSlot) == SpellState.Ready;
-            var useDfg = ItemHandler.Dfg.IsReady() &&
-                         MenuHandler.LeBlancConfig.SubMenu("Items").Item("useDfg").GetValue<bool>();
-            var targetQ = SkillHandler.Q.InRange(CTarget.ServerPosition);
-            var targetW = SkillHandler.W.InRange(CTarget.ServerPosition);
-            var targetE = SkillHandler.E.InRange(CTarget.ServerPosition, 800);
-            var targetR = SkillHandler.R.InRange(CTarget.ServerPosition);
-            var targetDfg = CTarget.Distance(Player.Position) < ItemHandler.Dfg.Range;
-            var wPriority = SkillHandler.W.Level > SkillHandler.Q.Level;
-
-            //Items
-            if (CTarget.Health <= MathHandler.ComboDamage(CTarget) && useDfg && targetDfg)
-            {
-                ItemHandler.Dfg.Cast(CTarget);
-            }
-
-            if (CTarget.Health <= MathHandler.ComboDamage(CTarget) && useIgnite)
-            {
-                Player.Spellbook.CastSpell(ItemHandler.IgniteSlot, CTarget);
-            }
-
-            //Spells
-            if (useE && targetE && !useR && !useQ && (!useW || Wused()))
-            {
-                SkillHandler.E.CastIfHitchanceEquals(CTarget, HitChance.Medium);
-            }
-
-
-            switch (wPriority)
-            {
-                case true:
-                    {
-                        if (useQ && targetQ)
-                        {
-                            SkillHandler.Q.Cast(CTarget);
-                        }
-                        if (!useQ && useW && targetW && Wunused())
-                        {
-                            SkillHandler.W.Cast(CTarget);
-                        }
-                        if (useR && StatusR() == "W" && targetW)
-                        {
-                            SkillHandler.R.Cast(CTarget);
-                            if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
-                            {
-                                SkillHandler.R.Cast(CTarget);
-                            }
-                        }
-                        else if (useR && StatusR() == "Q" && targetR && !useW)
-                        {
-                            SkillHandler.R.CastOnUnit(CTarget);
-                        }
-                        return;
-                    }
-                case false:
-                    {
-                        if (useQ && targetQ)
-                        {
-                            SkillHandler.Q.Cast(CTarget);
-                        }
-                        if (useR && StatusR() == "Q" && targetR)
-                        {
-                            SkillHandler.R.CastOnUnit(CTarget);
-                        }
-                        else if (useR && StatusR() == "W" && targetW && !useQ)
-                        {
-                            SkillHandler.R.Cast(CTarget);
-                            if (SkillHandler.R.Instance.Name == "leblancslidereturnm")
-                            {
-                                SkillHandler.R.Cast(Player);
-                            }
-                        }
-                        if (!useQ && !useR && useW && targetW && Wunused())
-                        {
-                            SkillHandler.W.Cast(CTarget);
-                        }
-
-                        return;
-                    }
-            }
-
-
-        }
-        public static void ComboLong()
-        {
-            if (Wused())
-            {
+            if (!MenuHandler.LeBlancConfig.Item("Interrupt").GetValue<bool>() || spell.DangerLevel != InterruptableDangerLevel.High)
                 return;
-            }
 
-            SkillHandler.W.Cast(CTarget.ServerPosition);
-            Combo();
+            if (SkillHandler.E.IsReady())
+            {
+                SkillHandler.E.Cast(unit, PacketCast);
+            }
+            else if (SkillHandler.R.IsReady() && StatusR() == "E")
+            {
+                SkillHandler.R.Cast(unit, PacketCast);
+            }
         }
-        public static void ComboTanky()
+
+        public static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            var useQ = SkillHandler.Q.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useQ").GetValue<bool>();
-            var useW = SkillHandler.W.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
-            var useE = SkillHandler.E.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useE").GetValue<bool>();
-            var useR = SkillHandler.R.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useR").GetValue<bool>();
-            var targetE = SkillHandler.E.InRange(CTarget.ServerPosition, 800);
-            var targetQ = SkillHandler.Q.InRange(CTarget.ServerPosition);
-            var targetW = SkillHandler.W.InRange(CTarget.ServerPosition);
-            var targetBuff = CTarget.HasBuff("LeblancSoulShackle");
+            if (!MenuHandler.LeBlancConfig.Item("Interrupt").GetValue<bool>())
+                return;
 
-            if (useE && targetE)
+            if (SkillHandler.E.IsReady())
             {
-                SkillHandler.E.CastIfHitchanceEquals(CTarget, HitChance.Medium);
+                SkillHandler.E.Cast(gapcloser.Sender, PacketCast);
             }
-            else if (useR && StatusR() == "E" && targetE)
+            else if (SkillHandler.R.IsReady() && StatusR() == "E")
             {
-                if (CTarget.IsRooted)
-                {
-                    SkillHandler.R.Cast(CTarget);
-                }
-                else if (!targetBuff)
-                {
-                    SkillHandler.R.CastIfHitchanceEquals(CTarget, HitChance.Medium);
-                }
+                SkillHandler.R.Cast(gapcloser.Sender, PacketCast);
             }
-            else if (StatusR() != "E" || !useR)
-            {
-                if (useQ && targetQ)
-                {
-                    SkillHandler.Q.Cast(CTarget);
-                }
-
-                if (useW && targetW && !useQ && Wunused())
-                {
-                    SkillHandler.W.Cast(CTarget);
-                }
-            }
-
         }
-        public static void Harass()
-        {
-            var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
-            var mana = Player.ManaPercentage() > MenuHandler.LeBlancConfig.SubMenu("Harass").Item("HarassManaPercent").GetValue<Slider>().Value;
-            var useQ = SkillHandler.Q.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Harass").Item("useQ").GetValue<bool>();
-            var useW = SkillHandler.W.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Harass").Item("useW").GetValue<bool>();
-            var useE = SkillHandler.E.IsReady() &&
-                       MenuHandler.LeBlancConfig.SubMenu("Harass").Item("useE").GetValue<bool>();
-            var targetQ = SkillHandler.Q.InRange(target);
-            var targetW = SkillHandler.W.InRange(target);
-            var targetE = SkillHandler.E.InRange(target);
 
-            if (!mana) {return;}
-
-            if (useE && targetE)
-                {
-                    SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium);
-                }
-                if (useQ && targetQ)
-                {
-                    SkillHandler.Q.CastOnUnit(target);
-                }
-                if (!useQ && useW && targetW)
-                {
-                    SkillHandler.W.Cast(target);
-                    if (Wused())
-                    {
-                        Utility.DelayAction.Add(100, () => SkillHandler.W.Cast(Player));
-                    }
-                }
-        }
         public static string StatusR()
         {
             var name = Player.Spellbook.GetSpell(SpellSlot.R).Name;
@@ -311,74 +119,22 @@ namespace Princess_LeBlanc
             return "unkown";
 
         }
-        public static void LaneClear()
-        {
-            var useQ = MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearQ").GetValue<bool>() &&
-                       SkillHandler.Q.IsReady();
-            var useW = MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearW").GetValue<bool>() &&
-                       SkillHandler.W.IsReady();
-            var minions = MinionManager.GetMinions(
-                Player.ServerPosition, SkillHandler.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-            var farmLocation = MinionManager.GetBestCircularFarmLocation(MinionManager.GetMinions(SkillHandler.W.Range, MinionTypes.All, MinionTeam.Enemy).Select(m => m.ServerPosition.To2D()).ToList(), SkillHandler.W.Width, SkillHandler.W.Range);
-            var mana = Player.ManaPercentage() >
-                       MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearManaPercent").GetValue<Slider>().Value;
-            var minionHit = farmLocation.MinionsHit >=
-                            MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearWHit").GetValue<Slider>().Value;
-            if (!mana)
-            {
-                return;
-            }
-            foreach (var minion in minions)
-            {
-                if (useQ && minion.IsValidTarget() && minion.Health <= SkillHandler.Q.GetDamage(minion))
-                {
-                    SkillHandler.Q.CastOnUnit(minion);
-                }
-            }
-            if (minionHit && useW)
-            {
-                SkillHandler.W.Cast(farmLocation.Position);
-            }
-            if (Wused())
-            {
-                Utility.DelayAction.Add(100, () => SkillHandler.W.Cast(Player));
-            }
-        }
-        public static void JungleClear()
-        {
-            var useQ = MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearQ").GetValue<bool>() &&
-                       SkillHandler.Q.IsReady();
-            var useW = MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearW").GetValue<bool>() &&
-                       SkillHandler.W.IsReady();
-            var minions = MinionManager.GetMinions(
-                Player.ServerPosition, SkillHandler.Q.Range, MinionTypes.All, MinionTeam.Neutral);
-            var farmLocation = MinionManager.GetBestCircularFarmLocation(MinionManager.GetMinions(SkillHandler.W.Range, MinionTypes.All, MinionTeam.Neutral).Select(m => m.ServerPosition.To2D()).ToList(), SkillHandler.W.Width, SkillHandler.W.Range);
-            var mana = Player.ManaPercentage() >
-                       MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearManaPercent").GetValue<Slider>().Value;
 
-            if (!mana)
+        public static string StatusW()
+        {
+            var name = Player.Spellbook.GetSpell(SpellSlot.W).Name;
+
+            if (name != "LeblancSlide")
             {
-                return;
+                return "return";
             }
-            foreach (var minion in minions)
-            {
-                if (useQ && minion.IsValidTarget())
-                {
-                    SkillHandler.Q.CastOnUnit(minion);
-                }
-            }
-            if (farmLocation.MinionsHit > 0 && useW)
-            {
-                SkillHandler.W.Cast(farmLocation.Position);
-            }
-            if (Wused())
-            {
-                Utility.DelayAction.Add(100, () => SkillHandler.W.Cast(Player));
-            }
+            return "normal";
+
         }
+
         public static void CloneLogic()
         {
-            if (Game.Time > CloneTime)
+            if (Game.Time > _clonetime)
             {
                 return;
             }
@@ -416,69 +172,231 @@ namespace Princess_LeBlanc
                     }
             }
         }
-        public static void WLogic()
+
+        public static void LaneClear()
+        {
+            var useQ = MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearQ").GetValue<bool>() && SkillHandler.Q.IsReady();
+            var useW = MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearW").GetValue<bool>() && SkillHandler.W.IsReady();
+            var minions = MinionManager.GetMinions(
+                Player.ServerPosition, SkillHandler.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+            var farmLocation = MinionManager.GetBestCircularFarmLocation(MinionManager.GetMinions(SkillHandler.W.Range).Select(m => m.ServerPosition.To2D()).ToList(), SkillHandler.W.Width, SkillHandler.W.Range);
+            var mana = Player.ManaPercentage() > MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearManaPercent").GetValue<Slider>().Value;
+            var minionHit = farmLocation.MinionsHit >= MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearWHit").GetValue<Slider>().Value;
+            if (!mana)
+            {
+                return;
+            }
+            foreach (var minion in minions)
+            {
+                if (minion != null && useQ && minion.IsValidTarget() && minion.Health <= SkillHandler.Q.GetDamage(minion))
+                {
+                    SkillHandler.Q.CastOnUnit(minion, PacketCast);
+                }
+            }
+            if (minionHit && useW && StatusW() == "normal")
+            {
+                SkillHandler.W.Cast(farmLocation.Position, PacketCast);
+            }
+            if (StatusW() == "return")
+            {
+                SkillHandler.W.Cast(PacketCast);
+            }
+        }
+
+        public static void JungleClear()
+        {
+            var useQ = MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearQ").GetValue<bool>() && SkillHandler.Q.IsReady();
+            var useW = MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearW").GetValue<bool>() && SkillHandler.W.IsReady() && StatusW() == "normal";
+            var minions = MinionManager.GetMinions(
+                Player.ServerPosition, SkillHandler.Q.Range, MinionTypes.All, MinionTeam.Neutral);
+            var farmLocation = MinionManager.GetBestCircularFarmLocation(MinionManager.GetMinions(SkillHandler.W.Range, MinionTypes.All, MinionTeam.Neutral).Select(m => m.ServerPosition.To2D()).ToList(), SkillHandler.W.Width, SkillHandler.W.Range);
+            var mana = Player.ManaPercentage() >
+                       MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearManaPercent").GetValue<Slider>().Value;
+
+            if (!mana)
+            {
+                return;
+            }
+            foreach (var minion in minions)
+            {
+                if (minion != null && useQ && minion.IsValidTarget())
+                {
+                    SkillHandler.Q.CastOnUnit(minion, PacketCast);
+                }
+            }
+            if (farmLocation.MinionsHit > 0 && useW)
+            {
+                SkillHandler.W.Cast(farmLocation.Position);
+            }
+            if (StatusW() == "return")
+            {
+                SkillHandler.W.Cast(PacketCast);
+            }
+        }
+
+        public static void Flee()
+        {
+            if (!MenuHandler.LeBlancConfig.Item("FleeK").GetValue<KeyBind>().Active) { return; }
+
+            ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            var target = TargetSelector.GetTarget(SkillHandler.E.Range, TargetSelector.DamageType.Magical);
+
+            if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && StatusW() == "normal" && SkillHandler.W.IsReady())
+            {
+                SkillHandler.W.Cast(Game.CursorPos, PacketCast);
+            }
+
+            if (MenuHandler.LeBlancConfig.Item("FleeW").GetValue<bool>() && StatusR() == "W" && SkillHandler.R.IsReady() && SkillHandler.R.Instance.Name != "LeblancSlideReturnM")
+            {
+                SkillHandler.R.Cast(Game.CursorPos, PacketCast);
+            }
+
+            if (MenuHandler.LeBlancConfig.Item("FleeE").GetValue<bool>() && SkillHandler.E.IsReady() && SkillHandler.E.IsInRange(target))
+            {
+                SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium, PacketCast);
+            }
+        }
+
+        public static void Harass()
         {
             var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
-            var allOncd = !SkillHandler.Q.IsReady() && !SkillHandler.E.IsReady() &&
-                          !SkillHandler.R.IsReady();
-            var wPos = new Vector3(WPosition[0], WPosition[1], WPosition[2]);
-            var countW = Utility.CountEnemysInRange(wPos, 200) == 0;
-            if (!MenuHandler.LeBlancConfig.Item("backW").GetValue<bool>())
+            var mana = Player.ManaPercentage() > MenuHandler.LeBlancConfig.SubMenu("Harass").Item("HarassManaPercent").GetValue<Slider>().Value;
+            var useQ = SkillHandler.Q.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Harass").Item("useQ").GetValue<bool>();
+            var useW = SkillHandler.W.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Harass").Item("useW").GetValue<bool>();
+            var useE = SkillHandler.E.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Harass").Item("useE").GetValue<bool>();
+            var targetQ = SkillHandler.Q.IsInRange(target);
+            var targetW = SkillHandler.W.IsInRange(target);
+            var targetE = SkillHandler.E.IsInRange(target);
+
+            if (!mana) { return; }
+
+            if (useE && targetE)
+            {
+                SkillHandler.E.CastIfHitchanceEquals(target, HitChance.Medium, PacketCast);
+            }
+            if (useQ && targetQ)
+            {
+                SkillHandler.Q.CastOnUnit(target, PacketCast);
+            }
+            if (!useQ && useW && targetW && StatusW() == "normal")
+            {
+                SkillHandler.W.Cast(target, PacketCast);
+            }
+            if (StatusW() == "return")
+            {
+                SkillHandler.W.Cast(PacketCast);
+            }
+        }
+
+        public static void WLogic()
+        {
+            var t = GetEnemy(SkillHandler.E.Range, TargetSelector.DamageType.Magical);
+            bool countW = _wpos.CountEnemysInRange(300) >= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWcountEnemy").GetValue<Slider>().Value;
+            var playerhealth = Player.HealthPercentage() <= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWplayerHp").GetValue<Slider>().Value;
+            var playermana = Player.ManaPercentage() <= MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWplayerMana").GetValue<Slider>().Value;
+            var thp = t.HealthPercentage() >=
+                      MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWtargetHp").GetValue<Slider>().Value;
+            var alloncd = !SkillHandler.Q.IsReady() && !SkillHandler.W.IsReady() && !SkillHandler.E.IsReady() && !SkillHandler.R.IsReady();
+            var dead = MenuHandler.LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWtargetDead").GetValue<bool>() && t.IsDead;
+
+            if (!MenuHandler.LeBlancConfig.SubMenu("backW").Item("useSW").GetValue<bool>() || StatusW() == "normal" || countW)
             {
                 return;
             }
 
-            if (Wused() && countW)
+            if ((playermana && t.HealthPercentage() > 8) || playerhealth || (thp && alloncd) || dead)
             {
-                if (Player.Mana < Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost && target.HealthPercentage() > 5)
-                {
-                    SkillHandler.W.Cast(Player);
-                }
-                else if (target.IsDead)
-                {
-                    SkillHandler.W.Cast(Player);
-                }
-                else if (target.HealthPercentage() > 40 && allOncd)
-                {
-                    SkillHandler.W.Cast(Player);
-                }
+                SkillHandler.W.Cast(PacketCast);
             }
         }
-        public static void Interrupter_OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
-        {
-            if (!MenuHandler.LeBlancConfig.Item("Interrupt").GetValue<bool>() || spell.DangerLevel != InterruptableDangerLevel.High)
-                return;
 
-            if (SkillHandler.E.IsReady())
-            {
-                SkillHandler.E.Cast(unit);
-            }
-            else if (SkillHandler.R.IsReady() && StatusR() == "E")
-            {
-                SkillHandler.R.Cast(unit);
-            }
-        }
-        public static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
+        private static void Combo()
         {
-            if (!MenuHandler.LeBlancConfig.Item("Interrupt").GetValue<bool>())
-                return;
+            var t = GetEnemy(SkillHandler.E.Range, TargetSelector.DamageType.Magical);
+            var useQ = SkillHandler.Q.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useQ").GetValue<bool>() && SkillHandler.Q.IsInRange(t);
+            var useW = SkillHandler.W.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>() && SkillHandler.W.IsInRange(t);
+            var useE = SkillHandler.E.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useE").GetValue<bool>() && SkillHandler.E.IsInRange(t);
+            var useR = SkillHandler.R.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useR").GetValue<bool>() && SkillHandler.R.IsInRange(t);
+            var useIgnite = ItemHandler.Igniteslot != SpellSlot.Unknown && MenuHandler.LeBlancConfig.SubMenu("Items").Item("useIgnite").GetValue<bool>() &&
+                            Player.Spellbook.CanUseSpell(ItemHandler.Igniteslot) == SpellState.Ready && Player.ServerPosition.Distance(t.ServerPosition) < 600;
+            var useDfg = ItemHandler.Dfg.IsReady() && ItemHandler.Dfg.IsInRange(t) &&MenuHandler.LeBlancConfig.SubMenu("Items").Item("useDfg").GetValue<bool>();
+            var prior = MathHandler.RqDamage(t) < MathHandler.RwDamage(t);
 
-            if (SkillHandler.E.IsReady())
+            //Items
+            if (t.Health <= MathHandler.ComboDamage(t) && useDfg)
             {
-                SkillHandler.E.Cast(gapcloser.Sender);
+                ItemHandler.Dfg.Cast(t);
             }
-            else if (SkillHandler.R.IsReady() && StatusR() == "E")
+
+            if (t.Health <= MathHandler.ComboDamage(t) && useIgnite)
             {
-                SkillHandler.R.Cast(gapcloser.Sender);
+                Player.Spellbook.CastSpell(ItemHandler.Igniteslot, t);
+            }
+
+            //Spells
+            if (useE && (!SkillHandler.Q.IsReady() && !SkillHandler.W.IsReady() && !SkillHandler.R.IsReady()) || Player.ServerPosition.Distance(t.ServerPosition) > SkillHandler.Q.Range)
+            {
+                SkillHandler.E.CastIfHitchanceEquals(t, HitChance.Medium, PacketCast);
+            }
+            if (useQ)
+            {
+                SkillHandler.Q.CastOnUnit(t, PacketCast);
+            }
+            if (useW && !SkillHandler.Q.IsReady())
+            {
+                SkillHandler.W.Cast(t.ServerPosition, PacketCast);
+            }
+            if (!SkillHandler.Q.IsReady() && !SkillHandler.W.IsReady() && !SkillHandler.E.IsReady() && useR &&
+                StatusR() == "E")
+            {
+                SkillHandler.R.CastIfHitchanceEquals(t, HitChance.Medium, PacketCast);
+            }
+            switch (prior)
+            {
+                case true:
+                    {
+                        if (useR && StatusR() == "W")
+                            SkillHandler.R.Cast(t, PacketCast);
+                        break;
+                    }
+                case false:
+                    {
+                        if (useR && StatusR() == "Q")
+                            SkillHandler.R.CastOnUnit(t, PacketCast);
+                        break;
+                    }
             }
         }
-        private static bool Wunused()
+
+        private static void ComboGapClose()
         {
-            return SkillHandler.W.Instance.Name == "LeblancSlide";
+            var t = TargetSelector.GetTarget(1000, TargetSelector.DamageType.Magical);
+            var useW = SkillHandler.W.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
+
+            if (useW)
+            {
+                SkillHandler.W.Cast(t.ServerPosition, PacketCast);
+            }
+
+            if (!SkillHandler.W.IsReady())
+            {
+                Combo();
+            }
         }
-        private static bool Wused()
+
+        public static void ComboLogic()
         {
-            return SkillHandler.W.Instance.Name == "leblancslidereturn";
+            var t = GetEnemy(1000, TargetSelector.DamageType.Magical);
+            var tq = SkillHandler.W.IsInRange(t);
+
+            if (!tq && t.Health < MathHandler.ComboDamage(t) - ((45 + (40 * SkillHandler.W.Level)) + ((Player.BaseAbilityDamage + Player.FlatMagicDamageMod) * 0.6)))
+            {
+                ComboGapClose();
+            }
+            else
+            {
+                Combo();
+            }
         }
     }
 }

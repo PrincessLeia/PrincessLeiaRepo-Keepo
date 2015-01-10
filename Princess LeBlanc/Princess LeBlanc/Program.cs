@@ -1,41 +1,43 @@
-using System;
+﻿using System;
 using LeagueSharp;
 using LeagueSharp.Common;
 
 namespace Princess_LeBlanc
 {
-    class Program
+    internal class Program
     {
+        private static Obj_AI_Hero Player
+        {
+            get { return ObjectManager.Player; }
+        }
+
+        public static bool PacketCast;
+
         public static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += OnGameLoad;
         }
 
-        public static void OnGameLoad(EventArgs args)
+        private static void OnGameLoad(EventArgs args)
         {
-            if (ObjectManager.Player.ChampionName != "Leblanc")
+            if (Player.ChampionName != "Leblanc")
             {
                 return;
             }
-
             SkillHandler.Init();
-            ItemHandler.Init();
             MenuHandler.Init();
-            AssassinManager.Init();
-
-            Drawing.OnDraw += AssassinManager.Drawing_OnDraw;
-            Drawing.OnDraw += DrawingHandler.OnDraw;
-            Game.OnWndProc += AssassinManager.Game_OnWndProc;
-            Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
-            AntiGapcloser.OnEnemyGapcloser += FightHandler.AntiGapcloser_OnEnemyGapcloser;
-            Game.OnGameUpdate += OnGameUpdate;
+            ItemHandler.Init();
+            DrawingHandler.Init();
+            Game.OnGameUpdate += Game_OnGameUpdate;
             GameObject.OnCreate += FightHandler.GameObject_OnCreate;
             GameObject.OnDelete += FightHandler.GameObject_OnDelete;
+            Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
+            AntiGapcloser.OnEnemyGapcloser += FightHandler.AntiGapcloser_OnEnemyGapcloser;
 
             Game.PrintChat("<b><font color =\"#FFFFFF\">Princess LeBlanc</font></b><font color =\"#FFFFFF\"> by </font><b><font color=\"#FF66FF\">Leia</font></b><font color =\"#FFFFFF\"> loaded!</font>");
         }
 
-        public static void OnGameUpdate(EventArgs args)
+        private static void Game_OnGameUpdate(EventArgs args)
         {
             if (ObjectManager.Player.IsDead)
             {
@@ -46,28 +48,34 @@ namespace Princess_LeBlanc
                 return;
             }
 
-            switch (MenuHandler.Orb.ActiveMode)
+            PacketCast = MenuHandler.LeBlancConfig.SubMenu("Misc").Item("UsePacket").GetValue<bool>();
+
+            switch (MenuHandler.Orbwalker.ActiveMode)
             {
-               case Orbwalking.OrbwalkingMode.Combo:
+                case Orbwalking2.OrbwalkingMode.Combo:
                 {
-                    FightHandler.TargetSelect();
                     FightHandler.ComboLogic();
                     FightHandler.WLogic();
                     break;
                 }
-               case Orbwalking.OrbwalkingMode.LaneClear:
+                case Orbwalking2.OrbwalkingMode.LaneClear:
                 {
                     FightHandler.LaneClear();
                     FightHandler.JungleClear();
                     break;
                 }
-               case Orbwalking.OrbwalkingMode.Mixed:
+                case Orbwalking2.OrbwalkingMode.LastHit:
+                {
+                    break;
+                }
+                case Orbwalking2.OrbwalkingMode.Mixed:
                 {
                     FightHandler.Harass();
                     break;
                 }
             }
             FightHandler.Flee();
+            FightHandler.CloneLogic();
         }
     }
 }
