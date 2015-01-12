@@ -25,17 +25,17 @@ namespace PrinceTalon
 
             if (DrawW.Active)
             {
-                Utility.DrawCircle(Player.Position, SkillHandler.W.Range, DrawW.Color);
+                Render.Circle.DrawCircle(Player.Position, SkillHandler.W.Range, DrawW.Color);
             }
 
             if (DrawE.Active)
             {
-                Utility.DrawCircle(Player.Position, SkillHandler.E.Range, DrawE.Color);
+               Render.Circle.DrawCircle(Player.Position, SkillHandler.E.Range, DrawE.Color);
             }
 
             if (DrawR.Active)
             {
-                Utility.DrawCircle(Player.Position, SkillHandler.R.Range, DrawR.Color);
+                Render.Circle.DrawCircle(Player.Position, SkillHandler.R.Range, DrawR.Color);
             }
         }
     }

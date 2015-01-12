@@ -10,7 +10,7 @@ namespace PrinceTalon
         public static Orbwalking.Orbwalker Orb;
         public static void Init()
         {
-        TalonConfig = new Menu(ObjectManager.Player.ChampionName, ObjectManager.Player.ChampionName, true);
+            TalonConfig = new Menu("Prince " + ObjectManager.Player.ChampionName, "Prince " + ObjectManager.Player.ChampionName, true);
 
         var orbwalker = new Menu("Orbwalker", "orbwalker");
 
@@ -20,6 +20,8 @@ namespace PrinceTalon
         var targetselectormenu = new Menu("Target Selector", "Common_TargetSelector");
         TargetSelector.AddToMenu(targetselectormenu);
         TalonConfig.AddSubMenu(targetselectormenu);
+
+            new AssassinManager();
 
         TalonConfig.AddSubMenu(new Menu("Combo", "Combo"));
         TalonConfig.SubMenu("Combo").AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
@@ -65,10 +67,10 @@ namespace PrinceTalon
 
         TalonConfig.AddSubMenu(new Menu("Drawings", "Drawing"));
         TalonConfig.SubMenu("Drawing").AddItem(dmgAfterComboItem);
-        TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawW", "Draw W").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
-        TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawE", "Draw E").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
-        TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawR", "Draw R").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
-
+        TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawW", "Draw W").SetValue(new Circle(true, Color.AntiqueWhite)));
+        TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawE", "Draw E").SetValue(new Circle(true, Color.AntiqueWhite)));
+        TalonConfig.SubMenu("Drawing").AddItem(new MenuItem("drawR", "Draw R").SetValue(new Circle(true, Color.AntiqueWhite)));
+           
             TalonConfig.AddSubMenu(new Menu("Misc", "Misc"));
             TalonConfig.SubMenu("Misc").AddItem(new MenuItem("UsePacket", "Use Packet").SetValue(true));
 

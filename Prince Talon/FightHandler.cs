@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -15,96 +16,92 @@ namespace PrinceTalon
             get { return TargetSelector.GetTarget(1200, TargetSelector.DamageType.Physical); }
         }
 
-        private static Obj_AI_Hero Target;
         public static bool PacketCast;
 
+        static Obj_AI_Hero GetEnemy(float vDefaultRange = 0, TargetSelector.DamageType vDefaultDamageType = TargetSelector.DamageType.Physical)
+        {
+            if (Math.Abs(vDefaultRange) < 0.00001)
+                vDefaultRange = SkillHandler.Q.Range;
+
+            if (!MenuHandler.TalonConfig.Item("AssassinActive").GetValue<bool>())
+                return TargetSelector.GetTarget(vDefaultRange, vDefaultDamageType);
+
+            var assassinRange = MenuHandler.TalonConfig.Item("AssassinSearchRange").GetValue<Slider>().Value;
+
+            var vEnemy = ObjectManager.Get<Obj_AI_Hero>()
+                .Where(
+                    enemy =>
+                        enemy.Team != ObjectManager.Player.Team && !enemy.IsDead && enemy.IsVisible &&
+                        MenuHandler.TalonConfig.Item("Assassin" + enemy.ChampionName) != null &&
+                        MenuHandler.TalonConfig.Item("Assassin" + enemy.ChampionName).GetValue<bool>() &&
+                        ObjectManager.Player.Distance(enemy) < assassinRange);
+
+            if (MenuHandler.TalonConfig.Item("AssassinSelectOption").GetValue<StringList>().SelectedIndex == 1)
+            {
+                vEnemy = (from vEn in vEnemy select vEn).OrderByDescending(vEn => vEn.MaxHealth);
+            }
+
+            Obj_AI_Hero[] objAiHeroes = vEnemy as Obj_AI_Hero[] ?? vEnemy.ToArray();
+
+            Obj_AI_Hero t = !objAiHeroes.Any()
+                ? TargetSelector.GetTarget(vDefaultRange, vDefaultDamageType)
+                : objAiHeroes[0];
+
+            return t;
+        }
 
         public static void Combo()
         {
-            var assassinRange = MenuHandler.TalonConfig.Item("AssassinRange").GetValue<Slider>().Value;
-            Obj_AI_Hero vTarget = null;
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>()
-                .Where(enemy => enemy.Team != Player.Team
-                    && !enemy.IsDead && enemy.IsVisible
-                    && MenuHandler.TalonConfig.Item("Assassin" + enemy.ChampionName) != null
-                    && MenuHandler.TalonConfig.Item("Assassin" + enemy.ChampionName).GetValue<bool>())
-                    .OrderBy(enemy => enemy.Distance(Game.CursorPos))
-                    )
-                {
-                    vTarget = Player.Distance(enemy) < assassinRange ? enemy : null;
-                }
-
-            switch (MenuHandler.TalonConfig.SubMenu("Common_TargetSelector").SubMenu("AssassinManager").Item("AssassinActive").GetValue<bool>())
-            {
-                case  true:
-                {
-                    Target = vTarget;
-                    break;
-                }
-                case false:
-                {
-                    Target = target;
-                    break;
-                }
-            }
-
-            var useW = SkillHandler.W.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
-            var useE = SkillHandler.E.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useE").GetValue<bool>();
-            var useR = SkillHandler.R.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useR").GetValue<bool>();
-            var useBlade = ItemHandler.Blade.IsReady() && MenuHandler.TalonConfig.SubMenu("Items").Item("useBotrK").GetValue<bool>();
-            var useBilge = ItemHandler.Bilgewater.IsReady() && MenuHandler.TalonConfig.SubMenu("Items").Item("useBilge").GetValue<bool>();
-            var useYoumuu = ItemHandler.Youmuu.IsReady() && MenuHandler.TalonConfig.SubMenu("Items").Item("useYoumuu").GetValue<bool>();
-            var useTiamat = ItemHandler.Tiamat.IsReady() && MenuHandler.TalonConfig.SubMenu("Items").Item("useTiamat").GetValue<bool>();
-            var useHydra = ItemHandler.Hydra.IsReady() && MenuHandler.TalonConfig.SubMenu("Items").Item("useHydra").GetValue<bool>();
-            var targetW = vTarget.Distance(Player.Position) < SkillHandler.W.Range;
-            var targetE = vTarget.Distance(Player.Position) < SkillHandler.E.Range;
-            var targetR = vTarget.Distance(Player.Position) < SkillHandler.R.Range;
-            var targetBlade = vTarget.Distance(Player.Position) < ItemHandler.Blade.Range;
-            var targetBilge = vTarget.Distance(Player.Position) < ItemHandler.Bilgewater.Range;
-            var targetYoumuu = vTarget.Distance(Player.Position) < SkillHandler.E.Range + 100;
-            var targetTiamat = vTarget.Distance(Player.Position) < ItemHandler.Tiamat.Range;
-            var targetHydra = vTarget.Distance(Player.Position) < ItemHandler.Hydra.Range;
+            var t = GetEnemy(SkillHandler.E.Range, TargetSelector.DamageType.Magical);
+            var useW = SkillHandler.W.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useW").GetValue<bool>() && SkillHandler.Q.IsInRange(t);
+            var useE = SkillHandler.E.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useE").GetValue<bool>() && SkillHandler.W.IsInRange(t);
+            var useR = SkillHandler.R.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useR").GetValue<bool>() && SkillHandler.E.IsInRange(t);
+            var useBlade = ItemHandler.Blade.IsReady() && MenuHandler.TalonConfig.SubMenu("Items").Item("useBotrK").GetValue<bool>() && ItemHandler.Blade.IsInRange(t);
+            var useBilge = ItemHandler.Bilgewater.IsReady() && MenuHandler.TalonConfig.SubMenu("Items").Item("useBilge").GetValue<bool>() && ItemHandler.Bilgewater.IsInRange(t);
+            var useYoumuu = ItemHandler.Youmuu.IsReady() && MenuHandler.TalonConfig.SubMenu("Items").Item("useYoumuu").GetValue<bool>() && t.Distance(Player.Position) < SkillHandler.E.Range + 100;
+            var useTiamat = ItemHandler.Tiamat.IsReady() && MenuHandler.TalonConfig.SubMenu("Items").Item("useTiamat").GetValue<bool>() && ItemHandler.Tiamat.IsInRange(t);
+            var useHydra = ItemHandler.Hydra.IsReady() && MenuHandler.TalonConfig.SubMenu("Items").Item("useHydra").GetValue<bool>() && ItemHandler.Hydra.IsInRange(t);
 
             //Items
-            if (useBlade && targetBlade)
+            if (useBlade)
             {
-                ItemHandler.Blade.Cast(vTarget);
+                ItemHandler.Blade.Cast(t);
             }
-            if (useBilge && targetBilge)
+            if (useBilge)
             {
-                ItemHandler.Bilgewater.Cast(vTarget);
+                ItemHandler.Bilgewater.Cast(t);
             }
-            if (useYoumuu && targetYoumuu)
+            if (useYoumuu)
             {
                 ItemHandler.Youmuu.Cast();
             }
-            if (useTiamat && targetTiamat)
+            if (useTiamat)
             {
                 ItemHandler.Tiamat.Cast();
             }
-            if (useHydra && targetHydra)
+            if (useHydra)
             {
                 ItemHandler.Hydra.Cast();
             }
             if (ItemHandler.IgniteSlot != SpellSlot.Unknown &&
             Player.Spellbook.CanUseSpell(ItemHandler.IgniteSlot) == SpellState.Ready)
             {
-                if (Target.Health <= MathHandler.ComboDamage(Target))
+                if (t.Health <= MathHandler.ComboDamage(t))
                 {
-                    Player.Spellbook.CastSpell(ItemHandler.IgniteSlot, vTarget);
+                    Player.Spellbook.CastSpell(ItemHandler.IgniteSlot, t);
                 }
             }
 
             //Spells
-            if (useE && targetE)
+            if (useE)
             {
-                SkillHandler.E.Cast(vTarget, PacketCast);
+                SkillHandler.E.Cast(t, PacketCast);
             }
-            if (useW && targetW)
+            if (useW)
             {
-                SkillHandler.W.CastIfHitchanceEquals(vTarget, HitChance.Medium, PacketCast);
+                SkillHandler.W.CastIfHitchanceEquals(t, HitChance.Medium, PacketCast);
             }
-            if (useR && targetR)
+            if (useR)
             {
                 SkillHandler.R.Cast(PacketCast);
             }
@@ -112,20 +109,20 @@ namespace PrinceTalon
 
         public static void AfterAttack(Orbwalking.BeforeAttackEventArgs args)
         {
-            var targetq = target.Distance(Player.ServerPosition) < SkillHandler.Q.Range;
-            var useQ = SkillHandler.Q.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useQ").GetValue<bool>();
-            var useQh = SkillHandler.Q.IsReady() && MenuHandler.TalonConfig.SubMenu("Harass").Item("haraQ").GetValue<bool>();
+            var Target = TargetSelector.GetTarget(SkillHandler.Q.Range, TargetSelector.DamageType.Physical);
+            var useQ = SkillHandler.Q.IsReady() && MenuHandler.TalonConfig.SubMenu("Combo").Item("useQ").GetValue<bool>() && SkillHandler.Q.IsInRange(Target);
+            var useQh = SkillHandler.Q.IsReady() && MenuHandler.TalonConfig.SubMenu("Harass").Item("haraQ").GetValue<bool>() && SkillHandler.Q.IsInRange(Target);
 
             if (MenuHandler.Orb.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
-                if (useQh && targetq && Player.ManaPercentage() > MenuHandler.TalonConfig.Item("HarassManaPercent").GetValue<Slider>().Value)
+                if (useQh && Player.ManaPercentage() > MenuHandler.TalonConfig.Item("HarassManaPercent").GetValue<Slider>().Value)
                 {
                     SkillHandler.Q.Cast(PacketCast);
                 }
             }
             if (MenuHandler.Orb.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                if (useQ && targetq)
+                if (useQ)
                 {
                     SkillHandler.Q.Cast(PacketCast);
                 }
@@ -223,6 +220,7 @@ namespace PrinceTalon
 
         public static void Harass()
         {
+            var target = TargetSelector.GetTarget(SkillHandler.E.Range, TargetSelector.DamageType.Physical);
             var mana = Player.ManaPercentage() > MenuHandler.TalonConfig.Item("HarassManaPercent").GetValue<Slider>().Value;
             var useW = MenuHandler.TalonConfig.SubMenu("Harass").Item("haraW").GetValue<bool>() &&
                        SkillHandler.W.IsReady();
@@ -234,11 +232,11 @@ namespace PrinceTalon
                 return;
             }
             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-            if (useW && SkillHandler.W.InRange(target))
+            if (useW && SkillHandler.W.IsInRange(target))
             {
                 SkillHandler.W.Cast(target.Position, PacketCast);
             }
-            if (useE && SkillHandler.E.InRange(target))
+            if (useE && SkillHandler.E.IsInRange(target))
             {
                 SkillHandler.E.Cast(target, PacketCast);
             }

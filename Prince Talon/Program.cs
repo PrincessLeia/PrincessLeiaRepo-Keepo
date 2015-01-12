@@ -25,21 +25,11 @@ namespace PrinceTalon
             ItemHandler.Init();
             MenuHandler.Init();
             DrawingHandler.Init();
- 
-            try
-            {
-                new AssassinManager();
-            }
-            catch (Exception)
-            {
-                Game.PrintChat("Something wrong 'Loading Assassing Manager'");
-                return;
-            }
 
             Game.OnGameUpdate += OnGameUpdateModes;
             Orbwalking.BeforeAttack += FightHandler.AfterAttack;
 
-            Utility.DelayAction.Add(2000, () => Game.PrintChat("<b><font color =\"#FFFFFF\">Prince Talon</font></b><font color =\"#FFFFFF\"> by </font><b><font color=\"#FF66FF\">Leia</font></b><font color =\"#FFFFFF\"> loaded!</font>"));
+            Game.PrintChat("<b><font color =\"#FFFFFF\">Prince Talon</font></b><font color =\"#FFFFFF\"> by </font><b><font color=\"#FF66FF\">Leia</font></b><font color =\"#FFFFFF\"> loaded!</font>");
         }
 
         public static void OnGameUpdateModes(EventArgs args)
