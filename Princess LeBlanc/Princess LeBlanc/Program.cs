@@ -1,6 +1,7 @@
 ﻿using System;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX.Direct3D9;
 
 namespace Princess_LeBlanc
 {
@@ -33,6 +34,7 @@ namespace Princess_LeBlanc
             GameObject.OnDelete += FightHandler.GameObject_OnDelete;
             Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
             AntiGapcloser.OnEnemyGapcloser += FightHandler.AntiGapcloser_OnEnemyGapcloser;
+            Obj_AI_Base.OnProcessSpellCast += FightHandler.Obj_AI_Base_OnProcessSpellCast;
 
             Game.PrintChat("<b><font color =\"#FFFFFF\">Princess LeBlanc</font></b><font color =\"#FFFFFF\"> by </font><b><font color=\"#FF66FF\">Leia</font></b><font color =\"#FFFFFF\"> loaded!</font>");
         }
@@ -52,22 +54,34 @@ namespace Princess_LeBlanc
 
             switch (MenuHandler.Orbwalker.ActiveMode)
             {
-                case Orbwalking2.OrbwalkingMode.Combo:
+                case Orbwalking.OrbwalkingMode.Combo:
                 {
                     FightHandler.ComboLogic();
                     break;
                 }
-                case Orbwalking2.OrbwalkingMode.LaneClear:
+                case Orbwalking.OrbwalkingMode.LaneClear:
                 {
-                    FightHandler.LaneClear();
-                    FightHandler.JungleClear();
+                        switch (MenuHandler.LeBlancConfig.SubMenu("LaneMode").Item("LaneModeSwitch").GetValue<StringList>().SelectedIndex)
+                        {
+                            case 0:
+                            {
+                                FightHandler.LaneClear();
+                                FightHandler.JungleClear();
+                                break;
+                            }
+                            case 1:
+                            {
+                                FightHandler.Harass();
+                                break;
+                            }
+                        }
                     break;
                 }
-                case Orbwalking2.OrbwalkingMode.LastHit:
+                case Orbwalking.OrbwalkingMode.LastHit:
                 {
                     break;
                 }
-                case Orbwalking2.OrbwalkingMode.Mixed:
+                case Orbwalking.OrbwalkingMode.Mixed:
                 {
                     FightHandler.Harass();
                     break;
@@ -76,6 +90,28 @@ namespace Princess_LeBlanc
             FightHandler.WLogic();
             FightHandler.Flee();
             FightHandler.CloneLogic();
+            FightHandler.Timer();
+
+            if (MenuHandler.LeBlancConfig.SubMenu("LaneMode").Item("LaneModeToggle").GetValue<KeyBind>().Active)
+            {
+                if (MenuHandler.LeBlancConfig.SubMenu("LaneMode")
+                        .Item("LaneModeSwitch")
+                        .GetValue<StringList>()
+                        .SelectedIndex == 0)
+                {
+                        MenuHandler.LeBlancConfig.SubMenu("LaneMode").Item("LaneModeSwitch").SetValue(new StringList(new[] { "LaneClear", "Harass"}, 1));
+                }
+            }
+            if (!MenuHandler.LeBlancConfig.SubMenu("LaneMode").Item("LaneModeToggle").GetValue<KeyBind>().Active)
+            {
+                if (MenuHandler.LeBlancConfig.SubMenu("LaneMode")
+                        .Item("LaneModeSwitch")
+                        .GetValue<StringList>()
+                        .SelectedIndex == 1)
+                {
+                            MenuHandler.LeBlancConfig.SubMenu("LaneMode").Item("LaneModeSwitch").SetValue(new StringList(new[] { "LaneClear", "Harass" }, 0));
+                }
+            }
         }
     }
 }

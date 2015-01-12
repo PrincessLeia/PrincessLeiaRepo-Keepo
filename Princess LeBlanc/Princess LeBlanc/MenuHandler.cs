@@ -8,7 +8,7 @@ namespace Princess_LeBlanc
     {
         public static Menu LeBlancConfig;
         public static Menu TargetSelectorMenu;
-        internal static Orbwalking2.Orbwalker2 Orbwalker;
+        internal static Orbwalking.Orbwalker Orbwalker;
 
         public static void Init()
         {
@@ -17,7 +17,7 @@ namespace Princess_LeBlanc
                 "Princess " + ObjectManager.Player.ChampionName, "Princess" + ObjectManager.Player.ChampionName, true);
 
             LeBlancConfig.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
-            Orbwalker = new Orbwalking2.Orbwalker2(LeBlancConfig.SubMenu("Orbwalking"));
+            Orbwalker = new Orbwalking.Orbwalker(LeBlancConfig.SubMenu("Orbwalking"));
 
             TargetSelectorMenu = new Menu("Target Selector", "Common_TargetSelector");
             TargetSelector.AddToMenu(TargetSelectorMenu);
@@ -34,42 +34,39 @@ namespace Princess_LeBlanc
             LeBlancConfig.SubMenu("Combo").AddItem(new MenuItem("useW", "Use W").SetValue(true));
             LeBlancConfig.SubMenu("Combo").AddItem(new MenuItem("useE", "Use E").SetValue(true));
             LeBlancConfig.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R").SetValue(true));
-
-            LeBlancConfig.AddSubMenu(new Menu("Lane Clear", "ClearL"));
-            LeBlancConfig.SubMenu("ClearL")
+            LeBlancConfig.SubMenu("Combo").AddItem(new MenuItem("useRE", "Double Chain").SetValue(new KeyBind('K', KeyBindType.Press)));
+            LeBlancConfig.SubMenu("Combo")
                 .AddItem(
-                    new MenuItem("laneClearActive", "LaneClear!").SetValue(
+                    new MenuItem("Combousage", "Combo Usage").SetValue(new StringList(new[] { "Auto", "R(W)", "R(Q)" })));
+
+            LeBlancConfig.AddSubMenu(new Menu("Laning Mode", "LaneMode"));
+            LeBlancConfig.SubMenu("LaneMode")
+                .AddItem(
+                    new MenuItem("laneClearActive", "Laning Mode").SetValue(
                         new KeyBind(LeBlancConfig.Item("LaneClear").GetValue<KeyBind>().Key, KeyBindType.Press)));
-            LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearQ", "Use Q").SetValue(true));
-            LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClearW", "Use W").SetValue(true));
-            LeBlancConfig.SubMenu("ClearL").AddItem(new MenuItem("LaneClear2W", "Use Second W").SetValue(true));
-            LeBlancConfig.SubMenu("ClearL")
+            LeBlancConfig.SubMenu("LaneMode").AddSubMenu(new Menu("Lane Clear", "ClearL"));
+            LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").AddItem(new MenuItem("LaneClearQ", "Use Q").SetValue(true));
+            LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").AddItem(new MenuItem("LaneClearW", "Use W").SetValue(true));
+            LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").AddItem(new MenuItem("LaneClear2W", "Use Second W").SetValue(true));
+            LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL")
                 .AddItem(new MenuItem("LaneClearWHit", "Min minions by W").SetValue(new Slider(2, 0, 5)));
-            LeBlancConfig.SubMenu("ClearL")
+            LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL")
                 .AddItem(new MenuItem("LaneClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30)));
 
-            LeBlancConfig.AddSubMenu(new Menu("Jungle Clear", "ClearJ"));
-            LeBlancConfig.SubMenu("ClearJ")
-                .AddItem(
-                    new MenuItem("ClearJActive", "Jungle Clear!").SetValue(
-                        new KeyBind(LeBlancConfig.Item("LaneClear").GetValue<KeyBind>().Key, KeyBindType.Press)));
-            LeBlancConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearQ", "Use Q").SetValue(true));
-            LeBlancConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClearW", "Use W").SetValue(true));
-            LeBlancConfig.SubMenu("ClearJ").AddItem(new MenuItem("JungleClear2W", "Use Second W").SetValue(true));
-            LeBlancConfig.SubMenu("ClearJ")
-                .AddItem(new MenuItem("JungleClearManaPercent", "Minimum Mana Percent").SetValue(new Slider(30)));
-
-            LeBlancConfig.AddSubMenu(new Menu("Harass", "Harass"));
-            LeBlancConfig.SubMenu("Harass")
-                .AddItem(
-                    new MenuItem("HarassActive", "Harass!").SetValue(
-                        new KeyBind(LeBlancConfig.Item("Farm").GetValue<KeyBind>().Key, KeyBindType.Press)));
-            LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
-            LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useW", "Use W").SetValue(true));
-            LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("use2W", "Use Second W").SetValue(true));
-            LeBlancConfig.SubMenu("Harass").AddItem(new MenuItem("useE", "Use E").SetValue(true));
-            LeBlancConfig.SubMenu("Harass")
+            LeBlancConfig.SubMenu("LaneMode").AddSubMenu(new Menu("Harass", "Harass"));
+            LeBlancConfig.SubMenu("LaneMode").SubMenu("Harass").AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
+            LeBlancConfig.SubMenu("LaneMode").SubMenu("Harass").AddItem(new MenuItem("useW", "Use W").SetValue(true));
+            LeBlancConfig.SubMenu("LaneMode").SubMenu("Harass").AddItem(new MenuItem("use2W", "Use Second W").SetValue(true));
+            LeBlancConfig.SubMenu("LaneMode").SubMenu("Harass").AddItem(new MenuItem("useE", "Use E").SetValue(true));
+            LeBlancConfig.SubMenu("LaneMode").SubMenu("Harass")
                 .AddItem(new MenuItem("HarassManaPercent", "Minimum Mana Percent").SetValue(new Slider(30)));
+            LeBlancConfig.SubMenu("LaneMode")
+                .AddItem(
+                    new MenuItem("LaneModeSwitch", "LaneMode:").SetValue(
+                        new StringList(new[] { "LaneClear", "Harass" })));
+            LeBlancConfig.SubMenu("LaneMode")
+                .AddItem(
+                    new MenuItem("LaneModeToggle", "LaneMode Switch").SetValue(new KeyBind('J', KeyBindType.Toggle)));
 
             LeBlancConfig.AddSubMenu(new Menu("Flee", "Flee"));
             LeBlancConfig.SubMenu("Flee")
@@ -93,11 +90,11 @@ namespace Princess_LeBlanc
             LeBlancConfig.AddSubMenu(new Menu("Drawings", "Drawing"));
             LeBlancConfig.SubMenu("Drawing").AddItem(dmgAfterComboItem);
             LeBlancConfig.SubMenu("Drawing")
-                .AddItem(new MenuItem("drawQ", "Draw Q").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
+                .AddItem(new MenuItem("drawQ", "Draw Q").SetValue(new Circle(true, Color.FloralWhite)));
             LeBlancConfig.SubMenu("Drawing")
-                .AddItem(new MenuItem("drawW", "Draw W").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
+                .AddItem(new MenuItem("drawW", "Draw W").SetValue(new Circle(true, Color.FloralWhite)));
             LeBlancConfig.SubMenu("Drawing")
-                .AddItem(new MenuItem("drawE", "Draw E").SetValue(new Circle(true, Color.FromArgb(100, Color.Aqua))));
+                .AddItem(new MenuItem("drawE", "Draw E").SetValue(new Circle(true, Color.FloralWhite)));
 
             LeBlancConfig.AddSubMenu(new Menu("Misc", "Misc"));
             LeBlancConfig.SubMenu("Misc").AddSubMenu(new Menu("Second W Logic", "backW"));

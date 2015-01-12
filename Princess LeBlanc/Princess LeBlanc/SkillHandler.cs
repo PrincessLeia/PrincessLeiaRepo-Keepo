@@ -10,7 +10,7 @@ namespace Princess_LeBlanc
         {
             Q = new Spell(SpellSlot.Q, 700);
             W = new Spell(SpellSlot.W, 600);
-            E = new Spell(SpellSlot.E, 870);
+            E = new Spell(SpellSlot.E, 900);
             R = new Spell(SpellSlot.R);
 
             // Method Spell.SetSkillshot(float delay, float width, float speed, bool collision, SkillshotType 

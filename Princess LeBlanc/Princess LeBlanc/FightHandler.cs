@@ -14,7 +14,8 @@ namespace Princess_LeBlanc
         }
 
         private static float _clonetime;
-        public static Vector3 _wpos;
+        public static float ee, ff;
+        private static Vector3 _wpos;
 
         static readonly bool PacketCast = Program.PacketCast;
 
@@ -73,6 +74,18 @@ namespace Princess_LeBlanc
 
         }
 
+        public static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (!sender.IsMe)
+                return;
+            if (args.SData.Name.Contains("LeblancSlide"))
+                         ff = Game.Time + 4;
+        }
+
+        public static void Timer()
+        {
+            ee = (ff - Game.Time > 0) ? (ff - Game.Time) : 0;
+        }
         public static void Interrupter_OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
         {
             if (!MenuHandler.LeBlancConfig.Item("Interrupt").GetValue<bool>() || spell.DangerLevel != InterruptableDangerLevel.High)
@@ -175,13 +188,13 @@ namespace Princess_LeBlanc
 
         public static void LaneClear()
         {
-            var useQ = MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearQ").GetValue<bool>() && SkillHandler.Q.IsReady();
-            var useW = MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearW").GetValue<bool>() && SkillHandler.W.IsReady();
+            var useQ = MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").Item("LaneClearQ").GetValue<bool>() && SkillHandler.Q.IsReady();
+            var useW = MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").Item("LaneClearW").GetValue<bool>() && SkillHandler.W.IsReady();
             var minions = MinionManager.GetMinions(
                 Player.ServerPosition, SkillHandler.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             var farmLocation = MinionManager.GetBestCircularFarmLocation(MinionManager.GetMinions(SkillHandler.W.Range).Select(m => m.ServerPosition.To2D()).ToList(), SkillHandler.W.Width, SkillHandler.W.Range);
-            var mana = Player.ManaPercentage() > MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearManaPercent").GetValue<Slider>().Value;
-            var minionHit = farmLocation.MinionsHit >= MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClearWHit").GetValue<Slider>().Value;
+            var mana = Player.ManaPercentage() > MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").Item("LaneClearManaPercent").GetValue<Slider>().Value;
+            var minionHit = farmLocation.MinionsHit >= MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").Item("LaneClearWHit").GetValue<Slider>().Value;
             if (!mana)
             {
                 return;
@@ -197,7 +210,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.W.Cast(farmLocation.Position, PacketCast);
             }
-            if (StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("ClearL").Item("LaneClear2W").GetValue<bool>())
+            if (StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").Item("LaneClear2W").GetValue<bool>())
             {
                 SkillHandler.W.Cast(PacketCast);
             }
@@ -205,13 +218,13 @@ namespace Princess_LeBlanc
 
         public static void JungleClear()
         {
-            var useQ = MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearQ").GetValue<bool>() && SkillHandler.Q.IsReady();
-            var useW = MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearW").GetValue<bool>() && SkillHandler.W.IsReady() && StatusW() == "normal";
+            var useQ = MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").Item("LaneClearQ").GetValue<bool>() && SkillHandler.Q.IsReady();
+            var useW = MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").Item("LaneClearW").GetValue<bool>() && SkillHandler.W.IsReady() && StatusW() == "normal";
             var minions = MinionManager.GetMinions(
                 Player.ServerPosition, SkillHandler.Q.Range, MinionTypes.All, MinionTeam.Neutral);
             var farmLocation = MinionManager.GetBestCircularFarmLocation(MinionManager.GetMinions(SkillHandler.W.Range, MinionTypes.All, MinionTeam.Neutral).Select(m => m.ServerPosition.To2D()).ToList(), SkillHandler.W.Width, SkillHandler.W.Range);
             var mana = Player.ManaPercentage() >
-                       MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClearManaPercent").GetValue<Slider>().Value;
+                       MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearL").Item("LaneClearManaPercent").GetValue<Slider>().Value;
 
             if (!mana)
             {
@@ -228,7 +241,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.W.Cast(farmLocation.Position);
             }
-            if (StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("ClearJ").Item("JungleClear2W").GetValue<bool>())
+            if (StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("ClearJ").Item("JungleClear2W").GetValue<bool>())
             {
                 SkillHandler.W.Cast(PacketCast);
             }
@@ -267,10 +280,10 @@ namespace Princess_LeBlanc
         public static void Harass()
         {
             var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
-            var mana = Player.ManaPercentage() > MenuHandler.LeBlancConfig.SubMenu("Harass").Item("HarassManaPercent").GetValue<Slider>().Value;
-            var useQ = SkillHandler.Q.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Harass").Item("useQ").GetValue<bool>();
-            var useW = SkillHandler.W.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Harass").Item("useW").GetValue<bool>();
-            var useE = SkillHandler.E.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Harass").Item("useE").GetValue<bool>();
+            var mana = Player.ManaPercentage() > MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("Harass").Item("HarassManaPercent").GetValue<Slider>().Value;
+            var useQ = SkillHandler.Q.IsReady() && MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("Harass").Item("useQ").GetValue<bool>();
+            var useW = SkillHandler.W.IsReady() && MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("Harass").Item("useW").GetValue<bool>();
+            var useE = SkillHandler.E.IsReady() && MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("Harass").Item("useE").GetValue<bool>();
             var targetQ = SkillHandler.Q.IsInRange(target);
             var targetW = SkillHandler.W.IsInRange(target);
             var targetE = SkillHandler.E.IsInRange(target);
@@ -289,7 +302,7 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.W.Cast(target, PacketCast);
             }
-            if (StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("Harass").Item("use2W").GetValue<bool>())
+            if (StatusW() == "return" && MenuHandler.LeBlancConfig.SubMenu("LaneMode").SubMenu("Harass").Item("use2W").GetValue<bool>())
             {
                 SkillHandler.W.Cast(PacketCast);
             }
@@ -336,7 +349,7 @@ namespace Princess_LeBlanc
             }
 
             //Spells
-            if (useE && (!SkillHandler.Q.IsReady() && !SkillHandler.W.IsReady() && !SkillHandler.R.IsReady()) || Player.ServerPosition.Distance(t.ServerPosition) > SkillHandler.Q.Range)
+            if (useE)
             {
                 SkillHandler.E.CastIfHitchanceEquals(t, HitChance.Medium, PacketCast);
             }
@@ -348,26 +361,38 @@ namespace Princess_LeBlanc
             {
                 SkillHandler.W.Cast(t.ServerPosition, PacketCast);
             }
-            if (!SkillHandler.Q.IsReady() && !SkillHandler.W.IsReady() && !SkillHandler.E.IsReady() && useR &&
-                StatusR() == "E")
+            if (MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useRE").GetValue<KeyBind>().Active && useR && StatusR() == "E")
             {
-                SkillHandler.R.CastIfHitchanceEquals(t, HitChance.Medium, PacketCast);
+                SkillHandler.E.CastIfHitchanceEquals(t, HitChance.Medium, PacketCast);
             }
-            switch (prior)
-            {
-                case true:
+            else
+                switch (MenuHandler.LeBlancConfig.SubMenu("Combo").Item("Combousage").GetValue<StringList>().SelectedIndex)
+                {
+                    case 0:
+                    {
+                        if (prior && useR && StatusR() == "W")
+                                {
+                                    SkillHandler.R.Cast(t, PacketCast);
+                                }
+                            else if (!prior && useR && StatusR() == "Q")
+                                {
+                                    SkillHandler.R.CastOnUnit(t, PacketCast);
+                                }
+                        break;
+                    }
+                    case 1:
                     {
                         if (useR && StatusR() == "W")
                             SkillHandler.R.Cast(t, PacketCast);
                         break;
                     }
-                case false:
+                    case 2:
                     {
                         if (useR && StatusR() == "Q")
                             SkillHandler.R.CastOnUnit(t, PacketCast);
                         break;
                     }
-            }
+                }
         }
 
         private static void ComboGapClose()
