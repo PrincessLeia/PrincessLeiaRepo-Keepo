@@ -52,7 +52,7 @@ namespace Princess_LeBlanc
                     }
             }
 
-            if (ItemHandler.Dfg.IsReady() && ItemHandler.Dfg.IsInRange(t))
+            if (ItemManager.Dfg.IsReady() && ItemManager.Dfg.IsInRange(t))
             {
                 dmg += ObjectManager.Player.GetItemDamage(enemy, Damage.DamageItems.Dfg);
                 dmg = dmg * 1.2;
@@ -63,6 +63,7 @@ namespace Princess_LeBlanc
                 dmg += ObjectManager.Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
             }
             dmg += ObjectManager.Player.GetAutoAttackDamage(enemy, true) * 1;
+            dmg -= (enemy.FlatMagicReduction - ((enemy.FlatMagicReduction / 100) * ObjectManager.Player.PercentMagicPenetrationMod)) - ObjectManager.Player.FlatMagicPenetrationMod;
 
             return (float)dmg;
         }

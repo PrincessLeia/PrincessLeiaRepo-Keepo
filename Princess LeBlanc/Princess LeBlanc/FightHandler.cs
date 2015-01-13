@@ -332,20 +332,11 @@ namespace Princess_LeBlanc
             var useW = SkillHandler.W.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>() && SkillHandler.W.IsInRange(t);
             var useE = SkillHandler.E.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useE").GetValue<bool>() && SkillHandler.E.IsInRange(t);
             var useR = SkillHandler.R.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useR").GetValue<bool>() && SkillHandler.R.IsInRange(t);
-            var useIgnite = ItemHandler.Igniteslot != SpellSlot.Unknown && MenuHandler.LeBlancConfig.SubMenu("Items").Item("useIgnite").GetValue<bool>() &&
-                            Player.Spellbook.CanUseSpell(ItemHandler.Igniteslot) == SpellState.Ready && Player.ServerPosition.Distance(t.ServerPosition) < 600;
-            var useDfg = ItemHandler.Dfg.IsReady() && ItemHandler.Dfg.IsInRange(t) &&MenuHandler.LeBlancConfig.SubMenu("Items").Item("useDfg").GetValue<bool>();
             var prior = MathHandler.RqDamage(t) < MathHandler.RwDamage(t);
 
-            //Items
-            if (t.Health <= MathHandler.ComboDamage(t) && useDfg)
+            if (!t.IsTargetable || t.IsDead || t.IsInvulnerable)
             {
-                ItemHandler.Dfg.Cast(t);
-            }
-
-            if (t.Health <= MathHandler.ComboDamage(t) && useIgnite)
-            {
-                Player.Spellbook.CastSpell(ItemHandler.Igniteslot, t);
+                return;
             }
 
             //Spells
@@ -397,12 +388,20 @@ namespace Princess_LeBlanc
 
         private static void ComboGapClose()
         {
-            var t = TargetSelector.GetTarget(1000, TargetSelector.DamageType.Magical);
+            var t = TargetSelector.GetTarget(1800, TargetSelector.DamageType.Magical);
             var useW = SkillHandler.W.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>() && StatusW() == "normal";
+            var useR = SkillHandler.R.IsReady() && MenuHandler.LeBlancConfig.SubMenu("Combo").Item("useR").GetValue<bool>() && StatusR() == "W";
+            var dmgW = (45 + (40 * SkillHandler.W.Level)) + ((Player.BaseAbilityDamage + Player.FlatMagicDamageMod) * 0.6);
+            var dmgR = MathHandler.RwDamage(t);
 
-            if (useW)
+            if (useW && Player.Distance(t) > 1200 && t.Health < MathHandler.ComboDamage(t) - dmgW)
             {
                 SkillHandler.W.Cast(t.ServerPosition, PacketCast);
+            }
+            else if (useR && useW && Player.Distance(t) > 1800 && t.Health < MathHandler.ComboDamage(t) - (dmgW + dmgR))
+            {
+                SkillHandler.W.Cast(t.ServerPosition, PacketCast);
+                SkillHandler.R.Cast(t.ServerPosition, PacketCast);
             }
 
             if (!SkillHandler.W.IsReady())
@@ -413,10 +412,10 @@ namespace Princess_LeBlanc
 
         public static void ComboLogic()
         {
-            var t = GetEnemy(1000, TargetSelector.DamageType.Magical);
-            var tq = SkillHandler.W.IsInRange(t);
+            var t = GetEnemy(1800, TargetSelector.DamageType.Magical);
+            var tq = SkillHandler.Q.IsInRange(t);
 
-            if (!tq && t.Health < MathHandler.ComboDamage(t) - ((45 + (40 * SkillHandler.W.Level)) + ((Player.BaseAbilityDamage + Player.FlatMagicDamageMod) * 0.6)))
+            if (!tq)
             {
                 ComboGapClose();
             }

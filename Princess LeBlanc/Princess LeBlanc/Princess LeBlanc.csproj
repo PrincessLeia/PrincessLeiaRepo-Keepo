@@ -82,7 +82,7 @@
     <Compile Include="AssassinManager.cs" />
     <Compile Include="DrawingHandler.cs" />
     <Compile Include="FightHandler.cs" />
-    <Compile Include="ItemHandler.cs" />
+    <Compile Include="ItemManager.cs" />
     <Compile Include="MathHandler.cs" />
     <Compile Include="MenuHandler.cs" />
     <Compile Include="Program.cs" />

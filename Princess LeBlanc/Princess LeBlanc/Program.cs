@@ -27,7 +27,7 @@ namespace Princess_LeBlanc
             }
             SkillHandler.Init();
             MenuHandler.Init();
-            ItemHandler.Init();
+            ItemManager.Init();
             DrawingHandler.Init();
             Game.OnGameUpdate += Game_OnGameUpdate;
             GameObject.OnCreate += FightHandler.GameObject_OnCreate;
