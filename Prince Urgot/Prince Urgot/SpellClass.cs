@@ -2,16 +2,16 @@
 using LeagueSharp.Common;
 namespace Prince_Urgot
 {
-    internal class SkillHandler
+    internal class SpellClass
     {
-        public static Spell Q, Q2, W, E, R;
-        public static void Init()
+        internal static Spell Q, Q2, W, E, R;
+        public SpellClass()
         {
             Q = new Spell(SpellSlot.Q, 1000);
             Q2 = new Spell(SpellSlot.Q, 1200);
             W = new Spell(SpellSlot.W);
             E = new Spell(SpellSlot.E, 900);
-            R = new Spell(SpellSlot.R, 550);
+            R = new Spell(SpellSlot.R);
 
             Q.SetSkillshot(0.10f, 100f, 1600f, true, SkillshotType.SkillshotLine);
             Q2.SetSkillshot(0.10f, 100f, 1600f, false, SkillshotType.SkillshotLine);

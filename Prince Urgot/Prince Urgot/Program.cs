@@ -6,63 +6,50 @@ namespace Prince_Urgot
 {
     internal class Program
     {
+        private static Obj_AI_Hero Player
+        {
+            get { return ObjectManager.Player; }
+        }
 
-        private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
+        internal static Menu UrgotConfig;
+        internal static Menu TargetSelectorMenu;
+        internal static Orbwalking.Orbwalker Orbwalker;
+
         public static void Main(string[] args)
         {
-            CustomEvents.Game.OnGameLoad += Load;
+            CustomEvents.Game.OnGameLoad += OnGameLoad;
         }
 
-        public static void Load(EventArgs args)
+        private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Urgot")
+            {
                 return;
+            }
 
-            SkillHandler.Init();
-            ItemHandler.Init();
-            MenuHandler.Init();
-            DrawingHandler.Init();
+            MainMenu();
+            new SpellClass();
 
-            Interrupter.OnPossibleToInterrupt += FightHandler.Interrupter_OnPossibleToInterrupt;
-            Game.OnGameUpdate += OnGameUpdateModes;
-
-            Game.PrintChat("Prince " + Player.ChampionName + " Loaded");
-
+            Game.PrintChat("<b><font color =\"#FFFFFF\">Prince Urgot</font></b><font color =\"#FFFFFF\"> by </font><b><font color=\"#FF66FF\">Leia</font></b><font color =\"#FFFFFF\"> loaded!</font>");
         }
-        public static void OnGameUpdateModes(EventArgs args)
+
+        static void MainMenu()
         {
-            if (Player.IsDead)
-                return;
+            UrgotConfig = new Menu("Prince " + ObjectManager.Player.ChampionName, "Prince" + ObjectManager.Player.ChampionName, true);
 
-            SkillHandler.R.Range =  400+(150 * SkillHandler.R.Level);
+            UrgotConfig.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
+            Orbwalker = new Orbwalking.Orbwalker(UrgotConfig.SubMenu("Orbwalking"));
 
-            if (MenuHandler._uMenu.Item("Orbwalk").GetValue<KeyBind>().Active)
-            {
-                FightHandler.CastLogic();
-                FightHandler.ActivateMura();
-            }
-            else if (MenuHandler._uMenu.Item("Farm").GetValue<KeyBind>().Active)
-            {
-                FightHandler.LastHit();
-                FightHandler.DeActivateMura();
-            }
-            else if (MenuHandler._uMenu.Item("LaneClear").GetValue<KeyBind>().Active)
-            {
-                FightHandler.LaneClear();
-                FightHandler.DeActivateMura();
-            }
+            TargetSelectorMenu = new Menu("Target Selector", "Common_TargetSelector");
+            TargetSelector.AddToMenu(TargetSelectorMenu);
+            UrgotConfig.AddSubMenu(TargetSelectorMenu);
 
-            if (MenuHandler._uMenu.Item("HarassActive").GetValue<KeyBind>().Active || MenuHandler._uMenu.Item("HarassToggle").GetValue<KeyBind>().Active)
-            {
-                FightHandler.Harass();
-            }
-            if (MenuHandler._uMenu.Item("autoR").GetValue<bool>() && SkillHandler.R.IsReady())
-            {
-                FightHandler.AutoR();
-            }
-
-
-            FightHandler.KillSteal();
+            new ComboClass(UrgotConfig);
+            new HarassClass(UrgotConfig);
+            new LaneClearClass(UrgotConfig);
+            new ItemClass(UrgotConfig);
+            new DrawingClass(UrgotConfig);
+            UrgotConfig.AddToMainMenu();
         }
     }
 }
