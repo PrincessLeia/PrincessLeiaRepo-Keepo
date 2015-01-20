@@ -55,7 +55,7 @@ namespace Princess_LeBlanc
                             TargetSelector.GetPriority(enemy) > 3));
             }
             Program.LeBlancConfig.SubMenu("MenuAssassin")
-                .AddItem(new MenuItem("AssassinSearchRange", "Search Range")).SetValue(new Slider(1200, 1000, 2000));
+                .AddItem(new MenuItem("AssassinSearchRange", "Search Range")).SetValue(new Slider(1000, 2000));
 
             Game.OnGameUpdate += OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;

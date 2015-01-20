@@ -21,6 +21,7 @@ namespace Princess_LeBlanc
         private static Spell Q, W, E, R;
         private static bool PacketCast;
 
+        private static readonly SpellSlot IgniteSlot = Player.GetSpellSlot("SummonerDot");
         private static readonly Items.Item Dfg = new Items.Item(ItemData.Deathfire_Grasp.Id, ItemData.Deathfire_Grasp.Range);
         private static readonly Items.Item Zho = new Items.Item(ItemData.Zhonyas_Hourglass.Id);
         private static readonly Items.Item Hp = new Items.Item(ItemData.Health_Potion.Id);
@@ -75,8 +76,8 @@ namespace Princess_LeBlanc
             {
                     case Orbwalking.OrbwalkingMode.Combo:
                 {
-                    var t = GetEnemy(E.Range);
-                    Combo(t);
+                    var t = GetEnemy(1200);
+                    GapClose(t);
                     break;
                 }
                     case Orbwalking.OrbwalkingMode.LaneClear:
@@ -137,6 +138,7 @@ namespace Princess_LeBlanc
             LeBlancConfig.SubMenu("harass").AddItem(new MenuItem("haraKey", "Harass Toggle").SetValue(new KeyBind('Y', KeyBindType.Toggle)));
 
             LeBlancConfig.AddSubMenu(new Menu("Items", "items"));
+            LeBlancConfig.SubMenu("items").AddItem(new MenuItem("useIgnite", "Use Ignite").SetValue(true));
             LeBlancConfig.SubMenu("items").AddItem(new MenuItem("useDfg", "Use DFG").SetValue(true));
             LeBlancConfig.SubMenu("items").AddItem(new MenuItem("useZho", "Use Zhonyas").SetValue(true));
             LeBlancConfig.SubMenu("items").AddItem(new MenuItem("minZho", "Zhonyas Min Health%").SetValue(new Slider(5)));
@@ -195,6 +197,20 @@ namespace Princess_LeBlanc
 
         #region Combo
 
+        private static void GapClose(Obj_AI_Base t)
+        {
+            var dmg = ComboDamage(t) - Player.GetSpellDamage(t, SpellSlot.W) > t.Health;
+            var useW = LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
+
+            if (!dmg || Q.IsInRange(t))
+            {
+                Combo(t);
+                return;
+            }
+
+            W.Cast(t.ServerPosition, PacketCast);
+            Combo(t);
+        }
         private static void Combo(Obj_AI_Base t)
         {
             var useQ = LeBlancConfig.SubMenu("Combo").Item("useQ").GetValue<bool>();
@@ -202,11 +218,13 @@ namespace Princess_LeBlanc
             var useE = LeBlancConfig.SubMenu("Combo").Item("useE").GetValue<bool>();
             var useR = LeBlancConfig.SubMenu("Combo").Item("useR").GetValue<bool>();
             var useDfg = LeBlancConfig.SubMenu("items").Item("useDfg").GetValue<bool>();
+            var useIgnite = LeBlancConfig.SubMenu("items").Item("useIgnite").GetValue<bool>();
             var hitE = (HitChance)(LeBlancConfig.SubMenu("Combo").Item("preE").GetValue<StringList>().SelectedIndex + 3);
             var hitR = (HitChance)(LeBlancConfig.SubMenu("Combo").Item("preE").GetValue<StringList>().SelectedIndex + 3);
             if (t.Health < ComboDamage(t))
             {
                 CastDfg(t, useDfg);
+                CastIgnite(t, useIgnite);
             }
             CastE(t, hitE, useE);
             CastQ(t, useQ);
@@ -335,6 +353,13 @@ namespace Princess_LeBlanc
 
         #endregion Flee
         #region Items
+        private static void CastIgnite(Obj_AI_Base t, bool useIgnite)
+        {
+            if (t.IsInvulnerable || !t.IsValidTarget(600) || !IgniteSlot.IsReady() || !useIgnite || IgniteSlot == SpellSlot.Unknown)
+                return;
+
+            Player.Spellbook.CastSpell(IgniteSlot, t);
+        }
         private static void CastDfg(Obj_AI_Base t, bool useDfg)
         {
             if (t.IsInvulnerable || !t.IsValidTarget(Dfg.Range) || !Dfg.IsReady() || !useDfg)
@@ -596,24 +621,23 @@ namespace Princess_LeBlanc
         {
             var ap = ObjectManager.Player.BaseAbilityDamage + ObjectManager.Player.FlatMagicDamageMod;
             var dmg = 0d;
-            var player = ObjectManager.Player;
 
             if (Q.IsReady())
             {
-                dmg += player.GetSpellDamage(enemy, SpellSlot.Q);
+                dmg += Player.GetSpellDamage(enemy, SpellSlot.Q);
 
                 if ((W.IsReady() && W.Instance.Name == "LeblancSlide") || E.IsReady() || R.IsReady())
-                    dmg += player.GetSpellDamage(enemy, SpellSlot.Q);
+                    dmg += Player.GetSpellDamage(enemy, SpellSlot.Q);
             }
 
             if (W.IsReady())
             {
-                dmg += player.GetSpellDamage(enemy, SpellSlot.W);
+                dmg += Player.GetSpellDamage(enemy, SpellSlot.W);
             }
 
             if (E.IsReady())
             {
-                dmg += player.GetSpellDamage(enemy, SpellSlot.E);
+                dmg += Player.GetSpellDamage(enemy, SpellSlot.E);
             }
 
             if (R.IsReady())
@@ -627,29 +651,29 @@ namespace Princess_LeBlanc
                         {
                             var qDmg = new[] { 100, 200, 300 }[R.Level] + 0.65 * ap;
 
-                            dmg += player.CalcDamage(enemy, Damage.DamageType.Magical, qDmg);
+                            dmg += Player.CalcDamage(enemy, Damage.DamageType.Magical, qDmg);
 
                             if ((W.IsReady() && W.Instance.Name == "LeblancSlide") || E.IsReady() || Q.IsReady())
                             {
-                                dmg += player.CalcDamage(enemy, Damage.DamageType.Magical, maxDmg);
+                                dmg += Player.CalcDamage(enemy, Damage.DamageType.Magical, maxDmg);
                             }
                             break;
                         }
                     case "LeblancSlideM":
                         {
                             var wDmg = new[] { 150, 300, 450 }[R.Level] + 0.975 * ap;
-                            dmg += player.CalcDamage(enemy, Damage.DamageType.Magical, wDmg);
+                            dmg += Player.CalcDamage(enemy, Damage.DamageType.Magical, wDmg);
                             break;
                         }
                     case "LeblancSoulShackleM":
                         {
                             var eDmg = new[] { 100, 200, 300 }[R.Level] + 0.65 * ap;
 
-                            dmg += player.CalcDamage(enemy, Damage.DamageType.Magical, eDmg);
+                            dmg += Player.CalcDamage(enemy, Damage.DamageType.Magical, eDmg);
 
-                            if (player.CalcDamage(enemy, Damage.DamageType.Magical, eDmg) > maxDmg)
+                            if (Player.CalcDamage(enemy, Damage.DamageType.Magical, eDmg) > maxDmg)
                             {
-                                dmg += player.CalcDamage(enemy, Damage.DamageType.Magical, maxDmg);
+                                dmg += Player.CalcDamage(enemy, Damage.DamageType.Magical, maxDmg);
                             }
                             break;
                         }
@@ -660,22 +684,22 @@ namespace Princess_LeBlanc
             {
                 var qDmg = new[] { 100, 200, 300 }[R.Level] + 0.65 * ap;
 
-                dmg += player.CalcDamage(enemy, Damage.DamageType.Magical, qDmg);
+                dmg += Player.CalcDamage(enemy, Damage.DamageType.Magical, qDmg);
             }
 
             if (enemy.HasBuff("LeblancChaosOrb", true))
             {
-                dmg += player.GetSpellDamage(enemy, SpellSlot.Q);
+                dmg += Player.GetSpellDamage(enemy, SpellSlot.Q);
             }
 
             if (Dfg.IsReady())
                 dmg += Player.GetItemDamage(enemy, Damage.DamageItems.Dfg) / 1.2;
 
-            if (player.GetSpellSlot("SummonerIgnite") != SpellSlot.Unknown)
+            if (Player.GetSpellSlot("SummonerIgnite") != SpellSlot.Unknown)
             {
-                dmg += player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
+                dmg += Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
             }
-            dmg += player.GetAutoAttackDamage(enemy, true) * 1;
+            dmg += Player.GetAutoAttackDamage(enemy, true) * 1;
 
             return (float)dmg * (Dfg.IsReady() ? 1.2f : 1);
         }
