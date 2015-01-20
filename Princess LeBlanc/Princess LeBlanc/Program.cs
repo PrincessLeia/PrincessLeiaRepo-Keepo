@@ -69,13 +69,8 @@ namespace Princess_LeBlanc
                 return;
 
             PacketCast = LeBlancConfig.Item("UsePacket").GetValue<bool>();
-            WLogic();
-            Flee();
-            UseItems();
-            Clones();
-            if (LeBlancConfig.Item("haraKey").GetValue<KeyBind>().Active)
-                Harass();
 
+            WLogic();
             switch (Orbwalker.ActiveMode)
             {
                     case Orbwalking.OrbwalkingMode.Combo:
@@ -95,6 +90,11 @@ namespace Princess_LeBlanc
                     break;
                 }
             }
+            Flee();
+            UseItems();
+            Clones();
+            if (LeBlancConfig.Item("haraKey").GetValue<KeyBind>().Active)
+                Harass();
         }
 
         private static void Menu()
@@ -404,7 +404,7 @@ namespace Princess_LeBlanc
         #region Misc
         private static void WLogic()
         {
-            var countW = SecondW.Pos.CountEnemysInRange(200) > LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWcountEnemy").GetValue<Slider>().Value;
+            var countW = Utility.CountEnemiesInRange(SecondW.Pos, 200) > LeBlancConfig.SubMenu("Misc").SubMenu("backW").Item("SWcountEnemy").GetValue<Slider>().Value;
             var wposex = SecondW.Pos.Extend(Game.CursorPos, 100);
             var fleepos = wposex.Distance(SecondW.Pos) > Game.CursorPos.Distance(SecondW.Pos);
 
@@ -427,7 +427,7 @@ namespace Princess_LeBlanc
 
             if (mirror != null && LeBlancConfig.SubMenu("Misc").Item("Clone").GetValue<bool>())
             {
-                mirror.IssueOrder(GameObjectOrder.MoveTo, pos);
+                mirror.IssueOrder(GameObjectOrder.MovePet, pos);
             }
         }
 
