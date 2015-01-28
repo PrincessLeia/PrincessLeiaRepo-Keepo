@@ -21,13 +21,6 @@ namespace Princess_LeBlanc
         private static Spell Q, W, E, R;
         private static bool PacketCast;
 
-        private static readonly SpellSlot IgniteSlot = Player.GetSpellSlot("SummonerDot");
-        private static readonly Items.Item Dfg = new Items.Item(ItemData.Deathfire_Grasp.Id, ItemData.Deathfire_Grasp.Range);
-        private static readonly Items.Item Zho = new Items.Item(ItemData.Zhonyas_Hourglass.Id);
-        private static readonly Items.Item Hp = new Items.Item(ItemData.Health_Potion.Id);
-        private static readonly Items.Item Mp = new Items.Item(ItemData.Mana_Potion.Id);
-        private static readonly Items.Item Flask = new Items.Item(ItemData.Crystalline_Flask.Id);
-
         private static class SecondW
         {
             public static GameObject Object { get; set; }
@@ -92,7 +85,6 @@ namespace Princess_LeBlanc
                 }
             }
             Flee();
-            UseItems();
             Clones();
             if (LeBlancConfig.Item("haraKey").GetValue<KeyBind>().Active)
                 Harass();
@@ -202,13 +194,14 @@ namespace Princess_LeBlanc
             var dmg = ComboDamage(t) - Player.GetSpellDamage(t, SpellSlot.W) > t.Health;
             var useW = LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
 
-            if (!dmg || Q.IsInRange(t))
+            if (!dmg || Q.IsInRange(t) || !useW)
             {
                 Combo(t);
                 return;
             }
 
-            W.Cast(t.ServerPosition, PacketCast);
+            var vecW = Player.ServerPosition.Extend(t.ServerPosition, W.Range);
+            W.Cast(vecW, PacketCast);
             Combo(t);
         }
         private static void Combo(Obj_AI_Base t)
@@ -217,15 +210,8 @@ namespace Princess_LeBlanc
             var useW = LeBlancConfig.SubMenu("Combo").Item("useW").GetValue<bool>();
             var useE = LeBlancConfig.SubMenu("Combo").Item("useE").GetValue<bool>();
             var useR = LeBlancConfig.SubMenu("Combo").Item("useR").GetValue<bool>();
-            var useDfg = LeBlancConfig.SubMenu("items").Item("useDfg").GetValue<bool>();
-            var useIgnite = LeBlancConfig.SubMenu("items").Item("useIgnite").GetValue<bool>();
             var hitE = (HitChance)(LeBlancConfig.SubMenu("Combo").Item("preE").GetValue<StringList>().SelectedIndex + 3);
             var hitR = (HitChance)(LeBlancConfig.SubMenu("Combo").Item("preE").GetValue<StringList>().SelectedIndex + 3);
-            if (t.Health < ComboDamage(t))
-            {
-                CastDfg(t, useDfg);
-                CastIgnite(t, useIgnite);
-            }
             CastE(t, hitE, useE);
             CastQ(t, useQ);
             CastW(t, useW);
@@ -352,80 +338,6 @@ namespace Princess_LeBlanc
         }
 
         #endregion Flee
-        #region Items
-        private static void CastIgnite(Obj_AI_Base t, bool useIgnite)
-        {
-            if (t.IsInvulnerable || !t.IsValidTarget(600) || !IgniteSlot.IsReady() || !useIgnite || IgniteSlot == SpellSlot.Unknown)
-                return;
-
-            Player.Spellbook.CastSpell(IgniteSlot, t);
-        }
-        private static void CastDfg(Obj_AI_Base t, bool useDfg)
-        {
-            if (t.IsInvulnerable || !t.IsValidTarget(Dfg.Range) || !Dfg.IsReady() || !useDfg)
-                return;
-
-            Dfg.Cast(t);
-        }
-        private static void CastZho(bool useZho)
-        {
-            if (!Zho.IsReady() || !useZho)
-                return;
-
-            Zho.Cast();
-        }
-        private static void CastHp(bool useHp)
-        {
-            if (!Hp.IsReady() || !useHp)
-                return;
-
-            Hp.Cast();
-        }
-        private static void CastMp(bool useMp)
-        {
-            if (!Mp.IsReady() || !useMp)
-                return;
-
-            Mp.Cast();
-        }
-        private static void CastFlask(bool useFlask)
-        {
-            if (!Flask.IsReady() || !useFlask)
-                return;
-
-            Flask.Cast();
-        }
-        private static void UseItems()
-        {
-            var useHp = LeBlancConfig.SubMenu("items").SubMenu("hp").Item("useHp").GetValue<bool>();
-            var useHFlask = LeBlancConfig.SubMenu("items").SubMenu("hp").Item("useFlask").GetValue<bool>();
-            var minHp = ObjectManager.Player.HealthPercentage() < LeBlancConfig.SubMenu("items").SubMenu("hp").Item("minHp").GetValue<Slider>().Value;
-            var useMp = LeBlancConfig.SubMenu("items").SubMenu("mp").Item("useMp").GetValue<bool>();
-            var useMFlask = LeBlancConfig.SubMenu("items").SubMenu("mp").Item("useFlask").GetValue<bool>();
-            var minMp = ObjectManager.Player.ManaPercentage() < LeBlancConfig.SubMenu("items").SubMenu("mp").Item("minmp").GetValue<Slider>().Value;
-            var useFlask = useHFlask || useMFlask;
-            var useZho = LeBlancConfig.SubMenu("items").Item("useZho").GetValue<bool>();
-            var minZho = LeBlancConfig.SubMenu("items").Item("minZho").GetValue<Slider>().Value > ObjectManager.Player.HealthPercentage();
-
-            if (ObjectManager.Player.HasBuff("Recall"))
-                return;
-
-            if (minHp)
-            {
-                CastHp(useHp);
-                CastFlask(useFlask);
-            }
-            if (minMp)
-            {
-                CastMp(useMp);
-                CastFlask(useFlask);
-            }
-            if (minZho)
-            {
-                CastZho(useZho);
-            }
-        }
-        #endregion Items
         #region Misc
         private static void WLogic()
         {
@@ -692,16 +604,13 @@ namespace Princess_LeBlanc
                 dmg += Player.GetSpellDamage(enemy, SpellSlot.Q);
             }
 
-            if (Dfg.IsReady())
-                dmg += Player.GetItemDamage(enemy, Damage.DamageItems.Dfg) / 1.2;
-
             if (Player.GetSpellSlot("SummonerIgnite") != SpellSlot.Unknown)
             {
                 dmg += Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
             }
             dmg += Player.GetAutoAttackDamage(enemy, true) * 1;
 
-            return (float)dmg * (Dfg.IsReady() ? 1.2f : 1);
+            return (float)dmg;
         }
         private static Obj_AI_Hero GetEnemy(float vDefaultRange = 0, TargetSelector.DamageType vDefaultDamageType = TargetSelector.DamageType.Magical)
         {

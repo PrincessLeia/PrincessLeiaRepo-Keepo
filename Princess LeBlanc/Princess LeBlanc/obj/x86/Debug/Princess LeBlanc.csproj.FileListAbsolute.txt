@@ -1,0 +1,11 @@
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\Princess LeBlanc.exe.config
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\Princess LeBlanc.exe
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\Princess LeBlanc.pdb
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\LeagueSharp.Common.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\LeagueSharp.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\SharpDX.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\SharpDX.Direct3D9.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\clipper_library.dll
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\bin\x86\Debug\LeagueSharp.xml
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\obj\x86\Debug\Princess LeBlanc.exe
+C:\Users\Carli\Documents\Visual Studio 2013\Projects\Princess LeBlanc\Princess LeBlanc\obj\x86\Debug\Princess LeBlanc.pdb
